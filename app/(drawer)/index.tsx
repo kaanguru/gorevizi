@@ -1,14 +1,13 @@
 import { Stack } from 'expo-router';
-
+import { Text } from 'react-native';
 import { Container } from '~/components/Container';
-import { ScreenContent } from '~/components/ScreenContent';
 
-export default function Home() {
+export default function TaskList() {
   return (
     <>
-      <Stack.Screen options={{ title: 'Home' }} />
+      <Stack.Screen options={{ title: 'TaskList' }} />
       <Container>
-        <ScreenContent path="app/(drawer)/index.tsx" title="Home" />
+        <Text>TaskList</Text>
       </Container>
     </>
   );

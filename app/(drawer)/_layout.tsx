@@ -1,31 +1,23 @@
-import { Ionicons, MaterialIcons } from '@expo/vector-icons';
-import { Link } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 import { Drawer } from 'expo-router/drawer';
-
-import { HeaderButton } from '../../components/HeaderButton';
 
 const DrawerLayout = () => (
   <Drawer>
     <Drawer.Screen
       name="index"
       options={{
-        headerTitle: 'Home',
-        drawerLabel: 'Home',
-        drawerIcon: ({ size, color }) => <Ionicons name="home-outline" size={size} color={color} />,
+        headerTitle: 'TaskList',
+        drawerLabel: 'TaskList',
+        drawerIcon: ({ size, color }) => <Ionicons name="list-outline" size={size} color={color} />,
       }}
     />
     <Drawer.Screen
-      name="(tabs)"
+      name="(settings)/index"
       options={{
-        headerTitle: 'Tabs',
-        drawerLabel: 'Tabs',
+        headerTitle: 'Settings',
+        drawerLabel: 'Settings',
         drawerIcon: ({ size, color }) => (
-          <MaterialIcons name="border-bottom" size={size} color={color} />
-        ),
-        headerRight: () => (
-          <Link href="/modal" asChild>
-            <HeaderButton />
-          </Link>
+          <Ionicons name="settings-outline" size={size} color={color} />
         ),
       }}
     />
