@@ -1,12 +1,16 @@
-import { View, Text, TextInput, Pressable, Alert } from 'react-native';
+import { View, Text, TextInput, Pressable, Alert, ActivityIndicator } from 'react-native';
 import { Href, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { resetFirstVisit } from '~/utils/isFirstVisit';
+import { useAuth } from '~/utils/auth';
 
 export default function Login() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading] = useState(false);
+
+  const { signIn } = useAuth();
   const handleResetFirstVisit = async () => {
     Alert.alert(
       'Reset Onboarding',
@@ -34,14 +38,19 @@ export default function Login() {
       ]
     );
   };
-  const handleLogin = () => {
-    // TODO: Implement login logic
-    console.log('Login with:', { email, password });
+  const handleLogin = async () => {
+    const result = await signIn(email, password);
+    if (result?.error) {
+      Alert.alert('Login Failed', result.error.message);
+    } else {
+      router.replace('/' as Href);
+    }
   };
 
   return (
     <View className="flex-1 bg-white px-5 pt-12">
       <Text className="mb-8 text-2xl font-bold text-black">Welcome Back</Text>
+      <View>{loading && <ActivityIndicator />}</View>
 
       <View className="space-y-4">
         <View>

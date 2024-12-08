@@ -6,6 +6,7 @@
   "scripts": {
     "android": "DARK_MODE=media expo start --android",
     "dev": "expo start",
+    "dev:android": "expo run:android",
     "dev:clean": "expo start -c",
     "eslint": "eslint \"**/*.{js,jsx,ts,tsx}\" ",
     "format": "eslint \"**/*.{js,jsx,ts,tsx}\" --fix && prettier \"**/*.{js,jsx,ts,tsx,json}\" --write",

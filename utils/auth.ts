@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Alert } from 'react-native';
 import { supabase } from './supabase';
+import { router } from 'expo-router';
 
 /**
  * A hook that provides authentication functionality.
@@ -20,7 +21,10 @@ export const useAuth = () => {
    * @param email The user's email address.
    * @param password The user's password.
    */
-  const signIn = async (email: string, password: string) => {
+  const signIn = async (
+    email: string,
+    password: string
+  ): Promise<{ error: { message: string } } | null> => {
     try {
       setLoading(true);
       const { error } = await supabase.auth.signInWithPassword({
@@ -28,10 +32,17 @@ export const useAuth = () => {
         password,
       });
 
-      if (error) Alert.alert('Error', error.message);
+      if (error) {
+        Alert.alert('Error', error.message);
+        return { error: { message: error.message } };
+      }
+      return null;
     } catch (error) {
       console.error('🚀 ~ signIn ~ error:', error);
       Alert.alert('Sign In Failed', 'Unable to sign in. ');
+      return {
+        error: { message: error instanceof Error ? error.message : 'Unknown errorin signing in' },
+      };
     } finally {
       setLoading(false);
     }
@@ -43,7 +54,10 @@ export const useAuth = () => {
    * @param email The user's email address.
    * @param password The user's password.
    */
-  const signUp = async (email: string, password: string) => {
+  const signUp = async (
+    email: string,
+    password: string
+  ): Promise<{ error: { message: string } } | null> => {
     try {
       setLoading(true);
       const {
@@ -54,24 +68,42 @@ export const useAuth = () => {
         password,
       });
 
-      if (error) Alert.alert('Error', error.message);
+      if (error) {
+        Alert.alert('Error', error.message);
+        return { error: { message: error.message } };
+      }
       if (!session) Alert.alert('Success', 'Please check your inbox for email verification!');
+      return null;
     } catch (error) {
       console.error('🚀 ~ signUp ~ error:', error);
       Alert.alert('Sign Up Failed', 'Unable to create your account.Try again.');
+      return {
+        error: { message: error instanceof Error ? error.message : 'Unknown error signing up' },
+      };
     } finally {
       setLoading(false);
     }
   };
 
   /**
-   * Signs out the user with Supabase.
+   * Signs out the user with Supabase and redirects to the auth screen.
    */
   const signOut = async () => {
     try {
       setLoading(true);
+
+      // Sign out from Supabase first
       const { error } = await supabase.auth.signOut();
-      if (error) Alert.alert('Error', error.message);
+      if (error) {
+        Alert.alert('Error', error.message);
+        return;
+      }
+      /* 
+      // Use requestAnimationFrame to ensure we're not in the middle of a render cycle
+      requestAnimationFrame(() => {
+        // Reset navigation state and go to login
+        router.replace('/(auth)/login');
+      }); */
     } catch (error) {
       console.error('🚀 ~ signOut ~ error:', error);
       Alert.alert('Sign Out Failed', 'Unable to sign you out. Please try again.');

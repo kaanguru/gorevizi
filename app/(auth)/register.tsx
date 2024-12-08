@@ -1,21 +1,29 @@
-import { View, Text, TextInput, Pressable } from 'react-native';
-import { useRouter } from 'expo-router';
+import { View, Text, TextInput, Pressable, Alert, ActivityIndicator } from 'react-native';
+import { Href, useRouter } from 'expo-router';
 import { useState } from 'react';
+import { useAuth } from '~/utils/auth';
 
 export default function Register() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading] = useState(false);
 
-  const handleRegister = () => {
-    // TODO: Implement registration logic
-    console.log('Register with:', { email, password });
+  const { signUp } = useAuth();
+  const handleRegister = async () => {
+    const result = await signUp(email, password);
+    console.log('🚀 ~ handleRegister ~ :', email, password);
+    if (result?.error) {
+      Alert.alert('Login Failed', result.error.message);
+    } else {
+      router.push('/(auth)/login' as Href);
+    }
   };
 
   return (
     <View className="flex-1 bg-white px-5 pt-12">
       <Text className="text-navy-800 mb-8 text-2xl font-bold">Create Account</Text>
-
+      <View>{loading && <ActivityIndicator />}</View>
       <View className="space-y-4">
         <View>
           <Text className="text-navy-800 mb-2">Email</Text>
