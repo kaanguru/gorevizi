@@ -13,6 +13,7 @@
     "lint": "eslint \"**/*.{js,jsx,ts,tsx}\" && prettier -c \"**/*.{js,jsx,ts,tsx,json}\"",
     "prebuild": "expo prebuild",
     "start": "supabase start && expo start",
+    "stop": "supabase stop ",
     "updatesdk": "expo install expo@latest && expo install --fix",
     "web": "DARK_MODE=media expo start --web"
   },
