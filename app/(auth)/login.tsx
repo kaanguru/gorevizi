@@ -10,7 +10,7 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [loading] = useState(false);
 
-  const { signIn } = useAuth();
+  const { signInWithEmailAndPassword } = useAuth();
   const handleResetFirstVisit = async () => {
     Alert.alert(
       'Reset Onboarding',
@@ -39,7 +39,7 @@ export default function Login() {
     );
   };
   const handleLogin = async () => {
-    const result = await signIn(email, password);
+    const result = await signInWithEmailAndPassword(email, password);
     if (result?.error) {
       Alert.alert('Login Failed', result.error.message);
     } else {

@@ -1,27 +1,28 @@
 import { useState } from 'react';
-import { Alert } from 'react-native';
+import { AppState } from 'react-native';
 import { supabase } from './supabase';
-import { router } from 'expo-router';
 
+AppState.addEventListener('change', (state) => {
+  if (state === 'active') {
+    supabase.auth.startAutoRefresh();
+  } else {
+    supabase.auth.stopAutoRefresh();
+  }
+});
 /**
- * A hook that provides authentication functionality.
+ * Hook to handle user authentication.
  *
- * @returns An object with the following keys:
- *   - `signIn`: A function that takes an email and password and signs in the user with Supabase.
- *   - `signUp`: A function that takes an email and password and signs up the user with Supabase.
- *   - `signOut`: A function that signs out the user with Supabase.
- *   - `loading`: A boolean indicating whether an authentication request is in progress.
+ * @returns An object containing the functions to sign in, sign up, sign out, and a boolean indicating whether the authentication is in progress.
+ *
+ * The `signInWithEmailAndPassword` function signs in the user with the email and password provided.
+ * The `signUpWithEmailAndPassword` function signs up the user with the email and password provided.
+ * The `signOut` function signs out the user.
+ * The `loading` property is a boolean indicating whether the authentication is in progress.
  */
 export const useAuth = () => {
   const [loading, setLoading] = useState(false);
 
-  /**
-   * Signs in the user with Supabase.
-   *
-   * @param email The user's email address.
-   * @param password The user's password.
-   */
-  const signIn = async (
+  const signInWithEmailAndPassword = async (
     email: string,
     password: string
   ): Promise<{ error: { message: string } } | null> => {
@@ -33,88 +34,69 @@ export const useAuth = () => {
       });
 
       if (error) {
-        Alert.alert('Error', error.message);
-        return { error: { message: error.message } };
+        return { error: { message: error?.message ?? 'Unknown error when signing in' } };
       }
       return null;
     } catch (error) {
-      console.error('🚀 ~ signIn ~ error:', error);
-      Alert.alert('Sign In Failed', 'Unable to sign in. ');
-      return {
-        error: { message: error instanceof Error ? error.message : 'Unknown errorin signing in' },
-      };
+      if (error instanceof Error) {
+        return { error: { message: error.message } };
+      }
+      return { error: { message: 'Unknown error when signing in with email and password' } };
     } finally {
       setLoading(false);
     }
   };
 
-  /**
-   * Signs up the user with Supabase.
-   *
-   * @param email The user's email address.
-   * @param password The user's password.
-   */
-  const signUp = async (
+  const signUpWithEmailAndPassword = async (
     email: string,
     password: string
   ): Promise<{ error: { message: string } } | null> => {
     try {
       setLoading(true);
-      const {
-        data: { session },
-        error,
-      } = await supabase.auth.signUp({
-        email,
-        password,
-      });
+      const { data, error } = await supabase.auth.signUp({ email, password });
 
       if (error) {
-        Alert.alert('Error', error.message);
-        return { error: { message: error.message } };
+        return { error: { message: error?.message ?? 'Unknown error when signing up' } };
       }
-      if (!session) Alert.alert('Success', 'Please check your inbox for email verification!');
+
       return null;
     } catch (error) {
-      console.error('🚀 ~ signUp ~ error:', error);
-      Alert.alert('Sign Up Failed', 'Unable to create your account.Try again.');
+      console.error('Error when signing up:', error);
       return {
-        error: { message: error instanceof Error ? error.message : 'Unknown error signing up' },
+        error: {
+          message: error instanceof Error ? error.message : 'Unknown error when signing up',
+        },
       };
     } finally {
       setLoading(false);
     }
   };
 
-  /**
-   * Signs out the user with Supabase and redirects to the auth screen.
-   */
   const signOut = async () => {
     try {
       setLoading(true);
-
-      // Sign out from Supabase first
       const { error } = await supabase.auth.signOut();
       if (error) {
-        Alert.alert('Error', error.message);
-        return;
+        console.error('Error when signing out:', error);
       }
-      /* 
-      // Use requestAnimationFrame to ensure we're not in the middle of a render cycle
-      requestAnimationFrame(() => {
-        // Reset navigation state and go to login
-        router.replace('/(auth)/login');
-      }); */
     } catch (error) {
-      console.error('🚀 ~ signOut ~ error:', error);
-      Alert.alert('Sign Out Failed', 'Unable to sign you out. Please try again.');
+      console.error('Error when signing out:', error);
     } finally {
       setLoading(false);
+      return null;
     }
   };
 
   return {
-    signIn,
-    signUp,
+    /**
+     * Signs in a user with the provided email and password.
+     *
+     * @param email - The user's email address.
+     * @param password - The user's password.
+     * @returns An object containing the error message if an error occurs, otherwise null.
+     */
+    signInWithEmailAndPassword,
+    signUpWithEmailAndPassword,
     signOut,
     loading,
   };

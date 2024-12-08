@@ -9,12 +9,11 @@ export default function Register() {
   const [password, setPassword] = useState('');
   const [loading] = useState(false);
 
-  const { signUp } = useAuth();
+  const { signUpWithEmailAndPassword } = useAuth();
   const handleRegister = async () => {
-    const result = await signUp(email, password);
-    console.log('🚀 ~ handleRegister ~ :', email, password);
+    const result = await signUpWithEmailAndPassword(email, password);
     if (result?.error) {
-      Alert.alert('Login Failed', result.error.message);
+      Alert.alert('Register Failed', result.error.message);
     } else {
       router.push('/(auth)/login' as Href);
     }
