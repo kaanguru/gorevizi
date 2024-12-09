@@ -8,9 +8,9 @@ export default function Login() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loading] = useState(false);
-
+  const [loading, setLoading] = useState(false);
   const { signInWithEmail } = useAuth();
+
   const handleResetFirstVisit = async () => {
     Alert.alert(
       'Reset Onboarding',
@@ -26,8 +26,7 @@ export default function Login() {
           onPress: async () => {
             try {
               await resetFirstVisit();
-              // Force a small delay to ensure AsyncStorage is updated
-              await new Promise((resolve) => setTimeout(resolve, 1000));
+              await new Promise((resolve) => setTimeout(resolve, 200));
               router.replace('/(onboarding)/splash' as Href);
             } catch (error) {
               console.error('Error resetting first visit:', error);
@@ -37,19 +36,28 @@ export default function Login() {
       ]
     );
   };
+
   const handleLogin = async () => {
-    const result = await signInWithEmail(email, password);
-    if (result?.error) {
-      Alert.alert('Login Failed', result.error.message);
-    } else {
-      router.replace('/' as Href);
+    if (loading) return;
+    setLoading(true);
+    try {
+      const result = await signInWithEmail(email, password);
+      if (result?.error) {
+        Alert.alert('Login Failed', result.error.message);
+      } else {
+        router.replace('/' as Href);
+      }
+    } catch (error) {
+      console.error('Error logging in:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <View className="flex-1 bg-white px-5 pt-12">
       <Text className="mb-8 text-2xl font-bold text-black">Welcome Back</Text>
-      <View>{loading && <ActivityIndicator />}</View>
+      {loading && <ActivityIndicator />}
 
       <View className="space-y-4">
         <View>
@@ -85,9 +93,10 @@ export default function Login() {
         <Pressable className={styles.textButton} onPress={() => router.push('/(auth)/register')}>
           <Text className="text-center text-black">Don't have an account? Register</Text>
         </Pressable>
+
         <View className={styles.smallButtonHolder}>
           <Pressable className={styles.smallButton} onPress={handleResetFirstVisit}>
-            <Text className="text-center font-semibold text-white">Reset Onboarding Flow</Text>
+            <Text className="text-center text-white">Reset Onboarding Flow</Text>
           </Pressable>
         </View>
       </View>

@@ -1,8 +1,8 @@
 import { View, Text } from 'react-native';
 import { Href, useRouter } from 'expo-router';
 import { useEffect } from 'react';
-//@ts-ignore
-import Logo from '../../assets/Logo.svg';
+//@ts-expect-error - svg is not supported by default in expo-router
+import Logo from '~/assets/logo.svg';
 
 export default function SplashScreen() {
   const router = useRouter();
