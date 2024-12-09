@@ -29,7 +29,6 @@
     ]
   },
   "dependencies": {
-    "@expo/metro-runtime": "~4.0.0",
     "@expo/vector-icons": "^14.0.4",
     "@gluestack-ui/button": "^1.0.8",
     "@gluestack-ui/input": "^0.1.32",
@@ -41,7 +40,7 @@
     "@react-navigation/drawer": "^7.0.19",
     "@react-navigation/native": "^7.0.13",
     "@shopify/flash-list": "1.7.1",
-    "@supabase/supabase-js": "^2.47.2",
+    "@supabase/supabase-js": "^2.47.3",
     "babel-plugin-module-resolver": "^5.0.2",
     "expo": "^52.0.17",
     "expo-constants": "~17.0.3",
@@ -53,15 +52,13 @@
     "expo-web-browser": "~14.0.1",
     "nativewind": "^4.1.23",
     "react": "18.3.1",
-    "react-dom": "18.3.1",
     "react-native": "0.76.3",
     "react-native-css-interop": "^0.1.22",
     "react-native-gesture-handler": "~2.20.2",
     "react-native-reanimated": "3.16.2",
     "react-native-safe-area-context": "4.12.0",
     "react-native-screens": "~4.1.0",
-    "react-native-svg": "15.8.0",
-    "react-native-web": "~0.19.13"
+    "react-native-svg": "15.8.0"
   },
   "devDependencies": {
     "@babel/core": "^7.26.0",
@@ -81,5 +78,6 @@
     "react-native-svg-transformer": "^1.5.0",
     "tailwindcss": "^3.4.16",
     "typescript": "~5.3.3"
-  }
+  },
+  "packageManager": "pnpm@9.15.0+sha512.76e2379760a4328ec4415815bcd6628dee727af3779aaa4c914e3944156c4299921a89f976381ee107d41f12cfa4b66681ca9c718f0668fa0831ed4c6d8ba56c"
 }
