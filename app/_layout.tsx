@@ -7,22 +7,8 @@ import { Text } from 'react-native';
 import { Stack } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { supabase } from '~/utils/supabase';
-import { useAuth } from '../utils/auth';
 import { View } from 'react-native';
 
-export const unstable_settings = {
-  // Ensure that reloading keeps a back button present.
-  initialRouteName: '(tasks)',
-};
-
-/**
- * The top-level layout component that wraps the entire app.
- *
- * It waits for supabase to be initialized and then checks if it's the user's first visit.
- * If it is, it redirects to the onboarding flow.
- *
- * @returns The root layout component.
- */
 export default function RootLayout() {
   const [isSupabaseInitialized, setSupabaseInitialized] = useState(false);
 

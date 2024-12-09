@@ -1,12 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Drawer } from 'expo-router/drawer';
 import { router } from 'expo-router';
-
 import { useAuth } from '~/utils/auth';
-export const unstable_settings = {
-  // Ensure that reloading keeps a back button present.
-  initialRouteName: 'index',
-};
+
 const DrawerLayout = () => {
   const { signOut } = useAuth();
 
