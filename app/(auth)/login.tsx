@@ -31,7 +31,6 @@ export default function Login() {
               router.replace('/(onboarding)/splash' as Href);
             } catch (error) {
               console.error('Error resetting first visit:', error);
-              Alert.alert('Error', 'Failed to reset onboarding flow');
             }
           },
         },

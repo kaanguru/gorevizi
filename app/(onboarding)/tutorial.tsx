@@ -6,6 +6,7 @@ import { Image } from 'expo-image';
 
 interface TutorialItem {
   id: number;
+  image: any;
   title: string;
   description: string;
 }
@@ -13,18 +14,21 @@ interface TutorialItem {
 const tutorials: TutorialItem[] = [
   {
     id: 1,
+    image: require('../../assets/tutorial1.png'),
     title: 'Tutorial 1',
     description:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt',
   },
   {
     id: 2,
+    image: require('../../assets/tutorial2.png'),
     title: 'Tutorial 2',
     description:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt',
   },
   {
     id: 3,
+    image: require('../../assets/tutorial2.png'),
     title: 'Tutorial 3',
     description:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt',
@@ -42,11 +46,7 @@ export default function TutorialScreen() {
   const renderItem = ({ item }: Readonly<{ item: TutorialItem }>) => (
     <View className="h-full items-center justify-center px-5" style={{ width: SCREEN_WIDTH }}>
       <View className="mb-5 h-72 w-72 items-center justify-center rounded-xl bg-gray-100">
-        <Image
-          source={require('../../assets/adaptive-icon.png')}
-          className="h-48 w-48"
-          contentFit="contain"
-        />
+        <Image source={item.image} className="h-48 w-48" contentFit="contain" />
       </View>
       <Text className="text-navy-800 mb-2.5 text-2xl font-bold">{item.title}</Text>
       <Text className="text-center text-base text-gray-600">{item.description}</Text>

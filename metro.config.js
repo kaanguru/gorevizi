@@ -5,5 +5,21 @@ const { withNativeWind } = require('nativewind/metro');
 /** @type {import('expo/metro-config').MetroConfig} */
 
 const config = getDefaultConfig(__dirname);
+module.exports = withNativeWind(
+  () => {
+    const { transformer, resolver } = config;
 
-module.exports = withNativeWind(config, { input: './global.css' });
+    config.transformer = {
+      ...transformer,
+      babelTransformerPath: require.resolve('react-native-svg-transformer/expo'),
+    };
+    config.resolver = {
+      ...resolver,
+      assetExts: resolver.assetExts.filter((ext) => ext !== 'svg'),
+      sourceExts: [...resolver.sourceExts, 'svg'],
+    };
+
+    return config;
+  },
+  { input: './global.css' }
+);

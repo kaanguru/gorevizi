@@ -1,19 +1,12 @@
 import { View, Text, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Image } from 'expo-image';
 
 export default function StartScreen() {
   const router = useRouter();
 
   return (
     <View className="flex-1 items-center justify-center bg-white px-5">
-      <View className="mb-4">
-        <Image
-          source={require('../../assets/adaptive-icon.png')}
-          className="h-32 w-32"
-          contentFit="contain"
-        />
-      </View>
+      <View className="mb-4"></View>
       <Text className="text-navy-800 my-11 mb-10 text-3xl font-bold">GoRevIzi</Text>
 
       <View className="w-full space-y-10">
