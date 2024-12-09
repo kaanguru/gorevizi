@@ -8,9 +8,13 @@ export default function Register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading] = useState(false);
-
+  const [confirmPassword, setConfirmPassword] = useState('');
   const { signUpWithEmail } = useAuth();
   const handleRegister = async () => {
+    if (password !== confirmPassword) {
+      Alert.alert('Password Mismatch', 'The passwords you entered do not match.');
+      return;
+    }
     const result = await signUpWithEmail(email, password);
     if (result?.error) {
       Alert.alert('Register Failed', result.error.message);
@@ -46,18 +50,30 @@ export default function Register() {
             secureTextEntry
           />
         </View>
+        <View>
+          <Text className="text-navy-800 mb-2">Confirm Password</Text>
+          <TextInput
+            className="w-full rounded-lg border border-gray-300 px-4 py-3"
+            placeholder="Confirm your password"
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+            secureTextEntry
+          />
+        </View>
 
-        <Pressable
-          disabled={loading}
-          className="border-navy-800 bg-navy-800 mt-4 w-full rounded-lg border py-4"
-          onPress={handleRegister}>
-          <Text className="text-center font-semibold text-black">Register</Text>
+        <Pressable disabled={loading} className={styles.button} onPress={handleRegister}>
+          <Text className={styles.buttonText}>Register</Text>
         </Pressable>
 
-        <Pressable className="mt-4" onPress={() => router.push('/(auth)/login')}>
+        <Pressable className={styles.textButton} onPress={() => router.push('/(auth)/login')}>
           <Text className="text-navy-800 text-center">Already have an account? Login</Text>
         </Pressable>
       </View>
     </View>
   );
 }
+const styles = {
+  button: 'border-navy-800 bg-navy-800 mt-4 w-full rounded-lg border py-4',
+  buttonText: 'text-center font-semibold text-black',
+  textButton: 'mt-8 bg-slate-50 p-3',
+};

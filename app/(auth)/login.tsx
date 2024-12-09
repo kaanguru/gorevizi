@@ -83,15 +83,20 @@ export default function Login() {
           <Text className="text-center font-semibold text-black">Login</Text>
         </Pressable>
 
-        <Pressable className="mt-4" onPress={() => router.push('/(auth)/register')}>
+        <Pressable className={styles.textButton} onPress={() => router.push('/(auth)/register')}>
           <Text className="text-center text-black">Don't have an account? Register</Text>
         </Pressable>
-        <Pressable className="mt-8 rounded-lg bg-red-500 px-4 py-3" onPress={handleResetFirstVisit}>
-          <Text className="text-center text-base font-semibold text-white">
-            Reset Onboarding Flow
-          </Text>
-        </Pressable>
+        <View className={styles.smallButtonHolder}>
+          <Pressable className={styles.smallButton} onPress={handleResetFirstVisit}>
+            <Text className="text-center font-semibold text-white">Reset Onboarding Flow</Text>
+          </Pressable>
+        </View>
       </View>
     </View>
   );
 }
+const styles = {
+  smallButtonHolder: 'flex flex-col justify-end items-end',
+  smallButton: `mt-80 w-1/2 bg-gray-500`,
+  textButton: 'mt-8 bg-slate-50 p-3',
+};
