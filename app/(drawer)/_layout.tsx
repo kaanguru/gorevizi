@@ -3,7 +3,10 @@ import { Drawer } from 'expo-router/drawer';
 import { router } from 'expo-router';
 
 import { useAuth } from '~/utils/auth';
-
+export const unstable_settings = {
+  // Ensure that reloading keeps a back button present.
+  initialRouteName: 'index',
+};
 const DrawerLayout = () => {
   const { signOut } = useAuth();
 
@@ -13,12 +16,12 @@ const DrawerLayout = () => {
   };
 
   return (
-    <Drawer>
+    <Drawer screenOptions={{ headerShown: true }}>
       <Drawer.Screen
         name="index"
         options={{
-          headerTitle: 'TaskList',
-          drawerLabel: 'TaskList',
+          headerTitle: 'Tasks',
+          drawerLabel: 'Tasks',
           drawerIcon: ({ size, color }) => (
             <Ionicons name="list-outline" size={size} color={color} />
           ),
@@ -44,8 +47,7 @@ const DrawerLayout = () => {
           ),
         }}
         listeners={{
-          drawerItemPress: (e) => {
-            e.preventDefault();
+          drawerItemPress: () => {
             handleSignOut();
           },
         }}

@@ -11,8 +11,8 @@ import { useAuth } from '../utils/auth';
 import { View } from 'react-native';
 
 export const unstable_settings = {
-  // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: '(drawer)',
+  // Ensure that reloading keeps a back button present.
+  initialRouteName: '(tasks)',
 };
 
 /**

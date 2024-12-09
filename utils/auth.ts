@@ -9,20 +9,11 @@ AppState.addEventListener('change', (state) => {
     supabase.auth.stopAutoRefresh();
   }
 });
-/**
- * Hook to handle user authentication.
- *
- * @returns An object containing the functions to sign in, sign up, sign out, and a boolean indicating whether the authentication is in progress.
- *
- * The `signInWithEmailAndPassword` function signs in the user with the email and password provided.
- * The `signUpWithEmailAndPassword` function signs up the user with the email and password provided.
- * The `signOut` function signs out the user.
- * The `loading` property is a boolean indicating whether the authentication is in progress.
- */
+
 export const useAuth = () => {
   const [loading, setLoading] = useState(false);
 
-  const signInWithEmailAndPassword = async (
+  const signInWithEmail = async (
     email: string,
     password: string
   ): Promise<{ error: { message: string } } | null> => {
@@ -47,7 +38,7 @@ export const useAuth = () => {
     }
   };
 
-  const signUpWithEmailAndPassword = async (
+  const signUpWithEmail = async (
     email: string,
     password: string
   ): Promise<{ error: { message: string } } | null> => {
@@ -88,15 +79,8 @@ export const useAuth = () => {
   };
 
   return {
-    /**
-     * Signs in a user with the provided email and password.
-     *
-     * @param email - The user's email address.
-     * @param password - The user's password.
-     * @returns An object containing the error message if an error occurs, otherwise null.
-     */
-    signInWithEmailAndPassword,
-    signUpWithEmailAndPassword,
+    signInWithEmail,
+    signUpWithEmail,
     signOut,
     loading,
   };

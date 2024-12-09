@@ -10,7 +10,7 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [loading] = useState(false);
 
-  const { signInWithEmailAndPassword } = useAuth();
+  const { signInWithEmail } = useAuth();
   const handleResetFirstVisit = async () => {
     Alert.alert(
       'Reset Onboarding',
@@ -39,7 +39,7 @@ export default function Login() {
     );
   };
   const handleLogin = async () => {
-    const result = await signInWithEmailAndPassword(email, password);
+    const result = await signInWithEmail(email, password);
     if (result?.error) {
       Alert.alert('Login Failed', result.error.message);
     } else {
@@ -77,6 +77,7 @@ export default function Login() {
         </View>
 
         <Pressable
+          disabled={loading}
           className="mt-4 w-full rounded-lg border border-black py-4"
           onPress={handleLogin}>
           <Text className="text-center font-semibold text-black">Login</Text>

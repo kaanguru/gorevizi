@@ -9,9 +9,9 @@ export default function Register() {
   const [password, setPassword] = useState('');
   const [loading] = useState(false);
 
-  const { signUpWithEmailAndPassword } = useAuth();
+  const { signUpWithEmail } = useAuth();
   const handleRegister = async () => {
-    const result = await signUpWithEmailAndPassword(email, password);
+    const result = await signUpWithEmail(email, password);
     if (result?.error) {
       Alert.alert('Register Failed', result.error.message);
     } else {
@@ -48,6 +48,7 @@ export default function Register() {
         </View>
 
         <Pressable
+          disabled={loading}
           className="border-navy-800 bg-navy-800 mt-4 w-full rounded-lg border py-4"
           onPress={handleRegister}>
           <Text className="text-center font-semibold text-black">Register</Text>
