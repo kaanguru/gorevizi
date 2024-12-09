@@ -14,12 +14,19 @@
     "prebuild": "expo prebuild",
     "start": "supabase start && expo start",
     "stop": "supabase stop ",
+    "test": "jest --watchAll",
     "updatesdk": "expo install expo@latest && expo install --fix",
     "web": "DARK_MODE=media expo start --web"
   },
   "eslintConfig": {
     "extends": "universe/native",
     "root": true
+  },
+  "jest": {
+    "preset": "jest-expo",
+    "transformIgnorePatterns": [
+      "node_modules/(?!(?:.pnpm/)?((jest-)?react-native|@react-native(-community)?|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@sentry/react-native|native-base|react-native-svg))"
+    ]
   },
   "dependencies": {
     "@expo/vector-icons": "^14.0.0",
@@ -57,12 +64,16 @@
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
+    "@testing-library/react-native": "^12.9.0",
+    "@types/jest": "^29.5.14",
     "@types/react": "~18.3.12",
     "@typescript-eslint/eslint-plugin": "^8.17.0",
     "@typescript-eslint/parser": "^8.17.0",
     "eslint": "^9.16.0",
     "eslint-config-universe": "^12.1.0",
     "eslint-plugin-functional": "^7.1.0",
+    "jest": "^29.7.0",
+    "jest-expo": "^52.0.2",
     "jscodeshift": "0.15.2",
     "prettier": "^3.2.5",
     "prettier-plugin-tailwindcss": "^0.5.11",
