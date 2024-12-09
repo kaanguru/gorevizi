@@ -1,6 +1,7 @@
 import { View, Text } from 'react-native';
 import { Href, useRouter } from 'expo-router';
 import { useEffect } from 'react';
+//@ts-ignore
 import Logo from '../../assets/Logo.svg';
 
 export default function SplashScreen() {
