@@ -6,13 +6,13 @@ import Logo from '../../assets/Logo.svg';
 export default function SplashScreen() {
   const router = useRouter();
 
-  /*  useEffect(() => {
+  useEffect(() => {
     const timer = setTimeout(() => {
       router.replace('/(onboarding)/tutorial' as Href);
     }, 2000);
 
     return () => clearTimeout(timer);
-  }, []); */
+  }, []);
 
   return (
     <View className="flex-1 items-center justify-center bg-white">
