@@ -1,13 +1,15 @@
 import { View, Text, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
-
+//@ts-expect-error - svg is not supported by default in expo-router
+import Logo from '~/assets/logo.svg';
 export default function StartScreen() {
   const router = useRouter();
 
   return (
     <View className="flex-1 items-center justify-center bg-white px-5">
-      <View className="mb-4"></View>
-      <Text className="text-navy-800 my-11 mb-10 text-3xl font-bold">GoRevIzi</Text>
+      <Text>
+        <Logo width={356} height={589} />
+      </Text>
 
       <View className="w-full space-y-10">
         <Pressable
