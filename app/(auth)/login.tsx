@@ -3,7 +3,6 @@ import { Href, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { resetFirstVisit } from '~/utils/isFirstVisit';
 import { useAuth } from '~/utils/auth';
-import styles from '~/styles';
 
 export default function Login() {
   const router = useRouter();
@@ -97,10 +96,15 @@ export default function Login() {
 
         <View className={styles.smallButtonHolder}>
           <Pressable className={styles.smallButton} onPress={handleResetFirstVisit}>
-            <Text className="text-center font-semibold text-white">Reset Onboarding Flow</Text>
+            <Text className="text-center text-white">Reset Onboarding Flow</Text>
           </Pressable>
         </View>
       </View>
     </View>
   );
 }
+const styles = {
+  smallButtonHolder: 'flex flex-col justify-end items-end',
+  smallButton: `mt-80 w-1/2 bg-gray-500`,
+  textButton: 'mt-8 bg-slate-50 p-3',
+};
