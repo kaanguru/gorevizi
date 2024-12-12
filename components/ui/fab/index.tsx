@@ -3,10 +3,7 @@ import React from 'react';
 import { createFab } from '@gluestack-ui/fab';
 import { Pressable, Text } from 'react-native';
 import { tva } from '@gluestack-ui/nativewind-utils/tva';
-import {
-  withStyleContext,
-  useStyleContext,
-} from '@gluestack-ui/nativewind-utils/withStyleContext';
+import { withStyleContext, useStyleContext } from '@gluestack-ui/nativewind-utils/withStyleContext';
 import { cssInterop } from 'nativewind';
 import type { VariantProps } from '@gluestack-ui/nativewind-utils';
 import { PrimitiveIcon, UIIcon } from '@gluestack-ui/icon';
@@ -68,11 +65,11 @@ const fabLabelStyle = tva({
     },
     size: {
       '2xs': 'text-2xs',
-      'xs': 'text-xs',
-      'sm': 'text-sm',
-      'md': 'text-base',
-      'lg': 'text-lg',
-      'xl': 'text-xl',
+      xs: 'text-xs',
+      sm: 'text-sm',
+      md: 'text-base',
+      lg: 'text-lg',
+      xl: 'text-xl',
       '2xl': 'text-2xl',
       '3xl': 'text-3xl',
       '4xl': 'text-4xl',
@@ -103,11 +100,11 @@ const fabIconStyle = tva({
   variants: {
     size: {
       '2xs': 'h-3 w-3',
-      'xs': 'h-3.5 w-3.5',
-      'sm': 'h-4 w-4',
-      'md': 'w-[18px] h-[18px]',
-      'lg': 'h-5 w-5',
-      'xl': 'h-6 w-6',
+      xs: 'h-3.5 w-3.5',
+      sm: 'h-4 w-4',
+      md: 'w-[18px] h-[18px]',
+      lg: 'h-5 w-5',
+      xl: 'h-6 w-6',
     },
   },
 });
@@ -131,10 +128,7 @@ const Fab = React.forwardRef<React.ElementRef<typeof UIFab>, IFabProps>(
 type IFabLabelProps = React.ComponentPropsWithoutRef<typeof UIFab.Label> &
   VariantProps<typeof fabLabelStyle>;
 
-const FabLabel = React.forwardRef<
-  React.ElementRef<typeof UIFab.Label>,
-  IFabLabelProps
->(
+const FabLabel = React.forwardRef<React.ElementRef<typeof UIFab.Label>, IFabLabelProps>(
   (
     {
       size,
@@ -174,47 +168,37 @@ type IFabIconProps = React.ComponentPropsWithoutRef<typeof UIFab.Icon> &
     width?: number;
   };
 
-const FabIcon = React.forwardRef<
-  React.ElementRef<typeof UIFab.Icon>,
-  IFabIconProps
->(({ size, className, ...props }, ref) => {
-  const { size: parentSize } = useStyleContext(SCOPE);
+const FabIcon = React.forwardRef<React.ElementRef<typeof UIFab.Icon>, IFabIconProps>(
+  ({ size, className, ...props }, ref) => {
+    const { size: parentSize } = useStyleContext(SCOPE);
 
-  if (typeof size === 'number') {
+    if (typeof size === 'number') {
+      return (
+        <UIFab.Icon
+          ref={ref}
+          {...props}
+          className={fabIconStyle({ class: className })}
+          size={size}
+        />
+      );
+    } else if ((props.height !== undefined || props.width !== undefined) && size === undefined) {
+      return <UIFab.Icon ref={ref} {...props} className={fabIconStyle({ class: className })} />;
+    }
     return (
       <UIFab.Icon
         ref={ref}
         {...props}
-        className={fabIconStyle({ class: className })}
-        size={size}
-      />
-    );
-  } else if (
-    (props.height !== undefined || props.width !== undefined) &&
-    size === undefined
-  ) {
-    return (
-      <UIFab.Icon
-        ref={ref}
-        {...props}
-        className={fabIconStyle({ class: className })}
+        className={fabIconStyle({
+          parentVariants: {
+            size: parentSize,
+          },
+          size,
+          class: className,
+        })}
       />
     );
   }
-  return (
-    <UIFab.Icon
-      ref={ref}
-      {...props}
-      className={fabIconStyle({
-        parentVariants: {
-          size: parentSize,
-        },
-        size,
-        class: className,
-      })}
-    />
-  );
-});
+);
 
 Fab.displayName = 'Fab';
 FabLabel.displayName = 'FabLabel';
