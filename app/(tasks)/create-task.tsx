@@ -57,6 +57,7 @@ export default function CreateTask() {
       });
 
       if (error) {
+        console.log('🚀 ~ handleCreate ~ error:', error);
         Alert.alert('Error', 'Failed to create task. Please try again.');
         return;
       }
