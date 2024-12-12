@@ -194,6 +194,7 @@ export default function CreateTask() {
               placeholder="Task title"
               value={formData.title}
               onChangeText={(text) => updateFormData({ title: text })}
+              testID="task-title-input"
             />
           </Input>
 
@@ -202,6 +203,7 @@ export default function CreateTask() {
               placeholder="Notes"
               value={formData.notes}
               onChangeText={(text) => updateFormData({ notes: text })}
+              testID="task-notes-input"
             />
           </Textarea>
 
@@ -313,7 +315,7 @@ export default function CreateTask() {
             />
           )}
 
-          <Button onPress={handleCreate} disabled={isSubmitting}>
+          <Button onPress={handleCreate} testID="create-task-button" disabled={isSubmitting}>
             <ButtonText>{isSubmitting ? 'Creating...' : 'Create'}</ButtonText>
           </Button>
         </VStack>
