@@ -23,12 +23,6 @@
     "extends": "universe/native",
     "root": true
   },
-  "jest": {
-    "preset": "jest-expo",
-    "transformIgnorePatterns": [
-      "node_modules/(?!(?:.pnpm/)?((jest-)?react-native|@react-native(-community)?|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@sentry/react-native|native-base|react-native-svg))"
-    ]
-  },
   "dependencies": {
     "@expo/html-elements": "0.4.2",
     "@expo/vector-icons": "^14.0.4",
@@ -75,7 +69,6 @@
   },
   "devDependencies": {
     "@babel/core": "^7.26.0",
-    "@testing-library/react-native": "^12.9.0",
     "@types/jest": "^29.5.14",
     "@types/react": "~18.3.14",
     "@typescript-eslint/eslint-plugin": "^8.17.0",
