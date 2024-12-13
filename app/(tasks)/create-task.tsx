@@ -58,19 +58,6 @@ const periodMapping = {
   Yearly: { singular: 'year', plural: 'years' },
 } as const;
 
-// Utility functions
-function calculateRepeatText(repeatPeriod: RepeatPeriod | '', repeatFrequency: number) {
-  if (!repeatPeriod) return '';
-  const period = periodMapping[repeatPeriod];
-  return `${repeatFrequency} ${repeatFrequency > 1 ? period.plural : period.singular}`;
-}
-
-function getCurrentDayOfWeek(): DayOfWeek {
-  const days: DayOfWeek[] = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  const today = new Date();
-  return days[today.getDay()];
-}
-
 // Components
 const Header = ({ onBack }: { onBack: () => void }) => (
   <HStack id="header" space="4xl">
@@ -328,4 +315,16 @@ export default function CreateTask() {
       </Box>
     </Box>
   );
+}
+// Utility functions
+function calculateRepeatText(repeatPeriod: RepeatPeriod | '', repeatFrequency: number) {
+  if (!repeatPeriod) return '';
+  const period = periodMapping[repeatPeriod];
+  return `${repeatFrequency} ${repeatFrequency > 1 ? period.plural : period.singular}`;
+}
+
+function getCurrentDayOfWeek(): DayOfWeek {
+  const days: DayOfWeek[] = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const today = new Date();
+  return days[today.getDay()];
 }
