@@ -46,7 +46,7 @@ const INITIAL_FORM_STATE: TaskFormData = {
   notes: '',
   repeatPeriod: '',
   repeatFrequency: 1,
-  repeatOnWk: [],
+  repeatOnWk: [getCurrentDayOfWeek()],
   customStartDate: null,
   isCustomStartDateEnabled: false,
 };
@@ -57,6 +57,19 @@ const periodMapping = {
   Monthly: { singular: 'month', plural: 'months' },
   Yearly: { singular: 'year', plural: 'years' },
 } as const;
+
+// Utility functions
+function calculateRepeatText(repeatPeriod: RepeatPeriod | '', repeatFrequency: number) {
+  if (!repeatPeriod) return '';
+  const period = periodMapping[repeatPeriod];
+  return `${repeatFrequency} ${repeatFrequency > 1 ? period.plural : period.singular}`;
+}
+
+function getCurrentDayOfWeek(): DayOfWeek {
+  const days: DayOfWeek[] = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const today = new Date();
+  return days[today.getDay()];
+}
 
 // Components
 const Header = ({ onBack }: { onBack: () => void }) => (
@@ -132,13 +145,6 @@ const WeekdaySelector = ({
     ))}
   </HStack>
 );
-
-// Utility functions
-function calculateRepeatText(repeatPeriod: RepeatPeriod | '', repeatFrequency: number) {
-  if (!repeatPeriod) return '';
-  const period = periodMapping[repeatPeriod];
-  return `${repeatFrequency} ${repeatFrequency > 1 ? period.plural : period.singular}`;
-}
 
 // Main component
 export default function CreateTask() {

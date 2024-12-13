@@ -5,6 +5,7 @@
   "main": "expo-router/entry",
   "scripts": {
     "android": "DARK_MODE=media expo start --android",
+    "android:debug": "expo start --android",
     "d": "expo start",
     "d:a": "expo run:android",
     "d:c": "expo start -c",
