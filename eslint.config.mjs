@@ -5,7 +5,7 @@ import tsParser from '@typescript-eslint/parser';
 export default [
   {
     files: ['**/*.{ts,tsx}'],
-    ignores: ['**/components/ui/**'],
+    ignores: ['**/components/ui/**', '**/database.types.ts'],
     plugins: { '@typescript-eslint': tseslint, functional },
     rules: {
       ...functional.configs.externalTypeScriptRecommended.rules,

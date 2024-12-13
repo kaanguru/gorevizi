@@ -1,2 +1,3 @@
 # Ignore UI components
 components/ui/*
+database.types.ts
