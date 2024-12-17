@@ -1,4 +1,7 @@
 {
+  "cli": {
+    "appVersionSource": "remote"
+  },
   "build": {
     "preview": {
       "environment": "preview",
@@ -18,6 +21,13 @@
       },
       "distribution": "internal"
     },
-    "production": {}
+    "production": {
+      "environment": "production",
+      "autoIncrement": true,
+      "android": {
+        "gradleCommand": ":app:assembleRelease"
+      },
+      "distribution": "internal"
+    }
   }
 }
