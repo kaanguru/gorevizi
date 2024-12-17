@@ -7,6 +7,7 @@ import { useRouter } from 'expo-router';
 jest.mock('expo-router', () => ({
   useRouter: jest.fn(),
 }));
+
 describe('TutorialScreen', () => {
   // Setup mock router before each test
   const mockReplace = jest.fn();

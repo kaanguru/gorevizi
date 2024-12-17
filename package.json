@@ -26,6 +26,9 @@
   },
   "jest": {
     "preset": "jest-expo",
+    "setupFiles": [
+      "./jest.setup.ts"
+    ],
     "transformIgnorePatterns": [
       "node_modules/(?!(?:.pnpm/)?((jest-)?react-native|@react-native(-community)?|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@sentry/react-native|native-base|react-native-svg))"
     ]
@@ -75,6 +78,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.26.0",
+    "@testing-library/react-hooks": "^8.0.1",
     "@testing-library/react-native": "^12.9.0",
     "@types/jest": "^29.5.14",
     "@types/react": "~18.3.14",
