@@ -5,6 +5,9 @@
   "main": "expo-router/entry",
   "scripts": {
     "android": "cross-env DARK_MODE=media expo start --android",
+    "build": "eas build:run -p android",
+    "build:pre": "eas build -p android --profile preview",
+    "build:dev": "eas build -p android --profile development",
     "start": "expo start",
     "start:clean": "expo start -c",
     "start:local": "supabase start && expo start",
@@ -12,11 +15,20 @@
     "lint": "eslint \"**/*.{js,jsx,ts,tsx}\" && prettier -c \"**/*.{js,jsx,ts,tsx,json}\"",
     "format": "eslint \"**/*.{js,jsx,ts,tsx}\" --fix && prettier \"**/*.{js,jsx,ts,tsx,json}\" --write",
     "update": "expo install expo@latest && expo install --fix",
-    "ios": "expo run:ios"
+    "test": "jest --watch --coverage=false --changedSince=origin/main",
+    "testDebug": "jest -o --watch --coverage=false",
+    "testFinal": "jest",
+    "updateSnapshots": "jest -u --coverage=false"
   },
   "eslintConfig": {
     "extends": "universe/native",
     "root": true
+  },
+  "jest": {
+    "preset": "jest-expo",
+    "transformIgnorePatterns": [
+      "node_modules/(?!(?:.pnpm/)?((jest-)?react-native|@react-native(-community)?|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@sentry/react-native|native-base|react-native-svg))"
+    ]
   },
   "dependencies": {
     "@expo/html-elements": "0.4.2",
@@ -45,6 +57,7 @@
     "babel-plugin-module-resolver": "^5.0.2",
     "expo": "^52.0.19",
     "expo-constants": "~17.0.3",
+    "expo-dev-client": "~5.0.6",
     "expo-image": "~2.0.3",
     "expo-linking": "~7.0.3",
     "expo-router": "~4.0.13",
@@ -63,6 +76,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.26.0",
+    "@testing-library/react-native": "^12.9.0",
     "@types/jest": "^29.5.14",
     "@types/react": "~18.3.14",
     "@typescript-eslint/eslint-plugin": "^8.17.0",
