@@ -21,7 +21,7 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#fffaec"
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
@@ -30,9 +30,17 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#fffaec"
       },
       "package": "com.kaanguru.gorevizi"
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "659fe4ca-1e7e-409f-ac1a-051581bc2b92"
+      }
     }
   }
 }
