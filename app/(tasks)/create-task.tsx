@@ -19,7 +19,7 @@ import {
   SelectDragIndicator,
   SelectItem,
 } from '@/components/ui/select';
-import { ArrowLeftIcon, ChevronDownIcon } from '~/components/ui/icon';
+import { AddIcon, ArrowLeftIcon, ChevronDownIcon, Icon, TrashIcon } from '~/components/ui/icon';
 import { HStack } from '@/components/ui/hstack';
 import { VStack } from '@/components/ui/vstack';
 import { Center } from '@/components/ui/center';
@@ -138,6 +138,7 @@ const WeekdaySelector = ({
     ))}
   </HStack>
 );
+
 const ChecklistSection = ({
   items,
   onAdd,
@@ -151,9 +152,9 @@ const ChecklistSection = ({
 }>) => (
   <VStack space="md">
     <HStack space="md">
-      <Text>Checklist Items</Text>
-      <Button size="sm" onPress={onAdd}>
-        <ButtonText>Add Item</ButtonText>
+      <Text>Add Routines</Text>
+      <Button size="md" variant="link" onPress={onAdd}>
+        <Icon as={AddIcon} className="mb-2 text-typography-500" />
       </Button>
     </HStack>
     {items.map((item, index) => (
@@ -165,8 +166,8 @@ const ChecklistSection = ({
             onChangeText={(text) => onUpdate(index, text)}
           />
         </Input>
-        <Button size="sm" variant="outline" onPress={() => onRemove(index)}>
-          <ButtonText>Remove</ButtonText>
+        <Button size="sm" variant="link" onPress={() => onRemove(index)}>
+          <Icon as={TrashIcon} className="m-2 h-4 w-4 text-typography-500" />
         </Button>
       </HStack>
     ))}
