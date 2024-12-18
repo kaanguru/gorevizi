@@ -39,6 +39,11 @@ interface TaskFormData {
   repeatOnWk: DayOfWeek[];
   customStartDate: Date | null;
   isCustomStartDateEnabled: boolean;
+  checklistItems: Array<{
+    content: string;
+    isComplete: boolean;
+    position: number;
+  }>;
 }
 
 const INITIAL_FORM_STATE: TaskFormData = {
@@ -49,6 +54,7 @@ const INITIAL_FORM_STATE: TaskFormData = {
   repeatOnWk: [getCurrentDayOfWeek()],
   customStartDate: null,
   isCustomStartDateEnabled: false,
+  checklistItems: [],
 };
 
 const periodMapping = {
@@ -132,6 +138,40 @@ const WeekdaySelector = ({
     ))}
   </HStack>
 );
+const ChecklistSection = ({
+  items,
+  onAdd,
+  onRemove,
+  onUpdate,
+}: Readonly<{
+  items: TaskFormData['checklistItems'];
+  onAdd: () => void;
+  onRemove: (index: number) => void;
+  onUpdate: (index: number, content: string) => void;
+}>) => (
+  <VStack space="md">
+    <HStack space="md">
+      <Text>Checklist Items</Text>
+      <Button size="sm" onPress={onAdd}>
+        <ButtonText>Add Item</ButtonText>
+      </Button>
+    </HStack>
+    {items.map((item, index) => (
+      <HStack key={index} space="sm">
+        <Input className="flex-1" variant="rounded">
+          <InputField
+            placeholder="Checklist item"
+            value={item.content}
+            onChangeText={(text) => onUpdate(index, text)}
+          />
+        </Input>
+        <Button size="sm" variant="outline" onPress={() => onRemove(index)}>
+          <ButtonText>Remove</ButtonText>
+        </Button>
+      </HStack>
+    ))}
+  </VStack>
+);
 
 // Main component
 export default function CreateTask() {
@@ -145,24 +185,50 @@ export default function CreateTask() {
       Alert.alert('Error', 'Title is required');
       return;
     }
-
+    if (formData.checklistItems.some((item) => !item.content.trim())) {
+      Alert.alert('Error', 'All checklist items must have content');
+      return;
+    }
     setIsSubmitting(true);
     try {
-      const { error } = await supabase.from('tasks').insert({
-        title: formData.title.trim(),
-        notes: formData.notes.trim() || null,
-        created_at: (formData.customStartDate || new Date()).toISOString(),
-        repeat_on_wk: formData.repeatOnWk.length > 0 ? formData.repeatOnWk : null,
-        repeat_frequency: formData.repeatFrequency || null,
-        repeat_period: formData.repeatPeriod || null,
-      });
+      const { data, error } = await supabase
+        .from('tasks')
+        .insert({
+          title: formData.title.trim(),
+          notes: formData.notes.trim() || null,
+          created_at: (formData.customStartDate || new Date()).toISOString(),
+          repeat_on_wk: formData.repeatOnWk.length > 0 ? formData.repeatOnWk : null,
+          repeat_frequency: formData.repeatFrequency || null,
+          repeat_period: formData.repeatPeriod || null,
+        })
+        .select()
+        .single();
 
       if (error) {
         console.error('Error creating task:', error);
         Alert.alert('Error', 'Failed to create task. Please try again.');
         return;
       }
+      if (!data) {
+        Alert.alert('Error', 'Failed to create task. No data returned.');
+        return;
+      }
+      if (formData.checklistItems.length > 0) {
+        const { error: checklistError } = await supabase.from('checklistitems').insert(
+          formData.checklistItems.map((item, index) => ({
+            task_id: data.id,
+            content: item.content.trim(),
+            position: index,
+            is_complete: false,
+          }))
+        );
 
+        if (checklistError) {
+          console.log('🚀 ~ handleCreate ~ checklistError:', checklistError);
+          Alert.alert('Error', 'Failed to create checklist items. Please try again.');
+          return;
+        }
+      }
       router.back();
     } catch (error) {
       console.error('Error creating task:', error);
@@ -170,6 +236,32 @@ export default function CreateTask() {
     } finally {
       setIsSubmitting(false);
     }
+  };
+  const handleAddChecklistItem = () => {
+    updateFormData({
+      checklistItems: [
+        ...formData.checklistItems,
+        {
+          content: '',
+          isComplete: false,
+          position: formData.checklistItems.length,
+        },
+      ],
+    });
+  };
+
+  const handleRemoveChecklistItem = (index: number) => {
+    updateFormData({
+      checklistItems: formData.checklistItems.filter((_, i) => i !== index),
+    });
+  };
+
+  const handleUpdateChecklistItem = (index: number, content: string) => {
+    updateFormData({
+      checklistItems: formData.checklistItems.map((item, i) =>
+        i === index ? { ...item, content } : item
+      ),
+    });
   };
 
   const updateFormData = (updates: Readonly<Partial<TaskFormData>>) => {
@@ -307,7 +399,12 @@ export default function CreateTask() {
               }}
             />
           )}
-
+          <ChecklistSection
+            items={formData.checklistItems}
+            onAdd={handleAddChecklistItem}
+            onRemove={handleRemoveChecklistItem}
+            onUpdate={handleUpdateChecklistItem}
+          />
           <Button onPress={handleCreate} testID="create-task-button" disabled={isSubmitting}>
             <ButtonText>{isSubmitting ? 'Creating...' : 'Create'}</ButtonText>
           </Button>

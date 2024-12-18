@@ -8,6 +8,7 @@
     "build": "eas build:run -p android",
     "build:pre": "eas build -p android --profile preview",
     "build:dev": "eas build -p android --profile development",
+    "dev": "expo start --android ",
     "start": "expo start",
     "start:clean": "expo start -c",
     "start:local": "supabase start && expo start",
