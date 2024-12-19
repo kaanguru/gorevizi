@@ -17,8 +17,8 @@
     "format": "eslint \"**/*.{js,jsx,ts,tsx}\" --fix && prettier \"**/*.{js,jsx,ts,tsx,json}\" --write",
     "update:sdk": "expo install expo@latest && expo install --fix",
     "test": "jest --watch --coverage=false --changedSince=origin/main",
-    "testDebug": "jest -o --watch --coverage=false",
-    "testFinal": "jest",
+    "test:debug": "jest -o --watch --coverage=false",
+    "test:final": "jest",
     "updateSnapshots": "jest -u --coverage=false",
     "ios": "expo run:ios"
   },
