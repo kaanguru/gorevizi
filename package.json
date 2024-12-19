@@ -15,11 +15,12 @@
     "prebuild": "expo prebuild",
     "lint": "eslint \"**/*.{js,jsx,ts,tsx}\" && prettier -c \"**/*.{js,jsx,ts,tsx,json}\"",
     "format": "eslint \"**/*.{js,jsx,ts,tsx}\" --fix && prettier \"**/*.{js,jsx,ts,tsx,json}\" --write",
-    "update": "expo install expo@latest && expo install --fix",
+    "update:sdk": "expo install expo@latest && expo install --fix",
     "test": "jest --watch --coverage=false --changedSince=origin/main",
     "testDebug": "jest -o --watch --coverage=false",
     "testFinal": "jest",
-    "updateSnapshots": "jest -u --coverage=false"
+    "updateSnapshots": "jest -u --coverage=false",
+    "ios": "expo run:ios"
   },
   "eslintConfig": {
     "extends": "universe/native",
@@ -59,11 +60,11 @@
     "@shopify/flash-list": "1.7.1",
     "@supabase/supabase-js": "^2.47.3",
     "babel-plugin-module-resolver": "^5.0.2",
-    "expo": "^52.0.19",
+    "expo": "^52.0.20",
     "expo-constants": "~17.0.3",
     "expo-image": "~2.0.3",
     "expo-linking": "~7.0.3",
-    "expo-router": "~4.0.13",
+    "expo-router": "~4.0.14",
     "expo-status-bar": "~2.0.0",
     "expo-system-ui": "~4.0.6",
     "expo-web-browser": "~14.0.1",

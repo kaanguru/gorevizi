@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alert } from 'react-native';
+import { Alert, TextInput } from 'react-native';
 import { useRouter } from 'expo-router';
 import { supabase } from '@/utils/supabase';
 import { Input, InputField } from '@/components/ui/input';
@@ -176,11 +176,18 @@ const DraggableItem = ({
   onDragEnd: (translationY: number) => void;
 }>) => {
   const animatedValue = useSharedValue(position * 60);
+  const inputRef = React.useRef<TextInput>(null);
 
   React.useEffect(() => {
     // eslint-disable-next-line functional/immutable-data
     animatedValue.value = withSpring(position * 60);
   }, [position]);
+
+  React.useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [item.content]);
 
   const gestureHandler = useAnimatedGestureHandler({
     onStart: () => {
@@ -215,9 +222,15 @@ const DraggableItem = ({
           </PanGestureHandler>
           <Input className="flex-1 bg-white" variant="rounded" size="md">
             <InputField
+              ref={inputRef as any}
               placeholder="Checklist item"
               value={item.content}
-              onChangeText={(text) => onUpdate(index, text)}
+              onChangeText={(text) => {
+                onUpdate(index, text);
+                if (inputRef.current) {
+                  inputRef.current.focus();
+                }
+              }}
               className="min-h-[40px] py-2 text-typography-900"
               placeholderTextColor="#9CA3AF"
             />
