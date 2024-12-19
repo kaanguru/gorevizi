@@ -1,5 +1,5 @@
-import React from 'react';
-import { Stack } from 'expo-router';
+import React, { useCallback } from 'react';
+import { Stack, useFocusEffect } from 'expo-router';
 import { Container } from '~/components/Container';
 import { Text } from '@/components/ui/text';
 import { useRouter } from 'expo-router';
@@ -10,20 +10,24 @@ import { useState, useEffect } from 'react';
 import { supabase } from '~/utils/supabase';
 import { FlatList } from 'react-native';
 import { Tables } from '~/database.types';
+
 export default function TaskList() {
   const router = useRouter();
   const [tasks, setTasks] = useState<Tables<'tasks'>[]>([]);
-  useEffect(() => {
-    const fetchTasks = async () => {
-      const { data, error } = await supabase.from('tasks').select('*');
-      if (error) {
-        console.error('Error fetching tasks:', error);
-        return;
-      }
-      setTasks(data || []);
-    };
-    fetchTasks();
+  const fetchTasks = useCallback(async () => {
+    const { data, error } = await supabase.from('tasks').select('*');
+    if (error) {
+      console.error('Error fetching tasks:', error);
+      return;
+    }
+    setTasks(data || []);
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchTasks();
+    }, [fetchTasks])
+  );
   return (
     <>
       <Stack.Screen options={{ title: 'Tasks' }} />
