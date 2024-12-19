@@ -37,44 +37,11 @@ import { supabase } from '@/utils/supabase';
 import Header from '~/components/Header';
 import DraggableItem from '~/components/DraggableItem';
 import WeekdaySelector from '~/components/WeekDaySelector';
+import { calculateRepeatText } from '~/utils/calculateRepeatText';
+import { getCurrentDayOfWeek } from '~/utils/getCurrentDayOfWeek';
+import { RepeatFrequencySlider } from '~/components/RepeatFrequencySlider';
 
 // Components
-
-const RepeatFrequencySlider = ({
-  period,
-  frequency,
-  onChange,
-}: Readonly<{
-  period: RepeatPeriod;
-  frequency: number;
-  onChange: (value: number) => void;
-}>) => (
-  <Box className="mt-4">
-    <HStack space="xl">
-      <Text>Repeat Every</Text>
-      <Text className="my-auto">{calculateRepeatText(period, frequency)}</Text>
-    </HStack>
-    <HStack space="xl">
-      <Center className="m-auto h-1/6 w-4/6">
-        <Slider
-          className="mt-8"
-          defaultValue={1}
-          minValue={1}
-          maxValue={period === 'Monthly' ? 12 : 30}
-          onChange={onChange}
-          size="lg"
-          orientation="horizontal"
-          isDisabled={false}
-          isReversed={false}>
-          <SliderTrack>
-            <SliderFilledTrack />
-          </SliderTrack>
-          <SliderThumb />
-        </Slider>
-      </Center>
-    </HStack>
-  </Box>
-);
 
 const ChecklistSection = ({
   items,
@@ -413,21 +380,4 @@ export default function CreateTask() {
       </VStack>
     </VStack>
   );
-}
-
-function calculateRepeatText(repeatPeriod: RepeatPeriod | '', repeatFrequency: number) {
-  if (!repeatPeriod) return '';
-  const period = {
-    Daily: { singular: 'day', plural: 'days' },
-    Weekly: { singular: 'week', plural: 'weeks' },
-    Monthly: { singular: 'month', plural: 'months' },
-    Yearly: { singular: 'year', plural: 'years' },
-  }[repeatPeriod];
-  return `${repeatFrequency} ${repeatFrequency > 1 ? period.plural : period.singular}`;
-}
-
-function getCurrentDayOfWeek(): DayOfWeek {
-  const days: DayOfWeek[] = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  const today = new Date();
-  return days[today.getDay()];
 }
