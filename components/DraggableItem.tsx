@@ -1,6 +1,6 @@
-import React from 'react';
+import { useEffect, useRef } from 'react';
 import { TextInput } from 'react-native';
-import { PanGestureHandler, GestureHandlerRootView } from 'react-native-gesture-handler';
+import { PanGestureHandler } from 'react-native-gesture-handler';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -8,10 +8,9 @@ import Animated, {
   runOnJS,
   useAnimatedGestureHandler,
 } from 'react-native-reanimated';
-import { Button, ButtonIcon } from '@/components/ui/button';
+import { Button } from '@/components/ui/button';
 import { HStack } from '@/components/ui/hstack';
 import { Box } from '@/components/ui/box';
-import { Text } from '@/components/ui/text';
 import { GripVerticalIcon, Icon, TrashIcon } from './ui/icon';
 import { Input, InputField } from './ui/input';
 import { TaskFormData } from '~/types';
@@ -37,16 +36,16 @@ const DraggableItem = ({
   onDragActive: (translationY: number) => void;
   onDragEnd: (translationY: number) => void;
 }>) => {
-  const animatedValue = useSharedValue(position * 60);
-  const inputRef = React.useRef<TextInput>(null);
+  const animatedValue = useSharedValue(position * 20);
+  const inputRef = useRef<TextInput>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     // Reanimated requires mutation
     // eslint-disable-next-line functional/immutable-data
-    animatedValue.value = withSpring(position * 60);
+    animatedValue.value = withSpring(position * 20);
   }, [position]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus();
     }
