@@ -6,7 +6,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 // UI Components
 import { Input, InputField } from '@/components/ui/input';
 import { Box } from '@/components/ui/box';
-import { Button, ButtonText, ButtonIcon } from '@/components/ui/button';
+import { Button, ButtonText } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
 import { Textarea, TextareaInput } from '@/components/ui/textarea';
 import {
@@ -21,7 +21,6 @@ import {
   SelectDragIndicator,
   SelectItem,
 } from '@/components/ui/select';
-import { Slider, SliderFilledTrack, SliderThumb, SliderTrack } from '@/components/ui/slider';
 import { Checkbox, CheckboxIndicator, CheckboxIcon, CheckboxLabel } from '@/components/ui/checkbox';
 
 import { AddIcon, ChevronDownIcon, Icon } from '~/components/ui/icon';
@@ -29,15 +28,13 @@ import { AddIcon, ChevronDownIcon, Icon } from '~/components/ui/icon';
 // Layout Components
 import { HStack } from '@/components/ui/hstack';
 import { VStack } from '@/components/ui/vstack';
-import { Center } from '@/components/ui/center';
-import { RepeatPeriod, DayOfWeek, TaskFormData } from './types';
+import { RepeatPeriod, TaskFormData } from './types';
 import { supabase } from '@/utils/supabase';
 
 // Custom components
 import Header from '~/components/Header';
 import DraggableItem from '~/components/DraggableItem';
 import WeekdaySelector from '~/components/WeekDaySelector';
-import { calculateRepeatText } from '~/utils/calculateRepeatText';
 import { getCurrentDayOfWeek } from '~/utils/getCurrentDayOfWeek';
 import { RepeatFrequencySlider } from '~/components/RepeatFrequencySlider';
 
