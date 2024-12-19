@@ -1,7 +1,9 @@
 import React from 'react';
-import { Alert, TextInput } from 'react-native';
+import { Alert } from 'react-native';
 import { useRouter } from 'expo-router';
-import { supabase } from '@/utils/supabase';
+import DateTimePicker from '@react-native-community/datetimepicker';
+
+// UI Components
 import { Input, InputField } from '@/components/ui/input';
 import { Box } from '@/components/ui/box';
 import { Button, ButtonText, ButtonIcon } from '@/components/ui/button';
@@ -19,65 +21,22 @@ import {
   SelectDragIndicator,
   SelectItem,
 } from '@/components/ui/select';
-import {
-  AddIcon,
-  ArrowLeftIcon,
-  ChevronDownIcon,
-  Icon,
-  TrashIcon,
-  GripVerticalIcon,
-} from '~/components/ui/icon';
+import { Slider, SliderFilledTrack, SliderThumb, SliderTrack } from '@/components/ui/slider';
+import { Checkbox, CheckboxIndicator, CheckboxIcon, CheckboxLabel } from '@/components/ui/checkbox';
+
+import { AddIcon, ChevronDownIcon, Icon } from '~/components/ui/icon';
+
+// Layout Components
 import { HStack } from '@/components/ui/hstack';
 import { VStack } from '@/components/ui/vstack';
 import { Center } from '@/components/ui/center';
-import { Slider, SliderFilledTrack, SliderThumb, SliderTrack } from '@/components/ui/slider';
-import { Checkbox, CheckboxIndicator, CheckboxIcon, CheckboxLabel } from '@/components/ui/checkbox';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { PanGestureHandler } from 'react-native-gesture-handler';
-import Animated, {
-  useAnimatedGestureHandler,
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-  runOnJS,
-} from 'react-native-reanimated';
+import { RepeatPeriod, DayOfWeek, TaskFormData } from './types';
+import { supabase } from '@/utils/supabase';
+
+// Custom components
 import Header from '~/components/Header';
-// Types
-type RepeatPeriod = 'Daily' | 'Weekly' | 'Monthly' | 'Yearly';
-type DayOfWeek = 'Mon' | 'Tue' | 'Wed' | 'Thu' | 'Fri' | 'Sat' | 'Sun';
-
-interface TaskFormData {
-  title: string;
-  notes: string;
-  repeatPeriod: RepeatPeriod | '';
-  repeatFrequency: number;
-  repeatOnWk: DayOfWeek[];
-  customStartDate: Date | null;
-  isCustomStartDateEnabled: boolean;
-  checklistItems: Array<{
-    content: string;
-    isComplete: boolean;
-    position: number;
-  }>;
-}
-
-const INITIAL_FORM_STATE: TaskFormData = {
-  title: '',
-  notes: '',
-  repeatPeriod: '',
-  repeatFrequency: 1,
-  repeatOnWk: [getCurrentDayOfWeek()],
-  customStartDate: null,
-  isCustomStartDateEnabled: false,
-  checklistItems: [],
-};
-
-const periodMapping = {
-  Daily: { singular: 'day', plural: 'days' },
-  Weekly: { singular: 'week', plural: 'weeks' },
-  Monthly: { singular: 'month', plural: 'months' },
-  Yearly: { singular: 'year', plural: 'years' },
-} as const;
+import DraggableItem from '~/components/DraggableItem';
+import WeekdaySelector from '~/components/WeekDaySelector';
 
 // Components
 
@@ -116,119 +75,6 @@ const RepeatFrequencySlider = ({
     </HStack>
   </Box>
 );
-
-const WeekdaySelector = ({
-  selectedDays,
-  onDayToggle,
-}: Readonly<{
-  selectedDays: DayOfWeek[];
-  onDayToggle: (day: DayOfWeek, isSelected: boolean) => void;
-}>) => (
-  <HStack space="sm" className="flex-wrap">
-    {(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] as DayOfWeek[]).map((day) => (
-      <Checkbox
-        key={day}
-        value={day}
-        isChecked={selectedDays.includes(day)}
-        onChange={(isSelected) => onDayToggle(day, isSelected)}>
-        <CheckboxIndicator>
-          <CheckboxIcon />
-        </CheckboxIndicator>
-        <CheckboxLabel>{day}</CheckboxLabel>
-      </Checkbox>
-    ))}
-  </HStack>
-);
-
-const DraggableItem = ({
-  item,
-  index,
-  isDragging,
-  onUpdate,
-  onRemove,
-  position,
-  onDragStart,
-  onDragActive,
-  onDragEnd,
-}: Readonly<{
-  item: TaskFormData['checklistItems'][number];
-  index: number;
-  isDragging: boolean;
-  onUpdate: (index: number, content: string) => void;
-  onRemove: (index: number) => void;
-  position: number;
-  onDragStart: () => void;
-  onDragActive: (translationY: number) => void;
-  onDragEnd: (translationY: number) => void;
-}>) => {
-  const animatedValue = useSharedValue(position * 60);
-  const inputRef = React.useRef<TextInput>(null);
-
-  React.useEffect(() => {
-    // eslint-disable-next-line functional/immutable-data
-    animatedValue.value = withSpring(position * 60);
-  }, [position]);
-
-  React.useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [item.content]);
-
-  const gestureHandler = useAnimatedGestureHandler({
-    onStart: () => {
-      runOnJS(onDragStart)();
-    },
-    onActive: (event) => {
-      // eslint-disable-next-line functional/immutable-data
-      animatedValue.value = event.translationY + position * 60;
-      runOnJS(onDragActive)(event.translationY);
-    },
-    onEnd: (event) => {
-      runOnJS(onDragEnd)(event.translationY);
-    },
-  });
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: animatedValue.value }],
-    zIndex: isDragging ? 1 : 0,
-    position: 'absolute',
-    left: 0,
-    right: 0,
-  }));
-
-  return (
-    <Animated.View style={animatedStyle}>
-      <Box className="mb-2 px-2">
-        <HStack space="sm" className="items-center">
-          <PanGestureHandler onGestureEvent={gestureHandler}>
-            <Animated.View>
-              <Icon as={GripVerticalIcon} className="m-2 h-4 w-4 text-typography-500" />
-            </Animated.View>
-          </PanGestureHandler>
-          <Input className="flex-1 bg-white" variant="rounded" size="md">
-            <InputField
-              ref={inputRef as any}
-              placeholder="Checklist item"
-              value={item.content}
-              onChangeText={(text) => {
-                onUpdate(index, text);
-                if (inputRef.current) {
-                  inputRef.current.focus();
-                }
-              }}
-              className="min-h-[40px] py-2 text-typography-900"
-              placeholderTextColor="#9CA3AF"
-            />
-          </Input>
-          <Button size="sm" variant="link" onPress={() => onRemove(index)}>
-            <Icon as={TrashIcon} className="m-2 h-4 w-4 text-typography-500" />
-          </Button>
-        </HStack>
-      </Box>
-    </Animated.View>
-  );
-};
 
 const ChecklistSection = ({
   items,
@@ -316,7 +162,16 @@ const ChecklistSection = ({
 // Main component
 export default function CreateTask() {
   const router = useRouter();
-  const [formData, setFormData] = React.useState<TaskFormData>(INITIAL_FORM_STATE);
+  const [formData, setFormData] = React.useState<TaskFormData>({
+    title: '',
+    notes: '',
+    repeatPeriod: '',
+    repeatFrequency: 1,
+    repeatOnWk: [getCurrentDayOfWeek()],
+    customStartDate: null,
+    isCustomStartDateEnabled: false,
+    checklistItems: [],
+  });
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [showDatePicker, setShowDatePicker] = React.useState(false);
 
@@ -562,7 +417,12 @@ export default function CreateTask() {
 
 function calculateRepeatText(repeatPeriod: RepeatPeriod | '', repeatFrequency: number) {
   if (!repeatPeriod) return '';
-  const period = periodMapping[repeatPeriod];
+  const period = {
+    Daily: { singular: 'day', plural: 'days' },
+    Weekly: { singular: 'week', plural: 'weeks' },
+    Monthly: { singular: 'month', plural: 'months' },
+    Yearly: { singular: 'year', plural: 'years' },
+  }[repeatPeriod];
   return `${repeatFrequency} ${repeatFrequency > 1 ? period.plural : period.singular}`;
 }
 
