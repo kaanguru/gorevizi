@@ -15,7 +15,7 @@ interface TaskFormData {
     content: string;
     isComplete: boolean;
     position: number;
-  }>; 
+  }>;
 }
 
 export type { RepeatPeriod, DayOfWeek, TaskFormData };
