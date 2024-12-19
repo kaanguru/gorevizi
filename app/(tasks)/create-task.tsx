@@ -1,10 +1,12 @@
 import React from 'react';
 import { Alert } from 'react-native';
 import { useRouter } from 'expo-router';
-import { supabase } from '@/utils/supabase';
+import DateTimePicker from '@react-native-community/datetimepicker';
+
+// UI Components
 import { Input, InputField } from '@/components/ui/input';
 import { Box } from '@/components/ui/box';
-import { Button, ButtonText, ButtonIcon } from '@/components/ui/button';
+import { Button, ButtonText } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
 import { Textarea, TextareaInput } from '@/components/ui/textarea';
 import {
@@ -19,124 +21,121 @@ import {
   SelectDragIndicator,
   SelectItem,
 } from '@/components/ui/select';
-import { ArrowLeftIcon, ChevronDownIcon } from '~/components/ui/icon';
+import { Checkbox, CheckboxIndicator, CheckboxIcon, CheckboxLabel } from '@/components/ui/checkbox';
+
+import { AddIcon, ChevronDownIcon, Icon } from '~/components/ui/icon';
+
+// Layout Components
 import { HStack } from '@/components/ui/hstack';
 import { VStack } from '@/components/ui/vstack';
-import { Center } from '@/components/ui/center';
-import { Slider, SliderFilledTrack, SliderThumb, SliderTrack } from '@/components/ui/slider';
-import { Checkbox, CheckboxIndicator, CheckboxIcon, CheckboxLabel } from '@/components/ui/checkbox';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import { RepeatPeriod, TaskFormData } from './types';
+import { supabase } from '@/utils/supabase';
 
-// Types
-type RepeatPeriod = 'Daily' | 'Weekly' | 'Monthly' | 'Yearly';
-type DayOfWeek = 'Mon' | 'Tue' | 'Wed' | 'Thu' | 'Fri' | 'Sat' | 'Sun';
-
-interface TaskFormData {
-  title: string;
-  notes: string;
-  repeatPeriod: RepeatPeriod | '';
-  repeatFrequency: number;
-  repeatOnWk: DayOfWeek[];
-  customStartDate: Date | null;
-  isCustomStartDateEnabled: boolean;
-}
-
-const INITIAL_FORM_STATE: TaskFormData = {
-  title: '',
-  notes: '',
-  repeatPeriod: '',
-  repeatFrequency: 1,
-  repeatOnWk: [getCurrentDayOfWeek()],
-  customStartDate: null,
-  isCustomStartDateEnabled: false,
-};
-
-const periodMapping = {
-  Daily: { singular: 'day', plural: 'days' },
-  Weekly: { singular: 'week', plural: 'weeks' },
-  Monthly: { singular: 'month', plural: 'months' },
-  Yearly: { singular: 'year', plural: 'years' },
-} as const;
+// Custom components
+import Header from '~/components/Header';
+import DraggableItem from '~/components/DraggableItem';
+import WeekdaySelector from '~/components/WeekDaySelector';
+import { getCurrentDayOfWeek } from '~/utils/getCurrentDayOfWeek';
+import { RepeatFrequencySlider } from '~/components/RepeatFrequencySlider';
 
 // Components
-const Header = ({ onBack }: { onBack: () => void }) => (
-  <HStack id="header" space="4xl">
-    <Box className="m-4">
-      <Button variant="link" onPress={onBack}>
-        <ButtonIcon as={ArrowLeftIcon} className="lg m-2 text-typography-900" />
-      </Button>
-    </Box>
-    <Box className="my-auto ms-16">
-      <Text bold size="xl">
-        Create Task
-      </Text>
-    </Box>
-  </HStack>
-);
 
-const RepeatFrequencySlider = ({
-  period,
-  frequency,
-  onChange,
+const ChecklistSection = ({
+  items,
+  onAdd,
+  onRemove,
+  onUpdate,
+  setFormData,
 }: Readonly<{
-  period: RepeatPeriod;
-  frequency: number;
-  onChange: (value: number) => void;
-}>) => (
-  <Box className="mt-4">
-    <HStack space="xl">
-      <Text>Repeat Every</Text>
-      <Text className="my-auto">{calculateRepeatText(period, frequency)}</Text>
-    </HStack>
-    <HStack space="xl">
-      <Center className="m-auto h-1/6 w-4/6">
-        <Slider
-          className="mt-8"
-          defaultValue={1}
-          minValue={1}
-          maxValue={period === 'Monthly' ? 12 : 30}
-          onChange={onChange}
-          size="lg"
-          orientation="horizontal"
-          isDisabled={false}
-          isReversed={false}>
-          <SliderTrack>
-            <SliderFilledTrack />
-          </SliderTrack>
-          <SliderThumb />
-        </Slider>
-      </Center>
-    </HStack>
-  </Box>
-);
+  items: TaskFormData['checklistItems'];
+  onAdd: () => void;
+  onRemove: (index: number) => void;
+  onUpdate: (index: number, content: string) => void;
+  setFormData: React.Dispatch<React.SetStateAction<TaskFormData>>;
+}>) => {
+  const [draggingIndex, setDraggingIndex] = React.useState<number | null>(null);
+  const [positions, setPositions] = React.useState<number[]>([]);
 
-const WeekdaySelector = ({
-  selectedDays,
-  onDayToggle,
-}: Readonly<{
-  selectedDays: DayOfWeek[];
-  onDayToggle: (day: DayOfWeek, isSelected: boolean) => void;
-}>) => (
-  <HStack space="sm" className="flex-wrap">
-    {(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] as DayOfWeek[]).map((day) => (
-      <Checkbox
-        key={day}
-        value={day}
-        isChecked={selectedDays.includes(day)}
-        onChange={(isSelected) => onDayToggle(day, isSelected)}>
-        <CheckboxIndicator>
-          <CheckboxIcon />
-        </CheckboxIndicator>
-        <CheckboxLabel>{day}</CheckboxLabel>
-      </Checkbox>
-    ))}
-  </HStack>
-);
+  React.useEffect(() => {
+    setPositions(items.map((_, i) => i));
+  }, [items.length]);
+
+  const handleDragStart = React.useCallback((index: number) => {
+    setDraggingIndex(index);
+  }, []);
+
+  const handleDragActive = React.useCallback(() => {
+    // Optional: Add any active drag handling logic
+  }, []);
+
+  const handleDragEnd = React.useCallback(
+    (index: number, translationY: number) => {
+      const newIndex = Math.round((translationY + index * 60) / 60);
+      const validIndex = Math.max(0, Math.min(newIndex, items.length - 1));
+
+      if (validIndex !== index) {
+        setFormData((prev) => {
+          const newItems = [...prev.checklistItems];
+          // eslint-disable-next-line functional/immutable-data
+          const [movedItem] = newItems.splice(index, 1);
+          // eslint-disable-next-line functional/immutable-data
+          newItems.splice(validIndex, 0, movedItem);
+
+          return {
+            ...prev,
+            checklistItems: newItems.map((item, idx) => ({
+              ...item,
+              position: idx,
+            })),
+          };
+        });
+      }
+      setDraggingIndex(null);
+    },
+    [items.length, setFormData]
+  );
+
+  return (
+    <VStack space="md">
+      <HStack space="md" className="items-center px-2">
+        <Text>Add Routines</Text>
+        <Button size="md" variant="link" onPress={onAdd}>
+          <Icon as={AddIcon} className="text-typography-500" />
+        </Button>
+      </HStack>
+      <Box className="relative" style={{ height: items.length * 60 + 16 }}>
+        {items.map((item, index) => (
+          <DraggableItem
+            key={`${index}-${item.content}`}
+            item={item}
+            index={index}
+            isDragging={draggingIndex === index}
+            onUpdate={onUpdate}
+            onRemove={onRemove}
+            position={positions[index] || index}
+            onDragStart={() => handleDragStart(index)}
+            onDragActive={handleDragActive}
+            onDragEnd={(translationY) => handleDragEnd(index, translationY)}
+          />
+        ))}
+      </Box>
+    </VStack>
+  );
+};
 
 // Main component
 export default function CreateTask() {
   const router = useRouter();
-  const [formData, setFormData] = React.useState<TaskFormData>(INITIAL_FORM_STATE);
+  const [formData, setFormData] = React.useState<TaskFormData>({
+    title: '',
+    notes: '',
+    repeatPeriod: '',
+    repeatFrequency: 1,
+    repeatOnWk: [getCurrentDayOfWeek()],
+    customStartDate: null,
+    isCustomStartDateEnabled: false,
+    checklistItems: [],
+  });
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [showDatePicker, setShowDatePicker] = React.useState(false);
 
@@ -145,24 +144,50 @@ export default function CreateTask() {
       Alert.alert('Error', 'Title is required');
       return;
     }
-
+    if (formData.checklistItems.some((item) => !item.content.trim())) {
+      Alert.alert('Error', 'All checklist items must have content');
+      return;
+    }
     setIsSubmitting(true);
     try {
-      const { error } = await supabase.from('tasks').insert({
-        title: formData.title.trim(),
-        notes: formData.notes.trim() || null,
-        created_at: (formData.customStartDate || new Date()).toISOString(),
-        repeat_on_wk: formData.repeatOnWk.length > 0 ? formData.repeatOnWk : null,
-        repeat_frequency: formData.repeatFrequency || null,
-        repeat_period: formData.repeatPeriod || null,
-      });
+      const { data, error } = await supabase
+        .from('tasks')
+        .insert({
+          title: formData.title.trim(),
+          notes: formData.notes.trim() || null,
+          created_at: (formData.customStartDate || new Date()).toISOString(),
+          repeat_on_wk: formData.repeatOnWk.length > 0 ? formData.repeatOnWk : null,
+          repeat_frequency: formData.repeatFrequency || null,
+          repeat_period: formData.repeatPeriod || null,
+        })
+        .select()
+        .single();
 
       if (error) {
         console.error('Error creating task:', error);
         Alert.alert('Error', 'Failed to create task. Please try again.');
         return;
       }
+      if (!data) {
+        Alert.alert('Error', 'Failed to create task. No data returned.');
+        return;
+      }
+      if (formData.checklistItems.length > 0) {
+        const { error: checklistError } = await supabase.from('checklistitems').insert(
+          formData.checklistItems.map((item, index) => ({
+            task_id: data.id,
+            content: item.content.trim(),
+            position: index,
+            is_complete: false,
+          }))
+        );
 
+        if (checklistError) {
+          console.log('🚀 ~ handleCreate ~ checklistError:', checklistError);
+          Alert.alert('Error', 'Failed to create checklist items. Please try again.');
+          return;
+        }
+      }
       router.back();
     } catch (error) {
       console.error('Error creating task:', error);
@@ -172,159 +197,184 @@ export default function CreateTask() {
     }
   };
 
-  const updateFormData = (updates: Readonly<Partial<TaskFormData>>) => {
-    setFormData((prev) => ({ ...prev, ...updates }));
+  const handleAddChecklistItem = () => {
+    setFormData((prev) => ({
+      ...prev,
+      checklistItems: [
+        ...prev.checklistItems,
+        {
+          content: '',
+          isComplete: false,
+          position: prev.checklistItems.length,
+        },
+      ],
+    }));
+  };
+
+  const handleRemoveChecklistItem = (index: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      checklistItems: prev.checklistItems.filter((_, i) => i !== index),
+    }));
+  };
+
+  const handleUpdateChecklistItem = (index: number, content: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      checklistItems: prev.checklistItems.map((item, i) =>
+        i === index ? { ...item, content } : item
+      ),
+    }));
   };
 
   return (
-    <Box>
+    <VStack space="xl" className="flex-1 bg-white p-4">
       <Header onBack={() => router.back()} />
+      <VStack space="md">
+        <Input size="md" variant="rounded" className="bg-white">
+          <InputField
+            placeholder="Task title"
+            value={formData.title}
+            onChangeText={(text) => setFormData((prev) => ({ ...prev, title: text }))}
+            className="min-h-[40px] py-2 text-typography-900"
+            placeholderTextColor="#9CA3AF"
+          />
+        </Input>
 
-      <Box id="form" className="my-4 justify-center px-2">
-        <VStack space="lg" reversed={false}>
-          <Input variant="rounded" size="lg">
-            <InputField
-              placeholder="Task title"
-              value={formData.title}
-              onChangeText={(text) => updateFormData({ title: text })}
-              testID="task-title-input"
-            />
-          </Input>
+        <Textarea size="md" className="bg-white">
+          <TextareaInput
+            placeholder="Notes"
+            value={formData.notes}
+            onChangeText={(text) => setFormData((prev) => ({ ...prev, notes: text }))}
+            className="min-h-[80px] py-2 text-typography-900"
+            placeholderTextColor="#9CA3AF"
+          />
+        </Textarea>
 
-          <Textarea>
-            <TextareaInput
-              placeholder="Notes"
-              value={formData.notes}
-              onChangeText={(text) => updateFormData({ notes: text })}
-              testID="task-notes-input"
-            />
-          </Textarea>
+        <Select
+          selectedValue={formData.repeatPeriod}
+          onValueChange={(value) =>
+            setFormData((prev) => ({ ...prev, repeatPeriod: value as RepeatPeriod | '' }))
+          }>
+          <SelectTrigger variant="rounded" size="xl" className="justify-between">
+            <SelectInput placeholder="Select repeat period" />
+            <SelectIcon className="ml-auto" as={ChevronDownIcon} />
+          </SelectTrigger>
+          <SelectPortal>
+            <SelectBackdrop />
+            <SelectContent>
+              <SelectDragIndicatorWrapper>
+                <SelectDragIndicator />
+              </SelectDragIndicatorWrapper>
+              <SelectItem label="No Repeat" value="" />
+              <SelectItem label="Daily" value="Daily" />
+              <SelectItem label="Weekly" value="Weekly" />
+              <SelectItem label="Monthly" value="Monthly" />
+              <SelectItem label="Yearly" value="Yearly" />
+            </SelectContent>
+          </SelectPortal>
+        </Select>
 
-          <Select
-            selectedValue={formData.repeatPeriod}
-            onValueChange={(value) => updateFormData({ repeatPeriod: value as RepeatPeriod | '' })}>
-            <SelectTrigger variant="rounded" size="xl" className="justify-between">
-              <SelectInput placeholder="Select repeat period" />
-              <SelectIcon className="ml-auto" as={ChevronDownIcon} />
-            </SelectTrigger>
-            <SelectPortal>
-              <SelectBackdrop />
-              <SelectContent>
-                <SelectDragIndicatorWrapper>
-                  <SelectDragIndicator />
-                </SelectDragIndicatorWrapper>
-                <SelectItem label="No Repeat" value="" />
-                <SelectItem label="Daily" value="Daily" />
-                <SelectItem label="Weekly" value="Weekly" />
-                <SelectItem label="Monthly" value="Monthly" />
-                <SelectItem label="Yearly" value="Yearly" />
-              </SelectContent>
-            </SelectPortal>
-          </Select>
+        {(formData.repeatPeriod === 'Daily' || formData.repeatPeriod === 'Monthly') && (
+          <RepeatFrequencySlider
+            period={formData.repeatPeriod}
+            frequency={formData.repeatFrequency}
+            onChange={(value) => setFormData((prev) => ({ ...prev, repeatFrequency: value }))}
+          />
+        )}
 
-          {(formData.repeatPeriod === 'Daily' || formData.repeatPeriod === 'Monthly') && (
-            <RepeatFrequencySlider
-              period={formData.repeatPeriod}
-              frequency={formData.repeatFrequency}
-              onChange={(value) => updateFormData({ repeatFrequency: value })}
-            />
-          )}
-
-          {formData.repeatPeriod === 'Weekly' && (
-            <Box className="mt-4 p-2">
-              <HStack space="md" className="mb-4">
-                <Text className="w-1/6">Repeat Every</Text>
-                <RepeatFrequencySlider
-                  period={formData.repeatPeriod}
-                  frequency={formData.repeatFrequency}
-                  onChange={(value) => updateFormData({ repeatFrequency: value })}
-                />
-              </HStack>
-              <HStack space="md">
-                <Text className="mb-2">Repeat on</Text>
-              </HStack>
-              <WeekdaySelector
-                selectedDays={formData.repeatOnWk}
-                onDayToggle={(day, isSelected) => {
-                  updateFormData({
-                    repeatOnWk: isSelected
-                      ? [...formData.repeatOnWk, day]
-                      : formData.repeatOnWk.filter((d) => d !== day),
-                  });
-                }}
+        {formData.repeatPeriod === 'Weekly' && (
+          <Box className="mt-4 p-2">
+            <HStack space="md" className="mb-4">
+              <Text className="w-1/6">Repeat Every</Text>
+              <RepeatFrequencySlider
+                period={formData.repeatPeriod}
+                frequency={formData.repeatFrequency}
+                onChange={(value) => setFormData((prev) => ({ ...prev, repeatFrequency: value }))}
               />
-            </Box>
-          )}
-
-          {formData.repeatPeriod === 'Yearly' && (
-            <Box className="mt-4">
-              <HStack space="md">
-                <Text>Repeat Every Year</Text>
-              </HStack>
-            </Box>
-          )}
-
-          <Box className="mt-4">
-            <HStack space="md" className="items-center">
-              <Checkbox
-                value="custom-start-date"
-                isChecked={formData.isCustomStartDateEnabled}
-                onChange={(isSelected) => {
-                  updateFormData({
-                    isCustomStartDateEnabled: isSelected,
-                    customStartDate: isSelected ? new Date() : null,
-                  });
-                }}>
-                <CheckboxIndicator>
-                  <CheckboxIcon />
-                </CheckboxIndicator>
-                <CheckboxLabel>Custom Start Date</CheckboxLabel>
-              </Checkbox>
             </HStack>
-          </Box>
-
-          {formData.isCustomStartDateEnabled && (
-            <Box className="mt-4">
-              <HStack space="xl">
-                <Text className="my-auto text-typography-black">Start Date</Text>
-                <Text className="my-auto">{formData.customStartDate?.toDateString()}</Text>
-                <Button size="xs" variant="outline" onPress={() => setShowDatePicker(true)}>
-                  <ButtonText>Change Date</ButtonText>
-                </Button>
-              </HStack>
-            </Box>
-          )}
-
-          {showDatePicker && (
-            <DateTimePicker
-              value={formData.customStartDate || new Date()}
-              mode="date"
-              onChange={(_, selectedDate) => {
-                setShowDatePicker(false);
-                if (selectedDate) {
-                  updateFormData({ customStartDate: selectedDate });
-                }
+            <HStack space="md">
+              <Text className="mb-2">Repeat on</Text>
+            </HStack>
+            <WeekdaySelector
+              selectedDays={formData.repeatOnWk}
+              onDayToggle={(day, isSelected) => {
+                setFormData((prev) => ({
+                  ...prev,
+                  repeatOnWk: isSelected
+                    ? [...prev.repeatOnWk, day]
+                    : prev.repeatOnWk.filter((d) => d !== day),
+                }));
               }}
             />
-          )}
+          </Box>
+        )}
 
-          <Button onPress={handleCreate} testID="create-task-button" disabled={isSubmitting}>
-            <ButtonText>{isSubmitting ? 'Creating...' : 'Create'}</ButtonText>
-          </Button>
-        </VStack>
-      </Box>
-    </Box>
+        {formData.repeatPeriod === 'Yearly' && (
+          <Box className="mt-4">
+            <HStack space="md">
+              <Text>Repeat Every Year</Text>
+            </HStack>
+          </Box>
+        )}
+
+        <Box className="mt-4">
+          <HStack space="md" className="items-center">
+            <Checkbox
+              value="custom-start-date"
+              isChecked={formData.isCustomStartDateEnabled}
+              onChange={(isSelected) => {
+                setFormData((prev) => ({
+                  ...prev,
+                  isCustomStartDateEnabled: isSelected,
+                  customStartDate: isSelected ? new Date() : null,
+                }));
+              }}>
+              <CheckboxIndicator>
+                <CheckboxIcon />
+              </CheckboxIndicator>
+              <CheckboxLabel>Custom Start Date</CheckboxLabel>
+            </Checkbox>
+          </HStack>
+        </Box>
+
+        {formData.isCustomStartDateEnabled && (
+          <Box className="mt-4">
+            <HStack space="xl">
+              <Text className="my-auto text-typography-black">Start Date</Text>
+              <Text className="my-auto">{formData.customStartDate?.toDateString()}</Text>
+              <Button size="xs" variant="outline" onPress={() => setShowDatePicker(true)}>
+                <ButtonText>Change Date</ButtonText>
+              </Button>
+            </HStack>
+          </Box>
+        )}
+
+        {showDatePicker && (
+          <DateTimePicker
+            value={formData.customStartDate || new Date()}
+            mode="date"
+            onChange={(_, selectedDate) => {
+              setShowDatePicker(false);
+              if (selectedDate) {
+                setFormData((prev) => ({ ...prev, customStartDate: selectedDate }));
+              }
+            }}
+          />
+        )}
+
+        <ChecklistSection
+          items={formData.checklistItems}
+          onAdd={handleAddChecklistItem}
+          onRemove={handleRemoveChecklistItem}
+          onUpdate={handleUpdateChecklistItem}
+          setFormData={setFormData}
+        />
+
+        <Button onPress={handleCreate} testID="create-task-button" disabled={isSubmitting}>
+          <ButtonText>{isSubmitting ? 'Creating...' : 'Create'}</ButtonText>
+        </Button>
+      </VStack>
+    </VStack>
   );
-}
-// Utility functions
-function calculateRepeatText(repeatPeriod: RepeatPeriod | '', repeatFrequency: number) {
-  if (!repeatPeriod) return '';
-  const period = periodMapping[repeatPeriod];
-  return `${repeatFrequency} ${repeatFrequency > 1 ? period.plural : period.singular}`;
-}
-
-function getCurrentDayOfWeek(): DayOfWeek {
-  const days: DayOfWeek[] = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  const today = new Date();
-  return days[today.getDay()];
 }

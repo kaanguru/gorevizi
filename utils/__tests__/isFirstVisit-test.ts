@@ -23,16 +23,16 @@ describe('useAuth', () => {
     });
 
     expect(supabase.auth.signInWithPassword).toHaveBeenCalledWith({
-        email: 'test@example.com',
-        password: 'password',
+      email: 'test@example.com',
+      password: 'password',
     });
-});
+  });
 
-it('should sign up with email and password', async () => {
+  it('should sign up with email and password', async () => {
     const { result } = renderHook(useAuth);
-    
+
     (supabase.auth.signUp as jest.Mock).mockResolvedValue({ data: {}, error: null });
-    
+
     await act(async () => {
       await result.current.signUpWithEmail('test@example.com', 'password');
     });

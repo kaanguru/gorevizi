@@ -4,4 +4,3 @@ jest.mock('@react-native-async-storage/async-storage', () => ({
   getItem: jest.fn(),
   removeItem: jest.fn(),
 }));
-
