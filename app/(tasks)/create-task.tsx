@@ -41,7 +41,7 @@ import Animated, {
   withSpring,
   runOnJS,
 } from 'react-native-reanimated';
-
+import Header from '~/components/Header';
 // Types
 type RepeatPeriod = 'Daily' | 'Weekly' | 'Monthly' | 'Yearly';
 type DayOfWeek = 'Mon' | 'Tue' | 'Wed' | 'Thu' | 'Fri' | 'Sat' | 'Sun';
@@ -80,20 +80,6 @@ const periodMapping = {
 } as const;
 
 // Components
-const Header = ({ onBack }: { onBack: () => void }) => (
-  <HStack id="header" space="4xl">
-    <Box className="m-4">
-      <Button variant="link" onPress={onBack}>
-        <ButtonIcon as={ArrowLeftIcon} className="lg m-2 text-typography-900" />
-      </Button>
-    </Box>
-    <Box className="my-auto ms-16">
-      <Text bold size="xl">
-        Create Task
-      </Text>
-    </Box>
-  </HStack>
-);
 
 const RepeatFrequencySlider = ({
   period,
