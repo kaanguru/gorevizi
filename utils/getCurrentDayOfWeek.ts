@@ -1,4 +1,4 @@
-import { DayOfWeek } from '~/app/(tasks)/types';
+import { DayOfWeek } from '~/types';
 
 export function getCurrentDayOfWeek(): DayOfWeek {
   const days: DayOfWeek[] = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];

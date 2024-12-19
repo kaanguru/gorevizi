@@ -1,4 +1,4 @@
-import { RepeatPeriod } from '~/app/(tasks)/types';
+import { RepeatPeriod } from '~/types';
 import { calculateRepeatText } from '~/utils/calculateRepeatText';
 import { Text } from '@/components/ui/text';
 import { Box } from './ui/box';

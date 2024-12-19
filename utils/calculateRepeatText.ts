@@ -1,4 +1,4 @@
-import { RepeatPeriod } from '~/app/(tasks)/types';
+import { RepeatPeriod } from '~/types';
 
 export function calculateRepeatText(repeatPeriod: RepeatPeriod | '', repeatFrequency: number) {
   if (!repeatPeriod) return '';

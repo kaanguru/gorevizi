@@ -14,7 +14,7 @@ import { Box } from '@/components/ui/box';
 import { Text } from '@/components/ui/text';
 import { GripVerticalIcon, Icon, TrashIcon } from './ui/icon';
 import { Input, InputField } from './ui/input';
-import { TaskFormData } from '~/app/(tasks)/types';
+import { TaskFormData } from '~/types';
 
 const DraggableItem = ({
   item,

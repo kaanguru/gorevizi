@@ -1,5 +1,5 @@
 import React from 'react';
-import { DayOfWeek } from '~/app/(tasks)/types';
+import { DayOfWeek } from '~/types';
 import { HStack } from './ui/hstack';
 import { Checkbox, CheckboxIcon, CheckboxIndicator, CheckboxLabel } from './ui/checkbox';
 

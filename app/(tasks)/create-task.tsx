@@ -28,7 +28,7 @@ import { AddIcon, ChevronDownIcon, Icon } from '~/components/ui/icon';
 // Layout Components
 import { HStack } from '@/components/ui/hstack';
 import { VStack } from '@/components/ui/vstack';
-import { RepeatPeriod, TaskFormData } from './types';
+import { RepeatPeriod, TaskFormData } from '../../types';
 import { supabase } from '@/utils/supabase';
 
 // Custom components
