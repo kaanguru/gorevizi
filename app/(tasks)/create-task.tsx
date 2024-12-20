@@ -28,6 +28,7 @@ import { AddIcon, ChevronDownIcon, Icon } from '~/components/ui/icon';
 // Layout Components
 import { HStack } from '@/components/ui/hstack';
 import { VStack } from '@/components/ui/vstack';
+import { ScrollView } from 'react-native';
 import { RepeatPeriod, TaskFormData } from '../../types';
 import { supabase } from '@/utils/supabase';
 
@@ -35,7 +36,6 @@ import { supabase } from '@/utils/supabase';
 import Header from '~/components/Header';
 import DraggableItem from '~/components/DraggableItem';
 import WeekdaySelector from '~/components/WeekDaySelector';
-import { getCurrentDayOfWeek } from '~/utils/getCurrentDayOfWeek';
 import { RepeatFrequencySlider } from '~/components/RepeatFrequencySlider';
 
 // Components
@@ -131,7 +131,7 @@ export default function CreateTask() {
     notes: '',
     repeatPeriod: '',
     repeatFrequency: 1,
-    repeatOnWk: [getCurrentDayOfWeek()],
+    repeatOnWk: [],
     customStartDate: null,
     isCustomStartDateEnabled: false,
     checklistItems: [],
@@ -228,153 +228,160 @@ export default function CreateTask() {
   };
 
   return (
-    <VStack space="xl" className="flex-1 bg-white p-4">
+    <VStack space="xl" className="flex-1 bg-white">
       <Header onBack={() => router.back()} />
-      <VStack space="md">
-        <Input size="md" variant="rounded" className="bg-white">
-          <InputField
-            placeholder="Task title"
-            value={formData.title}
-            onChangeText={(text) => setFormData((prev) => ({ ...prev, title: text }))}
-            className="min-h-[40px] py-2 text-typography-900"
-            placeholderTextColor="#9CA3AF"
-          />
-        </Input>
+      <Box className="flex-1">
+        <ScrollView className="flex-1 px-4">
+          <VStack space="md">
+            <Input size="md" variant="rounded" className="bg-white">
+              <InputField
+                placeholder="Task title"
+                value={formData.title}
+                onChangeText={(text) => setFormData((prev) => ({ ...prev, title: text }))}
+                className="min-h-[40px] py-2 text-typography-900"
+                placeholderTextColor="#9CA3AF"
+              />
+            </Input>
 
-        <Textarea size="md" className="bg-white">
-          <TextareaInput
-            placeholder="Notes"
-            value={formData.notes}
-            onChangeText={(text) => setFormData((prev) => ({ ...prev, notes: text }))}
-            className="min-h-[80px] py-2 text-typography-900"
-            placeholderTextColor="#9CA3AF"
-          />
-        </Textarea>
+            <Textarea size="md" className="bg-white">
+              <TextareaInput
+                placeholder="Notes"
+                value={formData.notes}
+                onChangeText={(text) => setFormData((prev) => ({ ...prev, notes: text }))}
+                className="min-h-[80px] py-2 text-typography-900"
+                placeholderTextColor="#9CA3AF"
+              />
+            </Textarea>
 
-        <Select
-          selectedValue={formData.repeatPeriod}
-          onValueChange={(value) =>
-            setFormData((prev) => ({ ...prev, repeatPeriod: value as RepeatPeriod | '' }))
-          }>
-          <SelectTrigger variant="rounded" size="xl" className="justify-between">
-            <SelectInput placeholder="Select repeat period" />
-            <SelectIcon className="ml-auto" as={ChevronDownIcon} />
-          </SelectTrigger>
-          <SelectPortal>
-            <SelectBackdrop />
-            <SelectContent>
-              <SelectDragIndicatorWrapper>
-                <SelectDragIndicator />
-              </SelectDragIndicatorWrapper>
-              <SelectItem label="No Repeat" value="" />
-              <SelectItem label="Daily" value="Daily" />
-              <SelectItem label="Weekly" value="Weekly" />
-              <SelectItem label="Monthly" value="Monthly" />
-              <SelectItem label="Yearly" value="Yearly" />
-            </SelectContent>
-          </SelectPortal>
-        </Select>
+            <Select
+              selectedValue={formData.repeatPeriod}
+              onValueChange={(value) =>
+                setFormData((prev) => ({ ...prev, repeatPeriod: value as RepeatPeriod | '' }))
+              }>
+              <SelectTrigger variant="rounded" size="xl" className="justify-between">
+                <SelectInput placeholder="Select repeat period" />
+                <SelectIcon className="ml-auto" as={ChevronDownIcon} />
+              </SelectTrigger>
+              <SelectPortal>
+                <SelectBackdrop />
+                <SelectContent>
+                  <SelectDragIndicatorWrapper>
+                    <SelectDragIndicator />
+                  </SelectDragIndicatorWrapper>
+                  <SelectItem label="No Repeat" value="" />
+                  <SelectItem label="Daily" value="Daily" />
+                  <SelectItem label="Weekly" value="Weekly" />
+                  <SelectItem label="Monthly" value="Monthly" />
+                  <SelectItem label="Yearly" value="Yearly" />
+                </SelectContent>
+              </SelectPortal>
+            </Select>
 
-        {(formData.repeatPeriod === 'Daily' || formData.repeatPeriod === 'Monthly') && (
-          <RepeatFrequencySlider
-            period={formData.repeatPeriod}
-            frequency={formData.repeatFrequency}
-            onChange={(value) => setFormData((prev) => ({ ...prev, repeatFrequency: value }))}
-          />
-        )}
-
-        {formData.repeatPeriod === 'Weekly' && (
-          <Box className="mt-4 p-2">
-            <HStack space="md" className="mb-4">
-              <Text className="w-1/6">Repeat Every</Text>
+            {(formData.repeatPeriod === 'Daily' || formData.repeatPeriod === 'Monthly') && (
               <RepeatFrequencySlider
                 period={formData.repeatPeriod}
                 frequency={formData.repeatFrequency}
                 onChange={(value) => setFormData((prev) => ({ ...prev, repeatFrequency: value }))}
               />
-            </HStack>
-            <HStack space="md">
-              <Text className="mb-2">Repeat on</Text>
-            </HStack>
-            <WeekdaySelector
-              selectedDays={formData.repeatOnWk}
-              onDayToggle={(day, isSelected) => {
-                setFormData((prev) => ({
-                  ...prev,
-                  repeatOnWk: isSelected
-                    ? [...prev.repeatOnWk, day]
-                    : prev.repeatOnWk.filter((d) => d !== day),
-                }));
-              }}
+            )}
+
+            {formData.repeatPeriod === 'Weekly' && (
+              <Box className="mt-4 p-2">
+                <HStack space="md" className="mb-4">
+                  <Text className="w-1/6">Repeat Every</Text>
+                  <RepeatFrequencySlider
+                    period={formData.repeatPeriod}
+                    frequency={formData.repeatFrequency}
+                    onChange={(value) =>
+                      setFormData((prev) => ({ ...prev, repeatFrequency: value }))
+                    }
+                  />
+                </HStack>
+                <HStack space="md">
+                  <Text className="mb-2">Repeat on</Text>
+                </HStack>
+                <WeekdaySelector
+                  selectedDays={formData.repeatOnWk}
+                  onDayToggle={(day, isSelected) => {
+                    setFormData((prev) => ({
+                      ...prev,
+                      repeatOnWk: isSelected
+                        ? [...prev.repeatOnWk, day]
+                        : prev.repeatOnWk.filter((d) => d !== day),
+                    }));
+                  }}
+                />
+              </Box>
+            )}
+
+            {formData.repeatPeriod === 'Yearly' && (
+              <Box className="mt-4">
+                <HStack space="md">
+                  <Text>Repeat Every Year</Text>
+                </HStack>
+              </Box>
+            )}
+
+            <Box className="mt-4">
+              <HStack space="md" className="items-center">
+                <Checkbox
+                  value="custom-start-date"
+                  isChecked={formData.isCustomStartDateEnabled}
+                  onChange={(isSelected) => {
+                    setFormData((prev) => ({
+                      ...prev,
+                      isCustomStartDateEnabled: isSelected,
+                      customStartDate: isSelected ? new Date() : null,
+                    }));
+                  }}>
+                  <CheckboxIndicator>
+                    <CheckboxIcon />
+                  </CheckboxIndicator>
+                  <CheckboxLabel>Custom Start Date</CheckboxLabel>
+                </Checkbox>
+              </HStack>
+            </Box>
+
+            {formData.isCustomStartDateEnabled && (
+              <Box className="mt-4">
+                <HStack space="xl">
+                  <Text className="my-auto text-typography-black">Start Date</Text>
+                  <Text className="my-auto">{formData.customStartDate?.toDateString()}</Text>
+                  <Button size="xs" variant="outline" onPress={() => setShowDatePicker(true)}>
+                    <ButtonText>Change Date</ButtonText>
+                  </Button>
+                </HStack>
+              </Box>
+            )}
+
+            {showDatePicker && (
+              <DateTimePicker
+                value={formData.customStartDate || new Date()}
+                mode="date"
+                onChange={(_, selectedDate) => {
+                  setShowDatePicker(false);
+                  if (selectedDate) {
+                    setFormData((prev) => ({ ...prev, customStartDate: selectedDate }));
+                  }
+                }}
+              />
+            )}
+
+            <ChecklistSection
+              items={formData.checklistItems}
+              onAdd={handleAddChecklistItem}
+              onRemove={handleRemoveChecklistItem}
+              onUpdate={handleUpdateChecklistItem}
+              setFormData={setFormData}
             />
-          </Box>
-        )}
-
-        {formData.repeatPeriod === 'Yearly' && (
-          <Box className="mt-4">
-            <HStack space="md">
-              <Text>Repeat Every Year</Text>
-            </HStack>
-          </Box>
-        )}
-
-        <Box className="mt-4">
-          <HStack space="md" className="items-center">
-            <Checkbox
-              value="custom-start-date"
-              isChecked={formData.isCustomStartDateEnabled}
-              onChange={(isSelected) => {
-                setFormData((prev) => ({
-                  ...prev,
-                  isCustomStartDateEnabled: isSelected,
-                  customStartDate: isSelected ? new Date() : null,
-                }));
-              }}>
-              <CheckboxIndicator>
-                <CheckboxIcon />
-              </CheckboxIndicator>
-              <CheckboxLabel>Custom Start Date</CheckboxLabel>
-            </Checkbox>
-          </HStack>
-        </Box>
-
-        {formData.isCustomStartDateEnabled && (
-          <Box className="mt-4">
-            <HStack space="xl">
-              <Text className="my-auto text-typography-black">Start Date</Text>
-              <Text className="my-auto">{formData.customStartDate?.toDateString()}</Text>
-              <Button size="xs" variant="outline" onPress={() => setShowDatePicker(true)}>
-                <ButtonText>Change Date</ButtonText>
-              </Button>
-            </HStack>
-          </Box>
-        )}
-
-        {showDatePicker && (
-          <DateTimePicker
-            value={formData.customStartDate || new Date()}
-            mode="date"
-            onChange={(_, selectedDate) => {
-              setShowDatePicker(false);
-              if (selectedDate) {
-                setFormData((prev) => ({ ...prev, customStartDate: selectedDate }));
-              }
-            }}
-          />
-        )}
-
-        <ChecklistSection
-          items={formData.checklistItems}
-          onAdd={handleAddChecklistItem}
-          onRemove={handleRemoveChecklistItem}
-          onUpdate={handleUpdateChecklistItem}
-          setFormData={setFormData}
-        />
-
+          </VStack>
+        </ScrollView>
+      </Box>
+      <Box className="px-4 py-2">
         <Button onPress={handleCreate} testID="create-task-button" disabled={isSubmitting}>
           <ButtonText>{isSubmitting ? 'Creating...' : 'Create'}</ButtonText>
         </Button>
-      </VStack>
+      </Box>
     </VStack>
   );
 }
