@@ -17,22 +17,21 @@ export const useAuth = () => {
     email: string,
     password: string
   ): Promise<{ error: { message: string } } | null> => {
+    setLoading(true);
     try {
-      setLoading(true);
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
 
       if (error) {
-        return { error: { message: error?.message ?? 'Unknown error when signing in' } };
+        return { error: { message: error.message || 'Unknown error when signing in' } };
       }
       return null;
     } catch (error) {
-      if (error instanceof Error) {
-        return { error: { message: error.message } };
-      }
-      return { error: { message: 'Unknown error when signing in with email and password' } };
+      return {
+        error: {
+          message:
+            (error as Error).message || 'Unknown error when signing in with email and password',
+        },
+      };
     } finally {
       setLoading(false);
     }
@@ -42,31 +41,27 @@ export const useAuth = () => {
     email: string,
     password: string
   ): Promise<{ error: { message: string } } | null> => {
+    setLoading(true);
     try {
-      setLoading(true);
-      const { data, error } = await supabase.auth.signUp({ email, password });
+      const { error } = await supabase.auth.signUp({ email, password });
 
       if (error) {
-        return { error: { message: error?.message ?? 'Unknown error when signing up' } };
+        return { error: { message: error.message || 'Unknown error when signing up' } };
       }
-
       return null;
     } catch (error) {
       console.error('Error when signing up:', error);
-      return {
-        error: {
-          message: error instanceof Error ? error.message : 'Unknown error when signing up',
-        },
-      };
+      return { error: { message: (error as Error).message || 'Unknown error when signing up' } };
     } finally {
       setLoading(false);
     }
   };
 
-  const signOut = async () => {
+  const signOut = async (): Promise<null> => {
+    setLoading(true);
     try {
-      setLoading(true);
       const { error } = await supabase.auth.signOut();
+
       if (error) {
         console.error('Error when signing out:', error);
       }
@@ -74,8 +69,8 @@ export const useAuth = () => {
       console.error('Error when signing out:', error);
     } finally {
       setLoading(false);
-      return null;
     }
+    return null;
   };
 
   return {
