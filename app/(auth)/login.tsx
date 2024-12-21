@@ -9,7 +9,7 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const { signInWithEmail } = useAuth();
+  const { signInWithEmail, signInWithGithub } = useAuth();
 
   const handleResetFirstVisit = async () => {
     Alert.alert(
@@ -53,7 +53,22 @@ export default function Login() {
       setLoading(false);
     }
   };
-
+  const handleLoginWithGithub = async () => {
+    if (loading) return;
+    setLoading(true);
+    try {
+      const result = await signInWithGithub();
+      if (result && 'error' in result) {
+        Alert.alert('Github Login Failed', result.error.message);
+      } else {
+        router.replace('https://gvpgucbkvbjbizsrgsmf.supabase.co/auth/v1/callback' as Href);
+      }
+    } catch (error) {
+      console.error('Error logging in with github:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <View className="flex-1 bg-white px-5 pt-12">
       <Text className="mb-8 text-2xl font-bold text-black">Welcome Back</Text>
@@ -88,6 +103,12 @@ export default function Login() {
           className="mt-4 w-full rounded-lg border border-black py-4"
           onPress={handleLogin}>
           <Text className="text-center font-semibold text-black">Login</Text>
+        </Pressable>
+        <Pressable
+          disabled={loading}
+          className="mt-4 w-full rounded-lg border border-black py-4"
+          onPress={handleLoginWithGithub}>
+          <Text className="text-center font-semibold text-black">Login with Github</Text>
         </Pressable>
 
         <Pressable className={styles.textButton} onPress={() => router.push('/(auth)/register')}>
