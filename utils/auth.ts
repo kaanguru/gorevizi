@@ -36,16 +36,6 @@ export const useAuth = () => {
       setLoading(false);
     }
   };
-  const signInWithGithub = async (): Promise<{ error: { message: string } } | typeof data> => {
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: 'github',
-    });
-
-    if (error) {
-      return { error: { message: error.message || 'Unknown error when signing in with github' } };
-    }
-    return data;
-  };
 
   const signUpWithEmail = async (
     email: string,
@@ -85,7 +75,6 @@ export const useAuth = () => {
 
   return {
     signInWithEmail,
-    signInWithGithub,
     signUpWithEmail,
     signOut,
     loading,
