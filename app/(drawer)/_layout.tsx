@@ -1,6 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Drawer } from 'expo-router/drawer';
-import { router } from 'expo-router';
 import { useAuth } from '~/utils/auth';
 
 const DrawerLayout = () => {
@@ -8,7 +7,6 @@ const DrawerLayout = () => {
 
   const handleSignOut = async () => {
     await signOut();
-    router.replace('/(auth)/login');
   };
 
   return (

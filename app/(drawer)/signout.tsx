@@ -1,10 +1,14 @@
-import { Stack } from 'expo-router';
-export default function signOut() {
-  return (
-    <>
-      <Stack>
-        <Stack.Screen name="Sign Out" options={{ title: 'Sign Out' }} />
-      </Stack>
-    </>
-  );
-}
+import { useEffect } from 'react';
+import { useRouter } from 'expo-router';
+import { Spinner } from '~/components/ui/spinner';
+
+const SignOut = () => {
+  const router = useRouter();
+  useEffect(() => {
+    router.navigate('/(auth)/login');
+  }, [router]);
+
+  return <Spinner size={'large'} />;
+};
+
+export default SignOut;

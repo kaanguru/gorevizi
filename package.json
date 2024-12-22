@@ -6,6 +6,7 @@
   "scripts": {
     "android": "cross-env DARK_MODE=media expo start --android",
     "build": "eas build:run -p android",
+    "local": "bunx expo run:android",
     "build:pre": "eas build -p android --profile preview",
     "build:dev": "eas build -p android --profile development",
     "dev": "expo start --android ",
