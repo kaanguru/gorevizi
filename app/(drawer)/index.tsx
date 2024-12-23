@@ -55,6 +55,7 @@ export default function TaskList() {
           </Box>
         ) : (
           <FlatList
+            contentContainerStyle={{ gap: 9 }}
             data={tasks}
             renderItem={renderTaskItem}
             keyExtractor={(item) => item.id.toString()}
