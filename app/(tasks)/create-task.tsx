@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -53,22 +53,22 @@ const ChecklistSection = ({
   onUpdate: (index: number, content: string) => void;
   setFormData: React.Dispatch<React.SetStateAction<TaskFormData>>;
 }>) => {
-  const [draggingIndex, setDraggingIndex] = React.useState<number | null>(null);
-  const [positions, setPositions] = React.useState<number[]>([]);
+  const [draggingIndex, setDraggingIndex] = useState<number | null>(null);
+  const [positions, setPositions] = useState<number[]>([]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setPositions(items.map((_, i) => i));
   }, [items.length]);
 
-  const handleDragStart = React.useCallback((index: number) => {
+  const handleDragStart = useCallback((index: number) => {
     setDraggingIndex(index);
   }, []);
 
-  const handleDragActive = React.useCallback(() => {
+  const handleDragActive = useCallback(() => {
     // Optional: Add any active drag handling logic
   }, []);
 
-  const handleDragEnd = React.useCallback(
+  const handleDragEnd = useCallback(
     (index: number, translationY: number) => {
       const newIndex = Math.round((translationY + index * 60) / 60);
       const validIndex = Math.max(0, Math.min(newIndex, items.length - 1));

@@ -41,8 +41,10 @@ export default function TaskList() {
   );
 
   const renderTaskItem = useCallback(
-    ({ item }: Readonly<{ item: Tables<'tasks'> }>) => <TaskItem task={item} />,
-    []
+    ({ item }: Readonly<{ item: Tables<'tasks'> }>) => (
+      <TaskItem task={item} onTaskUpdate={fetchTasks} />
+    ), // Pass fetchTasks to TaskItem
+    [fetchTasks]
   );
 
   return (
