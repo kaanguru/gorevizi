@@ -32,7 +32,11 @@ export function TaskItem({ task, onTaskUpdate }: Readonly<TaskItemProps>) {
   };
   return (
     <Box className="flex border border-gray-200 p-6">
-      <Checkbox value={(task.id as number).toString()} onChange={handleToggleComplete} size="lg">
+      <Checkbox
+        value={(task.id as number).toString()}
+        isChecked={task.is_complete}
+        onChange={handleToggleComplete}
+        size="lg">
         <CheckboxIndicator>
           <CheckboxIcon as={CheckIcon} />
         </CheckboxIndicator>

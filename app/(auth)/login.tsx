@@ -6,8 +6,8 @@ import { useAuth } from '~/utils/auth';
 
 export default function Login() {
   const router = useRouter();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('asdfafga@ff.gg');
+  const [password, setPassword] = useState('123qweasd');
   const [loading, setLoading] = useState(false);
   const { signInWithEmail } = useAuth();
 
@@ -36,7 +36,6 @@ export default function Login() {
       ]
     );
   };
-
   const handleLogin = async () => {
     if (loading) return;
     setLoading(true);
@@ -94,11 +93,11 @@ export default function Login() {
           <Text className="text-center text-black">Don't have an account? Register</Text>
         </Pressable>
 
-        <View className={styles.smallButtonHolder}>
+        {/*  <View className={styles.smallButtonHolder}>
           <Pressable className={styles.smallButton} onPress={handleResetFirstVisit}>
             <Text className="text-center text-white">Reset Onboarding Flow</Text>
           </Pressable>
-        </View>
+        </View> */}
       </View>
     </View>
   );
