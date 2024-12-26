@@ -98,8 +98,8 @@ const ChecklistSection = ({
   return (
     <VStack space="md">
       <HStack space="md" className="items-center px-2">
-        <Text>Add Routines</Text>
-        <Button size="md" variant="link" onPress={onAdd}>
+        <Text>Add checklist item</Text>
+        <Button size="lg" variant="link" onPress={onAdd}>
           <Icon as={AddIcon} className="text-typography-500" />
         </Button>
       </HStack>
@@ -114,7 +114,6 @@ const ChecklistSection = ({
             onRemove={onRemove}
             position={positions[index] || index}
             onDragStart={() => handleDragStart(index)}
-            onDragActive={handleDragActive}
             onDragEnd={(translationY) => handleDragEnd(index, translationY)}
           />
         ))}

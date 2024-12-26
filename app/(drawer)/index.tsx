@@ -8,12 +8,14 @@ import { supabase } from '~/utils/supabase';
 import { FlatList } from 'react-native';
 import { Tables } from '~/database.types';
 import { Spinner } from '~/components/ui/spinner';
-import { TaskItem } from '~/components/TaskItem';
+import { DraggableTaskItem } from '~/components/DraggableTaskItem';
 
 export default function TaskList() {
   const router = useRouter();
   const [tasks, setTasks] = useState<Readonly<Tables<'tasks'>[]>>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [draggingIndex, setDraggingIndex] = useState<number | null>(null);
+  const [positions, setPositions] = useState<number[]>([]);
 
   const fetchTasks = useCallback(async () => {
     setIsLoading(true);
@@ -27,22 +29,73 @@ export default function TaskList() {
 
     setIsLoading(false);
   }, []);
+  const handleDragStart = useCallback((index: number) => {
+    setDraggingIndex(index);
+  }, []);
+  const handleDragEnd = useCallback(
+    (index: number, translationY: number) => {
+      const itemHeight = 60; // Match ITEM_HEIGHT from DraggableTaskItem
+      const newIndex = Math.round(index + translationY / itemHeight);
 
+      if (newIndex < 0 || newIndex >= tasks.length) {
+        setDraggingIndex(null);
+        return;
+      }
+
+      const newPositions = [...positions];
+      [newPositions[index], newPositions[newIndex]] = [newPositions[newIndex], newPositions[index]];
+
+      setPositions(newPositions);
+      setDraggingIndex(null);
+
+      const updatedTasks = tasks.map((task, i) => ({
+        ...task,
+        position: newPositions[i],
+      }));
+
+      setTasks(updatedTasks);
+
+      // Batch update to reduce database calls
+      void supabase.from('tasks').upsert(updatedTasks);
+    },
+    [positions, tasks]
+  );
+  useFocusEffect(
+    useCallback(() => {
+      fetchTasks().then(() => {
+        setPositions(tasks.map((_, index) => index));
+      });
+    }, [fetchTasks])
+  );
   useFocusEffect(
     useCallback(() => {
       fetchTasks();
     }, [fetchTasks])
   );
+  const onUpdate = () => {};
+
+  const onRemove = () => {};
 
   const renderTaskItem = useCallback(
-    (props: Readonly<{ item: Tables<'tasks'> }>) => (
-      <TaskItem task={props.item} onTaskUpdate={fetchTasks} />
+    (props: Readonly<{ item: Tables<'tasks'>; index: number }>) => (
+      <DraggableTaskItem
+        task={props.item}
+        index={props.item.position ?? 0}
+        onTaskUpdate={fetchTasks}
+        onUpdate={onUpdate}
+        onRemove={onRemove}
+        isDragging={draggingIndex === props.index}
+        key={`${props.item.id}`}
+        position={positions[props.index] || props.index}
+        onDragStart={() => handleDragStart(props.index)}
+        onDragEnd={(translationY) => handleDragEnd(props.index, translationY)}
+      />
     ),
     [fetchTasks]
   );
 
   return (
-    <>
+    <Container>
       <Stack.Screen options={{ title: 'Tasks' }} />
       <Container>
         {isLoading ? (
@@ -51,7 +104,11 @@ export default function TaskList() {
           </Box>
         ) : (
           <FlatList
-            contentContainerStyle={{ gap: 9 }}
+            contentContainerStyle={{
+              gap: 9,
+              padding: 16,
+              paddingBottom: 80, // Add space for FAB
+            }}
             data={tasks}
             renderItem={renderTaskItem}
             keyExtractor={(item) => item.id.toString()}
@@ -65,6 +122,6 @@ export default function TaskList() {
           <FabLabel> Add Task </FabLabel>
         </Fab>
       </Container>
-    </>
+    </Container>
   );
 }
