@@ -1,14 +1,12 @@
-import React, { useCallback } from 'react';
-import { Stack, useFocusEffect } from 'expo-router';
-import { Container } from '~/components/Container';
-import { useRouter } from 'expo-router';
-import { Box } from '~/components/ui/box';
-import { Fab, FabLabel, FabIcon } from '@/components/ui/fab';
-import { AddIcon } from '~/components/ui/icon';
-import { useState } from 'react';
-import { supabase } from '~/utils/supabase';
+import React, { useCallback, useState } from 'react';
 import { FlatList } from 'react-native';
+import { Stack, useFocusEffect, useRouter } from 'expo-router';
+import { supabase } from '~/utils/supabase';
 import { Tables } from '~/database.types';
+import { Fab, FabLabel, FabIcon } from '@/components/ui/fab';
+import { Container } from '~/components/Container';
+import { Box } from '~/components/ui/box';
+import { AddIcon } from '~/components/ui/icon';
 import { Spinner } from '~/components/ui/spinner';
 import { TaskItem } from '~/components/TaskItem';
 
