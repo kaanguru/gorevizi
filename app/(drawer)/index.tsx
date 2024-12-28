@@ -41,10 +41,10 @@ export default function TaskList() {
   const renderTaskItem = useCallback(
     ({ item }: Readonly<{ item: Tables<'tasks'> }>) => (
       <TaskItem task={item} onTaskUpdate={fetchTasks} />
-    ), // Pass fetchTasks to TaskItem
+    ),
     [fetchTasks]
   );
-
+  const sortedTasks = [...tasks].sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
   return (
     <>
       <Stack.Screen options={{ title: 'Tasks' }} />
@@ -56,7 +56,7 @@ export default function TaskList() {
         ) : (
           <FlatList
             contentContainerStyle={{ gap: 9 }}
-            data={tasks}
+            data={sortedTasks}
             renderItem={renderTaskItem}
             keyExtractor={(item) => item.id.toString()}
           />

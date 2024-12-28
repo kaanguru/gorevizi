@@ -6,7 +6,7 @@ import { useAuth } from '~/utils/auth';
 
 export default function Login() {
   const router = useRouter();
-  const [email, setEmail] = useState('asdfafga@ff.gg');
+  const [email, setEmail] = useState('tes@yy.jj');
   const [password, setPassword] = useState('123qweasd');
   const [loading, setLoading] = useState(false);
   const { signInWithEmail } = useAuth();
@@ -93,11 +93,13 @@ export default function Login() {
           <Text className="text-center text-black">Don't have an account? Register</Text>
         </Pressable>
 
-        {/*  <View className={styles.smallButtonHolder}>
-          <Pressable className={styles.smallButton} onPress={handleResetFirstVisit}>
-            <Text className="text-center text-white">Reset Onboarding Flow</Text>
-          </Pressable>
-        </View> */}
+        {
+          <View className={styles.smallButtonHolder}>
+            <Pressable className={styles.smallButton} onPress={handleResetFirstVisit}>
+              <Text className="text-center text-white">Reset Onboarding Flow</Text>
+            </Pressable>
+          </View>
+        }
       </View>
     </View>
   );
