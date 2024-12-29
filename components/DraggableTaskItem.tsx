@@ -4,30 +4,25 @@ import { Text } from '@/components/ui/text';
 import { Tables } from '~/database.types';
 import { Checkbox, CheckboxIcon, CheckboxIndicator, CheckboxLabel } from './ui/checkbox';
 import { CheckIcon } from './ui/icon';
-import { supabase } from '@/utils/supabase';
+import { supabase } from '~/utils/supabase';
 
 // eslint-disable-next-line functional/no-mixed-types
 interface TaskItemProps {
   task: Tables<'tasks'>;
-  onTaskUpdate: () => void;
+  onTaskUpdate: (task: Readonly<Tables<'tasks'>>) => Promise<void>;
+  onReorder: (from: number, to: number) => void;
 }
-export function TaskItem({ task, onTaskUpdate }: Readonly<TaskItemProps>) {
-  const handleToggleComplete = async () => {
+export function TaskItem({ task, onTaskUpdate, onReorder }: Readonly<TaskItemProps>) {
+  const handleToggleComplete = async (task: Readonly<Tables<'tasks'>>): Promise<boolean> => {
     try {
-      const { error } = await supabase
+      const updatedTask = { ...task, is_complete: !task.is_complete };
+      const {} = await supabase
         .from('tasks')
-        .update({ is_complete: !task.is_complete })
-        .eq('id', task.id);
-
-      if (error) {
-        console.error('Error toggling task completion:', error);
-        // Optionally handle the error, e.g., show a toast message
-      } else {
-        onTaskUpdate();
-      }
+        .update({ is_complete: updatedTask.is_complete })
+        .eq('id', updatedTask.id);
+      return task.is_complete ?? false;
     } catch (error) {
       console.error('Error toggling task completion:', error);
-      // Optionally handle the error, e.g., show a toast message
     }
   };
   return (
@@ -35,7 +30,7 @@ export function TaskItem({ task, onTaskUpdate }: Readonly<TaskItemProps>) {
       <Checkbox
         value={(task.id as number).toString()}
         isChecked={task.is_complete}
-        onChange={handleToggleComplete}
+        onChange={handleToggleComplete(task)}
         size="lg">
         <CheckboxIndicator>
           <CheckboxIcon as={CheckIcon} />

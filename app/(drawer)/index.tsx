@@ -8,13 +8,12 @@ import { Container } from '~/components/Container';
 import { Box } from '~/components/ui/box';
 import { AddIcon } from '~/components/ui/icon';
 import { Spinner } from '~/components/ui/spinner';
-import { TaskItem } from '~/components/TaskItem';
+import { TaskItem } from '~/components/DraggableTaskItem';
 
 export default function TaskList() {
   const router = useRouter();
   const [tasks, setTasks] = useState<Tables<'tasks'>[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-
   const fetchTasks = useCallback(async () => {
     setIsLoading(true);
 
