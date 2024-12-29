@@ -16,7 +16,7 @@ interface TaskItemProps {
 export function TaskItem({ task, onReorder, onToggleComplete }: Readonly<TaskItemProps>) {
   return (
     <>
-      <Box className="flex flex-row  border border-gray-200 p-6">
+      <Box className="flex flex-row  border border-primary-800 p-6">
         <Checkbox
           className=" basis-1/6"
           value={(task.id as number).toString()}
@@ -30,8 +30,8 @@ export function TaskItem({ task, onReorder, onToggleComplete }: Readonly<TaskIte
         <Text className="basis-5/6"> {task.title} </Text>
       </Box>
       {task.notes && (
-        <Box className="mt-1 flex-row bg-primary-600 p-1">
-          <Text className="min-h-6 font-bold text-typography-0"> {task.notes} </Text>
+        <Box className="mb-1 flex-row bg-background-300 p-1">
+          <Text className="min-h-6 font-bold text-typography-700"> {task.notes} </Text>
         </Box>
       )}
     </>

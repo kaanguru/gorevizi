@@ -34,16 +34,16 @@ export default function Register() {
   };
 
   return (
-    <View className="flex-1 bg-white px-5 pt-12">
+    <View className="flex-1 bg-background-100 px-5 pt-12">
       <Text className="text-navy-800 mb-8 text-2xl font-bold">Create Account</Text>
 
       {loading && <ActivityIndicator />}
 
       <View className="space-y-4">
         <View>
-          <Text className="text-navy-800 mb-2">Email</Text>
+          <Text className="mb-2 text-typography-800">Email</Text>
           <TextInput
-            className="w-full rounded-lg border border-gray-300 px-4 py-3"
+            className="w-full rounded-lg border border-primary-400 px-4 py-3"
             placeholder="Enter your email"
             value={email}
             onChangeText={setEmail}
@@ -55,7 +55,7 @@ export default function Register() {
         <View>
           <Text className="text-navy-800 mb-2">Password</Text>
           <TextInput
-            className="w-full rounded-lg border border-gray-300 px-4 py-3"
+            className="w-full rounded-lg border  border-primary-400 px-4 py-3"
             placeholder="Enter your password"
             value={password}
             onChangeText={setPassword}
@@ -65,7 +65,7 @@ export default function Register() {
         <View>
           <Text className="text-navy-800 mb-2">Confirm Password</Text>
           <TextInput
-            className="w-full rounded-lg border border-gray-300 px-4 py-3"
+            className="w-full rounded-lg border  border-primary-400 px-4 py-3"
             placeholder="Confirm your password"
             value={confirmPassword}
             onChangeText={setConfirmPassword}
@@ -86,7 +86,7 @@ export default function Register() {
 }
 
 const styles = {
-  button: 'border-navy-800 bg-navy-800 mt-4 w-full rounded-lg border py-4',
+  button: 'border-primary-500 bg-background-400 mt-4 w-full rounded-lg border py-4',
   buttonText: 'text-center font-semibold text-black',
-  textButton: 'mt-8 bg-slate-50 p-3',
+  textButton: 'mt-8 bg-background-200 p-3',
 };

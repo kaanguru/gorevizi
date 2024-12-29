@@ -12,7 +12,7 @@ export const config = {
     '--color-primary-500': '51 51 51',
     '--color-primary-600': '41 41 41',
     '--color-primary-700': '31 31 31',
-    '--color-primary-800': '13 13 13',
+    '--color-primary-800': '255, 0, 110',
     '--color-primary-900': '10 10 10',
     '--color-primary-950': '8 8 8',
 
@@ -101,18 +101,19 @@ export const config = {
     '--color-info-950': '3 38 56',
 
     /* Typography */
-    '--color-typography-0': '254 254 255',
-    '--color-typography-50': '245 245 245',
-    '--color-typography-100': '229 229 229',
-    '--color-typography-200': '219 219 220',
-    '--color-typography-300': '212 212 212',
-    '--color-typography-400': '163 163 163',
-    '--color-typography-500': '140 140 140',
-    '--color-typography-600': '115 115 115',
-    '--color-typography-700': '82 82 82',
-    '--color-typography-800': '64 64 64',
-    '--color-typography-900': '38 38 39',
-    '--color-typography-950': '23 23 23',
+    
+  '--color-typography-0':  '92, 154, 255',
+  '--color-typography-50':  '92, 154, 255',
+  '--color-typography-100': '0, 86, 224',
+  '--color-typography-200': '0, 78, 204',
+  '--color-typography-300': '0, 70, 184',
+  '--color-typography-400': '0, 63, 163',
+  '--color-typography-500': '0, 55, 143',
+  '--color-typography-600': '0, 47, 122',
+  '--color-typography-700': '0, 39, 102',
+  '--color-typography-800': '0, 31, 82',
+  '--color-typography-900': '0, 23, 61',
+
 
     /* Outline */
     '--color-outline-0': '253 254 254',
@@ -129,14 +130,14 @@ export const config = {
     '--color-outline-950': '26 23 23',
 
     /* Background */
-    '--color-background-0': '255 255 255',
-    '--color-background-50': '246 246 246',
-    '--color-background-100': '242 241 241',
-    '--color-background-200': '220 219 219',
-    '--color-background-300': '213 212 212',
-    '--color-background-400': '162 163 163',
+    '--color-background-0': '255, 244, 214',
+    '--color-background-50': '255, 239, 194',
+    '--color-background-100': '255, 239, 194',
+    '--color-background-200': '255, 228, 153',
+    '--color-background-300': '255, 222, 133',
+    '--color-background-400': '255, 217, 112',
     '--color-background-500': '142 142 142',
-    '--color-background-600': '116 116 116',
+    '--color-background-600': '255 239 194',
     '--color-background-700': '83 82 82',
     '--color-background-800': '65 64 64',
     '--color-background-900': '39 38 37',
