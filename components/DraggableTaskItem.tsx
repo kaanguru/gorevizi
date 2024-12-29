@@ -11,35 +11,29 @@ interface TaskItemProps {
   task: Tables<'tasks'>;
   onTaskUpdate: (task: Readonly<Tables<'tasks'>>) => Promise<void>;
   onReorder: (from: number, to: number) => void;
+  onToggleComplete: (taskid: number, is_complete: boolean) => Promise<void>;
 }
-export function TaskItem({ task, onTaskUpdate, onReorder }: Readonly<TaskItemProps>) {
-  const handleToggleComplete = async (task: Readonly<Tables<'tasks'>>): Promise<boolean> => {
-    try {
-      const updatedTask = { ...task, is_complete: !task.is_complete };
-      const {} = await supabase
-        .from('tasks')
-        .update({ is_complete: updatedTask.is_complete })
-        .eq('id', updatedTask.id);
-      return task.is_complete ?? false;
-    } catch (error) {
-      console.error('Error toggling task completion:', error);
-    }
-  };
+export function TaskItem({ task, onReorder, onToggleComplete }: Readonly<TaskItemProps>) {
   return (
-    <Box className="flex border border-gray-200 p-6">
-      <Checkbox
-        value={(task.id as number).toString()}
-        isChecked={task.is_complete}
-        onChange={handleToggleComplete(task)}
-        size="lg">
-        <CheckboxIndicator>
-          <CheckboxIcon as={CheckIcon} />
-        </CheckboxIndicator>
-        <CheckboxLabel>{task.title}</CheckboxLabel>
-      </Checkbox>
-      <Box className="mt-1 justify-center bg-blue-500 p-1">
-        <Text className="font-bold text-typography-0"> {task.notes} </Text>
+    <>
+      <Box className="flex flex-row  border border-gray-200 p-6">
+        <Checkbox
+          className=" basis-1/6"
+          value={(task.id as number).toString()}
+          isChecked={task.is_complete}
+          onChange={(isChecked) => onToggleComplete(task.id, isChecked)}
+          size="lg">
+          <CheckboxIndicator className="h-8 w-8">
+            <CheckboxIcon className=" h-5 w-5 p-4" as={CheckIcon} />
+          </CheckboxIndicator>
+        </Checkbox>
+        <Text className="basis-5/6"> {task.title} </Text>
       </Box>
-    </Box>
+      {task.notes && (
+        <Box className="mt-1 flex-row bg-primary-600 p-1">
+          <Text className="min-h-6 font-bold text-typography-0"> {task.notes} </Text>
+        </Box>
+      )}
+    </>
   );
 }

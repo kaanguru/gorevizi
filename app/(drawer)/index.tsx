@@ -30,7 +30,17 @@ export default function TaskList() {
       setIsLoading(false);
     }
   }, []);
-
+  const changePosition = (from: number, to: number): void => {
+    console.error('Function not implemented.');
+  };
+  const handleToggleComplete = async (taskid: number, is_complete: boolean): Promise<void> => {
+    try {
+      const {} = await supabase.from('tasks').update({ is_complete: is_complete }).eq('id', taskid);
+      fetchTasks();
+    } catch (error) {
+      console.error('Error toggling task completion:', error);
+    }
+  };
   useFocusEffect(
     useCallback(() => {
       fetchTasks();
@@ -39,11 +49,16 @@ export default function TaskList() {
 
   const renderTaskItem = useCallback(
     ({ item }: Readonly<{ item: Tables<'tasks'> }>) => (
-      <TaskItem task={item} onTaskUpdate={fetchTasks} />
+      <TaskItem
+        task={item}
+        onTaskUpdate={fetchTasks}
+        onReorder={changePosition}
+        onToggleComplete={handleToggleComplete}
+      />
     ),
     [fetchTasks]
   );
-  const sortedTasks = [...tasks].sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
+  const sortedByIDTasks = [...tasks].sort((a, b) => (a.id ?? 0) - (b.id ?? 0));
   return (
     <>
       <Stack.Screen options={{ title: 'Tasks' }} />
@@ -55,7 +70,7 @@ export default function TaskList() {
         ) : (
           <FlatList
             contentContainerStyle={{ gap: 9 }}
-            data={sortedTasks}
+            data={sortedByIDTasks}
             renderItem={renderTaskItem}
             keyExtractor={(item) => item.id.toString()}
           />
