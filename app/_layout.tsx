@@ -18,7 +18,7 @@ export default function RootLayout() {
   useEffect(() => {
     const initializeSupabase = async () => {
       try {
-        await supabase;
+        supabase;
         setSupabaseInitialized(true);
       } catch (error) {
         console.error('Failed to initialize Supabase:', error);

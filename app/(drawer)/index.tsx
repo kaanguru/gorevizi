@@ -18,7 +18,10 @@ export default function TaskList() {
     setIsLoading(true);
 
     try {
-      const { data, error } = await supabase.from('tasks').select('*');
+      const { data, error } = await supabase
+        .from('tasks')
+        .select('*')
+        .order('id', { ascending: true });
       if (error) {
         console.error('Error fetching tasks:', error);
       } else {
@@ -58,7 +61,7 @@ export default function TaskList() {
     ),
     [fetchTasks]
   );
-  const sortedByIDTasks = [...tasks].sort((a, b) => (a.id ?? 0) - (b.id ?? 0));
+  // const sortedByIDTasks = [...tasks].sort((a, b) => (a.id ?? 0) - (b.id ?? 0));
   return (
     <>
       <Stack.Screen options={{ title: 'Tasks' }} />
@@ -70,7 +73,7 @@ export default function TaskList() {
         ) : (
           <FlatList
             contentContainerStyle={{ gap: 9 }}
-            data={sortedByIDTasks}
+            data={tasks}
             renderItem={renderTaskItem}
             keyExtractor={(item) => item.id.toString()}
           />
