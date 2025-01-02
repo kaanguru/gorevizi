@@ -6,7 +6,7 @@ import { useAuth } from '~/utils/auth';
 
 export default function Login() {
   const router = useRouter();
-  const [email, setEmail] = useState('tes@yy.jj');
+  const [email, setEmail] = useState('asdfafga@ff.gg');
   const [password, setPassword] = useState('123qweasd');
   const [loading, setLoading] = useState(false);
   const { signInWithEmail } = useAuth();

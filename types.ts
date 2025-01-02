@@ -1,5 +1,7 @@
 // Types
 
+import { Tables } from './database.types';
+
 type RepeatPeriod = 'Daily' | 'Weekly' | 'Monthly' | 'Yearly';
 type DayOfWeek = 'Mon' | 'Tue' | 'Wed' | 'Thu' | 'Fri' | 'Sat' | 'Sun';
 
@@ -17,5 +19,7 @@ interface TaskFormData {
     position: number;
   }>;
 }
+type Task = Tables<'tasks'>;
+type Item = Tables<'checklistitems'>;
 
-export type { RepeatPeriod, DayOfWeek, TaskFormData };
+export type { RepeatPeriod, DayOfWeek, TaskFormData, Task, Item };
