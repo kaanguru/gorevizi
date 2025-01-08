@@ -16,6 +16,8 @@ export default function TaskList() {
   const router = useRouter();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [reorderIndices, setReorderIndices] = useState<{ from: number; to: number } | null>(null);
+
   const fetchTasks = useCallback(async () => {
     setIsLoading(true);
 
@@ -46,11 +48,10 @@ export default function TaskList() {
     }
   };
   const changePosition = async (from: number, to: number) => {
-    await fetchTasks(); // Fetch the latest tasks before reordering
-
+    setReorderIndices({ from, to });
     const updatePositions = async () => {
       try {
-        console.log('🚀 ~ file: index.tsx:50 ~ from: ' + from + ' to ' + to);
+        console.log('🚀 ~ file: index.tsx:54 ~ from: ' + from + ' to ' + to);
         console.log(
           '🚀 orginalTasks:',
           tasks.map((t) => t.id)
@@ -73,10 +74,20 @@ export default function TaskList() {
         console.error('Error changing task position:', error);
       }
     };
-    useEffect(() => {
-      updatePositions();
-    }, [tasks]);
+    await updatePositions();
   };
+  useEffect(() => {
+    console.log('Tasks updated:', tasks.length);
+  }, [tasks]);
+  useEffect(() => {
+    if (reorderIndices) {
+      const { from, to } = reorderIndices;
+      const reorderedTasks = reOrder(from, to, tasks);
+      setTasks(reorderedTasks);
+      updateTaskPositions(reorderedTasks);
+      setReorderIndices(null); // Reset the reorder indices
+    }
+  }, [tasks, reorderIndices]);
   const handleToggleComplete = async (taskid: number, is_complete: boolean): Promise<void> => {
     try {
       const {} = await supabase.from('tasks').update({ is_complete: is_complete }).eq('id', taskid);
