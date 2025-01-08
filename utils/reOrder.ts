@@ -8,6 +8,10 @@ import * as R from 'ramda';
  * @returns A new array with the item moved to the new position.
  */
 function reOrder<T>(from: number, to: number, array: T[]): T[] {
+  if (array.length === 0) {
+    console.error('Array is empty');
+    return array;
+  }
   if (from < 0 || from >= array.length || to < 0 || to >= array.length) {
     console.error('Invalid from or to index');
     return array; // Return the original array if indices are invalid
