@@ -47,38 +47,11 @@ export default function TaskList() {
       console.error('Error updating task positions:', error);
     }
   };
+
   const changePosition = async (from: number, to: number) => {
     setReorderIndices({ from, to });
-    const updatePositions = async () => {
-      try {
-        console.log('🚀 ~ file: index.tsx:54 ~ from: ' + from + ' to ' + to);
-        console.log(
-          '🚀 orginalTasks:',
-          tasks.map((t) => t.id)
-        );
-        // Reorder the tasks locally
-        const reorderedTasks = reOrder(from, to, tasks);
-        console.log(
-          '🚀 reorderedTasks:',
-          reorderedTasks.map((t) => t.id)
-        );
-
-        setTasks(reorderedTasks);
-
-        // Update the positions in the database
-        await updateTaskPositions(reorderedTasks);
-
-        // Fetch the latest tasks from the database
-        await fetchTasks(); // Directly call fetchTasks here
-      } catch (error) {
-        console.error('Error changing task position:', error);
-      }
-    };
-    await updatePositions();
   };
-  useEffect(() => {
-    console.log('Tasks updated:', tasks.length);
-  }, [tasks]);
+
   useEffect(() => {
     if (reorderIndices) {
       const { from, to } = reorderIndices;
@@ -88,6 +61,11 @@ export default function TaskList() {
       setReorderIndices(null); // Reset the reorder indices
     }
   }, [tasks, reorderIndices]);
+
+  useEffect(() => {
+    fetchTasks();
+  }, []);
+
   const handleToggleComplete = async (taskid: number, is_complete: boolean): Promise<void> => {
     try {
       const {} = await supabase.from('tasks').update({ is_complete: is_complete }).eq('id', taskid);
