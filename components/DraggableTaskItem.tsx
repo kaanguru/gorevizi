@@ -24,7 +24,7 @@ interface TaskItemProps {
 
 export function TaskItem({ task, index, onReorder, onToggleComplete }: Readonly<TaskItemProps>) {
   const pressed = useSharedValue(false);
-  const itemHeight = 72;
+  const itemHeight = 69;
   const translateY = useSharedValue(0);
   const isDragging = useSharedValue(false);
 

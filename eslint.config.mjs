@@ -13,6 +13,7 @@ export default [
       ...functional.configs.stylistic.rules,
       'functional/no-return-void': 'off',
       '@typescript-eslint/prefer-readonly': 'error',
+      // 'functional/prefer-immutable-types': 'warn'
     },
     languageOptions: {
       parser: tsParser,

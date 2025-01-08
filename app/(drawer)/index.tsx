@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { FlatList } from 'react-native';
 import { Stack, useFocusEffect, useRouter } from 'expo-router';
 import { supabase } from '~/utils/supabase';
@@ -35,52 +35,47 @@ export default function TaskList() {
       setIsLoading(false);
     }
   }, []);
-  const changePosition = async (from: number, to: number): Promise<void> => {
-    console.log('🚀 ~ file: index.tsx:37 ~ from: ' + from + ' to: ' + to);
-
-    // 1. Fetch the current tasks from the database
-    await fetchTasks();
-
-    console.log(
-      'orginal tasks order',
-      tasks.map((t) => t.id)
-    );
-    const reorderedTasks: Task[] = reOrder(from, to, tasks);
-
-    console.log(
-      '🚀reorderedTasks:',
-      reorderedTasks.map((t) => t.id)
-    );
-    // 3. Assign new position values
-    const updatedTasks = reorderedTasks.map((task, index) => {
-      const newPosition: number | null = index > 0 ? index * 2 : null; // Use ternary operator for concise assignment
-
-      return { ...task, position: newPosition };
-    });
-
-    // 4. Update the database with the new positions
+  const updateTaskPositions = async (tasks: Tables<'tasks'>[]) => {
     try {
-      const updates = updatedTasks
-        .filter((task, index) => task.position !== tasks[index].position) // Only update if position changed
-        .map((task) => ({
-          id: task.id,
-          title: task.title,
-          position: task.position,
-        })); // Map to the correct format
-
-      if (updates.length > 0) {
-        const { error: updateError } = await supabase.from('tasks').upsert(updates); // Upsert the updates array
-
-        if (updateError) {
-          console.error('Error updating task positions:', updateError);
-        } else {
-          console.log('Task positions updated successfully');
-          fetchTasks();
-        }
-      }
+      const updates = tasks.map((task, index) =>
+        supabase.from('tasks').update({ position: index }).eq('id', task.id)
+      );
+      await Promise.all(updates);
     } catch (error) {
       console.error('Error updating task positions:', error);
     }
+  };
+  const changePosition = async (from: number, to: number) => {
+    await fetchTasks(); // Fetch the latest tasks before reordering
+
+    const updatePositions = async () => {
+      try {
+        console.log('🚀 ~ file: index.tsx:50 ~ from: ' + from + ' to ' + to);
+        console.log(
+          '🚀 orginalTasks:',
+          tasks.map((t) => t.id)
+        );
+        // Reorder the tasks locally
+        const reorderedTasks = reOrder(from, to, tasks);
+        console.log(
+          '🚀 reorderedTasks:',
+          reorderedTasks.map((t) => t.id)
+        );
+
+        setTasks(reorderedTasks);
+
+        // Update the positions in the database
+        await updateTaskPositions(reorderedTasks);
+
+        // Fetch the latest tasks from the database
+        await fetchTasks(); // Directly call fetchTasks here
+      } catch (error) {
+        console.error('Error changing task position:', error);
+      }
+    };
+    useEffect(() => {
+      updatePositions();
+    }, [tasks]);
   };
   const handleToggleComplete = async (taskid: number, is_complete: boolean): Promise<void> => {
     try {
@@ -108,6 +103,18 @@ export default function TaskList() {
     ),
     [fetchTasks]
   );
+
+  const compareTasksByPosition = (
+    a: Readonly<Tables<'tasks'>>,
+    b: Readonly<Tables<'tasks'>>
+  ): number => {
+    if (a.position === null && b.position === null) return 0;
+    if (a.position === null) return -1;
+    if (b.position === null) return 1;
+    return a.position - b.position;
+  };
+
+  const sortedTasks = tasks.slice().sort(compareTasksByPosition);
 
   return (
     <>
