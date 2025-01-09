@@ -19,18 +19,13 @@ export default function TaskList() {
 
   const fetchTasks = useCallback(async () => {
     setIsLoading(true);
-
     try {
       const { data, error } = await supabase
         .from('tasks')
         .select('*')
         .order('position', { ascending: true, nullsFirst: true });
 
-      if (error) {
-        console.error('Error fetching tasks:', error.message);
-      } else {
-        setTasks(data);
-      }
+      error ? console.error('Error fetching tasks:', error.message) : setTasks(data ?? []);
     } catch (error) {
       console.error('Error fetching tasks:', error);
     } finally {
@@ -49,7 +44,8 @@ export default function TaskList() {
   };
 
   const handleReorder = async (from: number, to: number) => {
-    const reorderedTasks = reOrder(from, to, tasks);
+    const mutableTasks = [...tasks];
+    const reorderedTasks = reOrder(from, to, mutableTasks);
     setTasks(reorderedTasks);
     await updateTaskPositions(reorderedTasks);
   };
