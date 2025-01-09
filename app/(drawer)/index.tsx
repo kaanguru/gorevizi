@@ -14,9 +14,8 @@ import { Task } from '~/types';
 
 export default function TaskList() {
   const router = useRouter();
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const [tasks, setTasks] = useState<ReadonlyArray<Task>>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [reorderIndices, setReorderIndices] = useState<{ from: number; to: number } | null>(null);
 
   const fetchTasks = useCallback(async () => {
     setIsLoading(true);
@@ -26,8 +25,9 @@ export default function TaskList() {
         .from('tasks')
         .select('*')
         .order('position', { ascending: true, nullsFirst: true });
+
       if (error) {
-        console.error('Error fetching tasks:', error);
+        console.error('Error fetching tasks:', error.message);
       } else {
         setTasks(data);
       }
@@ -37,7 +37,7 @@ export default function TaskList() {
       setIsLoading(false);
     }
   }, []);
-  const updateTaskPositions = async (tasks: Tables<'tasks'>[]) => {
+  const updateTaskPositions = async (tasks: ReadonlyArray<Tables<'tasks'>>) => {
     try {
       const updates = tasks.map((task, index) =>
         supabase.from('tasks').update({ position: index }).eq('id', task.id)
@@ -48,32 +48,21 @@ export default function TaskList() {
     }
   };
 
-  const changePosition = async (from: number, to: number) => {
-    setReorderIndices({ from, to });
+  const handleReorder = async (from: number, to: number) => {
+    const reorderedTasks = reOrder(from, to, tasks);
+    setTasks(reorderedTasks);
+    await updateTaskPositions(reorderedTasks);
   };
 
-  useEffect(() => {
-    if (reorderIndices) {
-      const { from, to } = reorderIndices;
-      const reorderedTasks = reOrder(from, to, tasks);
-      setTasks(reorderedTasks);
-      updateTaskPositions(reorderedTasks);
-      setReorderIndices(null); // Reset the reorder indices
-    }
-  }, [tasks, reorderIndices]);
-
-  useEffect(() => {
-    fetchTasks();
-  }, []);
-
-  const handleToggleComplete = async (taskid: number, is_complete: boolean): Promise<void> => {
+  const handleToggleComplete = async (taskId: number, isComplete: boolean): Promise<void> => {
     try {
-      const {} = await supabase.from('tasks').update({ is_complete: is_complete }).eq('id', taskid);
+      await supabase.from('tasks').update({ is_complete: isComplete }).eq('id', taskId);
       await fetchTasks();
     } catch (error) {
       console.error('Error toggling task completion:', error);
     }
   };
+
   useFocusEffect(
     useCallback(() => {
       fetchTasks();
@@ -86,24 +75,12 @@ export default function TaskList() {
         task={item}
         index={index}
         onTaskUpdate={fetchTasks}
-        onReorder={changePosition}
+        onReorder={handleReorder}
         onToggleComplete={handleToggleComplete}
       />
     ),
-    [fetchTasks]
+    [fetchTasks, handleReorder, handleToggleComplete]
   );
-
-  const compareTasksByPosition = (
-    a: Readonly<Tables<'tasks'>>,
-    b: Readonly<Tables<'tasks'>>
-  ): number => {
-    if (a.position === null && b.position === null) return 0;
-    if (a.position === null) return -1;
-    if (b.position === null) return 1;
-    return a.position - b.position;
-  };
-
-  const sortedTasks = tasks.slice().sort(compareTasksByPosition);
 
   return (
     <>
@@ -116,7 +93,7 @@ export default function TaskList() {
         ) : (
           <FlatList
             contentContainerStyle={{
-              gap: 9,
+              gap: 16,
               padding: 16,
               paddingBottom: 80,
             }}
