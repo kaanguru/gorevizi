@@ -15,16 +15,16 @@ import Animated, {
 
 // eslint-disable-next-line functional/no-mixed-types
 interface TaskItemProps {
-  task: Tables<'tasks'>;
+  task: Readonly<Tables<'tasks'>>;
   index: number;
   onTaskUpdate: (task: Readonly<Tables<'tasks'>>) => Promise<void>;
   onReorder: (from: number, to: number) => void;
-  onToggleComplete: (taskid: number, is_complete: boolean) => Promise<void>;
+  onToggleComplete: (taskId: number, isComplete: boolean) => Promise<void>;
 }
 
 export function TaskItem({ task, index, onReorder, onToggleComplete }: Readonly<TaskItemProps>) {
   const pressed = useSharedValue(false);
-  const itemHeight = 69;
+  const itemHeight = 94;
   const translateY = useSharedValue(0);
   const isDragging = useSharedValue(false);
 
@@ -49,25 +49,29 @@ export function TaskItem({ task, index, onReorder, onToggleComplete }: Readonly<
     zIndex: isDragging.value ? 1 : 0,
   }));
 
+  const handleToggleComplete = (isChecked: boolean) => {
+    onToggleComplete(task.id, isChecked);
+  };
+
   return (
     <GestureDetector gesture={panGesture}>
       <Animated.View style={animatedStyle}>
         <Box className="flex flex-row border border-primary-800 p-6">
           <Checkbox
             className="basis-1/6"
-            value={(task.id as number).toString()}
+            value={task.id.toString()}
             isChecked={task.is_complete}
-            onChange={(isChecked) => onToggleComplete(task.id, isChecked)}
+            onChange={handleToggleComplete}
             size="lg">
             <CheckboxIndicator className="h-8 w-8">
               <CheckboxIcon className="h-5 w-5 p-4" as={CheckIcon} />
             </CheckboxIndicator>
           </Checkbox>
-          <Text className="basis-5/6"> {task.title} </Text>
+          <Text className="basis-5/6">{task.title}</Text>
         </Box>
         {task.notes && (
           <Box className="mb-1 flex-row bg-background-300 p-1">
-            <Text className="min-h-6 font-bold text-typography-700"> {task.notes} </Text>
+            <Text className="min-h-6 font-bold text-typography-700">{task.notes}</Text>
           </Box>
         )}
       </Animated.View>
