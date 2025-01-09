@@ -1,8 +1,10 @@
 import { Tables } from '~/database.types';
 import { DayOfWeek } from '~/types';
 import getCurrentDayOfWeek from '~/utils/getCurrentDayOfWeek';
-export default function isTaskDueTodayOrNotDue(task: Readonly<Tables<'tasks'>>): boolean {
-  if (!task.repeat_on_wk && !task.repeat_frequency && !task.repeat_period) {
+
+export default function isTaskDueToday(task: Readonly<Tables<'tasks'>>): boolean {
+  return task.repeat_on_wk ? true : false;
+  /* if (!task.repeat_on_wk && !task.repeat_frequency && !task.repeat_period) {
     return true; // Task has no due date
   }
 
@@ -17,5 +19,5 @@ export default function isTaskDueTodayOrNotDue(task: Readonly<Tables<'tasks'>>):
 
   // Add more logic for Monthly and Yearly tasks if needed
 
-  return false;
+  return false; */
 }

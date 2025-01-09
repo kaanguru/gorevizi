@@ -1,22 +1,25 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { FlatList, GestureResponderEvent } from 'react-native';
+import React, { useCallback, useState } from 'react';
+import { FlatList, GestureResponderEvent, Pressable } from 'react-native';
 import { Stack, useFocusEffect, useRouter } from 'expo-router';
 import { supabase } from '~/utils/supabase';
 import { Tables } from '~/database.types';
 import { Fab, FabLabel, FabIcon } from '@/components/ui/fab';
 import { Container } from '~/components/Container';
 import { Box } from '~/components/ui/box';
-import { AddIcon, CalendarDaysIcon, Icon } from '@/components/ui/icon';
+import { AddIcon, CalendarDaysIcon, CheckCircleIcon, Icon } from '@/components/ui/icon';
 import { Spinner } from '~/components/ui/spinner';
 import { TaskItem } from '~/components/DraggableTaskItem';
 import reOrder from '~/utils/reOrder';
+import isTaskDueToday from '~/utils/isTaskDueToday';
 import { Task } from '~/types';
-import { Pressable } from '~/components/ui/pressable';
 
 export default function TaskList() {
   const router = useRouter();
   const [tasks, setTasks] = useState<ReadonlyArray<Task>>([]);
+  const [filteredTasks, setFilteredTasks] = useState<ReadonlyArray<Task>>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isFiltered, setIsFiltered] = useState<boolean>(false);
+  const [showCompleted, setShowCompleted] = useState<boolean>(false);
 
   const fetchTasks = useCallback(async () => {
     setIsLoading(true);
@@ -33,6 +36,7 @@ export default function TaskList() {
       setIsLoading(false);
     }
   }, []);
+
   const updateTaskPositions = async (tasks: ReadonlyArray<Tables<'tasks'>>) => {
     try {
       const updates = tasks.map((task, index) =>
@@ -60,6 +64,22 @@ export default function TaskList() {
     }
   };
 
+  const isTaskCompleted = (task: Readonly<Tables<'tasks'>>): boolean => task.is_complete;
+
+  const handleFilterTodayPress = (event: GestureResponderEvent): void => {
+    const tempTasks = [...tasks];
+    setFilteredTasks(tempTasks.filter(isTaskDueToday));
+    setIsFiltered(!isFiltered);
+  };
+
+  const handleFilterCompletedPress = (event: GestureResponderEvent): void => {
+    const tempTasks = [...tasks];
+    setFilteredTasks(tempTasks.filter(isTaskCompleted));
+    setShowCompleted(!showCompleted);
+  };
+
+  const tasksToDisplay = showCompleted ? tasks : tasks.filter((task) => !task.is_complete);
+
   useFocusEffect(
     useCallback(() => {
       fetchTasks();
@@ -79,19 +99,20 @@ export default function TaskList() {
     [fetchTasks, handleReorder, handleToggleComplete]
   );
 
-  function handleFilterTodayPress(event: GestureResponderEvent): void {
-    console.error('Filter Function not implemented.');
-  }
-
   return (
     <>
       <Stack.Screen
         options={{
           title: 'Tasks',
           headerRight: () => (
-            <Pressable onPress={handleFilterTodayPress} className="p-5">
-              <Icon as={CalendarDaysIcon} className="m-1 h-6 w-6 text-typography-500" />
-            </Pressable>
+            <>
+              <Pressable onPress={handleFilterCompletedPress} className="p-5">
+                <Icon as={CheckCircleIcon} className="m-1 h-6 w-6 text-typography-100" />
+              </Pressable>
+              <Pressable onPress={handleFilterTodayPress} className="p-5">
+                <Icon as={CalendarDaysIcon} className="m-1 h-6 w-6 text-typography-500" />
+              </Pressable>
+            </>
           ),
         }}
       />
@@ -107,7 +128,7 @@ export default function TaskList() {
               padding: 16,
               paddingBottom: 80,
             }}
-            data={tasks}
+            data={isFiltered ? filteredTasks : tasksToDisplay}
             renderItem={renderTaskItem}
             keyExtractor={(item) => item.id.toString()}
           />
