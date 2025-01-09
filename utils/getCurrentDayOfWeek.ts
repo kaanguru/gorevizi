@@ -1,7 +1,5 @@
 import { DayOfWeek } from '~/types';
 
-export function getCurrentDayOfWeek(): DayOfWeek {
-  const days: DayOfWeek[] = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  const today = new Date();
-  return days[today.getDay()];
+export default function getCurrentDayOfWeek(): DayOfWeek {
+  return new Intl.DateTimeFormat('en-US', { weekday: 'short' }).format(new Date()) as DayOfWeek;
 }

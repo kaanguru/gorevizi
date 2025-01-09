@@ -2,7 +2,7 @@ import React from 'react';
 import { DayOfWeek } from '~/types';
 import { HStack } from './ui/hstack';
 import { Checkbox, CheckboxIcon, CheckboxIndicator, CheckboxLabel } from './ui/checkbox';
-import { getCurrentDayOfWeek } from '~/utils/getCurrentDayOfWeek';
+import getCurrentDayOfWeek from '~/utils/getCurrentDayOfWeek';
 
 const WeekdaySelector = ({
   selectedDays,

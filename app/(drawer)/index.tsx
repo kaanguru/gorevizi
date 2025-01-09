@@ -1,16 +1,17 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { FlatList } from 'react-native';
+import { FlatList, GestureResponderEvent } from 'react-native';
 import { Stack, useFocusEffect, useRouter } from 'expo-router';
 import { supabase } from '~/utils/supabase';
 import { Tables } from '~/database.types';
 import { Fab, FabLabel, FabIcon } from '@/components/ui/fab';
 import { Container } from '~/components/Container';
 import { Box } from '~/components/ui/box';
-import { AddIcon } from '~/components/ui/icon';
+import { AddIcon, CalendarDaysIcon, Icon } from '@/components/ui/icon';
 import { Spinner } from '~/components/ui/spinner';
 import { TaskItem } from '~/components/DraggableTaskItem';
 import reOrder from '~/utils/reOrder';
 import { Task } from '~/types';
+import { Pressable } from '~/components/ui/pressable';
 
 export default function TaskList() {
   const router = useRouter();
@@ -78,9 +79,22 @@ export default function TaskList() {
     [fetchTasks, handleReorder, handleToggleComplete]
   );
 
+  function handleFilterTodayPress(event: GestureResponderEvent): void {
+    console.error('Filter Function not implemented.');
+  }
+
   return (
     <>
-      <Stack.Screen options={{ title: 'Tasks' }} />
+      <Stack.Screen
+        options={{
+          title: 'Tasks',
+          headerRight: () => (
+            <Pressable onPress={handleFilterTodayPress} className="p-5">
+              <Icon as={CalendarDaysIcon} className="m-1 h-6 w-6 text-typography-500" />
+            </Pressable>
+          ),
+        }}
+      />
       <Container>
         {isLoading ? (
           <Box className="flex-1 items-center justify-center">
