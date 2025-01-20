@@ -1,23 +1,26 @@
 import { Tables } from '~/database.types';
 import { DayOfWeek } from '~/types';
 import getCurrentDayOfWeek from '~/utils/getCurrentDayOfWeek';
-import { addDays, addWeeks, addMonths, addYears, isSameDay } from 'date-fns';
+import { addWeeks, addMonths, addYears, isSameDay, differenceInDays } from 'date-fns';
 
+const today = new Date();
 function isTaskDueToday(task: Readonly<Tables<'tasks'>>): boolean {
   const createdAtDate = new Date(task.created_at);
-  const today = new Date();
 
   switch (task.repeat_period) {
     case 'Daily':
-      return isSameDay(addDays(createdAtDate, task.repeat_frequency ?? 0), today);
+      return isDailyTaskDueToday(createdAtDate, task.repeat_frequency);
 
     case 'Weekly':
       if (!task.repeat_on_wk) return false;
       const currentDayOfWeek = getCurrentDayOfWeek();
-      return (
-        task.repeat_on_wk.includes(currentDayOfWeek as unknown as DayOfWeek) &&
-        isSameDay(addWeeks(createdAtDate, task.repeat_frequency ?? 0), today)
-      );
+      if (!task.repeat_on_wk.includes(currentDayOfWeek as unknown as DayOfWeek)) return false;
+
+      const daysSinceCreation = differenceInDays(today, createdAtDate);
+      const weeksSinceCreation = Math.floor(daysSinceCreation / 7);
+      const repeatFrequency = task.repeat_frequency ?? 1;
+
+      return daysSinceCreation >= 0 && weeksSinceCreation % repeatFrequency === 0;
 
     case 'Monthly':
       return isSameDay(addMonths(createdAtDate, task.repeat_frequency ?? 1), today);
@@ -29,8 +32,14 @@ function isTaskDueToday(task: Readonly<Tables<'tasks'>>): boolean {
       return true;
 
     default:
-      return false;
+      console.error('Task with unknown repeat_period:', task);
+      return true;
   }
 }
 
+function isDailyTaskDueToday(createdAtDate: Date, repeat_frequency: number | null): boolean {
+  const daysSinceCreation = differenceInDays(today, createdAtDate);
+  const repeatFrequency = repeat_frequency ?? 1;
+  return daysSinceCreation >= 0 && daysSinceCreation % repeatFrequency === 0;
+}
 export default isTaskDueToday;

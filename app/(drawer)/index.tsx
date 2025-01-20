@@ -6,7 +6,7 @@ import { Tables } from '~/database.types';
 import { Fab, FabLabel, FabIcon } from '@/components/ui/fab';
 import { Container } from '~/components/Container';
 import { Box } from '~/components/ui/box';
-import { AddIcon, CalendarDaysIcon, CheckCircleIcon, Icon } from '@/components/ui/icon';
+import { AddIcon, CalendarDaysIcon, Icon, DownloadIcon, EyeIcon } from '@/components/ui/icon';
 import { Spinner } from '~/components/ui/spinner';
 import { TaskItem } from '~/components/DraggableTaskItem';
 import reOrder from '~/utils/reOrder';
@@ -19,14 +19,14 @@ export default function TaskList() {
   const [filteredTasks, setFilteredTasks] = useState<ReadonlyArray<Task>>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isFiltered, setIsFiltered] = useState<boolean>(false);
-  const [showCompleted, setShowCompleted] = useState<boolean>(false);
 
-  const fetchTasks = useCallback(async () => {
+  const fetchDueTasks = useCallback(async () => {
     setIsLoading(true);
     try {
       const { data, error } = await supabase
         .from('tasks')
         .select('*')
+        .eq('is_complete', false)
         .order('position', { ascending: true, nullsFirst: true });
 
       error ? console.error('Error fetching tasks:', error.message) : setTasks(data ?? []);
@@ -58,13 +58,11 @@ export default function TaskList() {
   const handleToggleComplete = async (taskId: number, isComplete: boolean): Promise<void> => {
     try {
       await supabase.from('tasks').update({ is_complete: isComplete }).eq('id', taskId);
-      await fetchTasks();
+      await fetchDueTasks();
     } catch (error) {
       console.error('Error toggling task completion:', error);
     }
   };
-
-  const isTaskCompleted = (task: Readonly<Tables<'tasks'>>): boolean => task.is_complete;
 
   const handleFilterTodayPress = (event: GestureResponderEvent): void => {
     const tempTasks = [...tasks];
@@ -72,18 +70,10 @@ export default function TaskList() {
     setIsFiltered(!isFiltered);
   };
 
-  const handleFilterCompletedPress = (event: GestureResponderEvent): void => {
-    const tempTasks = [...tasks];
-    setFilteredTasks(tempTasks.filter(isTaskCompleted));
-    setShowCompleted(!showCompleted);
-  };
-
-  const tasksToDisplay = showCompleted ? tasks : tasks.filter((task) => !task.is_complete);
-
   useFocusEffect(
     useCallback(() => {
-      fetchTasks();
-    }, [fetchTasks])
+      fetchDueTasks();
+    }, [fetchDueTasks])
   );
 
   const renderTaskItem = useCallback(
@@ -91,12 +81,12 @@ export default function TaskList() {
       <TaskItem
         task={item}
         index={index}
-        onTaskUpdate={fetchTasks}
+        onTaskUpdate={fetchDueTasks}
         onReorder={handleReorder}
         onToggleComplete={handleToggleComplete}
       />
     ),
-    [fetchTasks, handleReorder, handleToggleComplete]
+    [fetchDueTasks, handleReorder, handleToggleComplete]
   );
 
   return (
@@ -106,11 +96,15 @@ export default function TaskList() {
           title: 'Tasks',
           headerRight: () => (
             <>
-              <Pressable onPress={handleFilterCompletedPress} className="p-5">
-                <Icon as={CheckCircleIcon} className="m-1 h-6 w-6 text-typography-100" />
+              <Pressable onPress={fetchDueTasks} className="p-5">
+                <Icon as={DownloadIcon} className="m-1 h-6 w-6 text-typography-100" />
               </Pressable>
+
               <Pressable onPress={handleFilterTodayPress} className="p-5">
-                <Icon as={CalendarDaysIcon} className="m-1 h-6 w-6 text-typography-500" />
+                <Icon
+                  as={isFiltered ? CalendarDaysIcon : EyeIcon}
+                  className="m-1 h-6 w-6 text-typography-500"
+                />
               </Pressable>
             </>
           ),
@@ -128,7 +122,7 @@ export default function TaskList() {
               padding: 16,
               paddingBottom: 80,
             }}
-            data={isFiltered ? filteredTasks : tasksToDisplay}
+            data={isFiltered ? filteredTasks : tasks}
             renderItem={renderTaskItem}
             keyExtractor={(item) => item.id.toString()}
           />
