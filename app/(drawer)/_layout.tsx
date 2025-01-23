@@ -16,8 +16,8 @@ const DrawerLayout = () => {
       <Drawer.Screen
         name="index"
         options={{
-          headerTitle: 'Tasks',
-          drawerLabel: 'Tasks',
+          headerTitle: 'Due Tasks',
+          drawerLabel: 'Due Tasks',
           drawerIcon: ({ size, color }) => (
             <Ionicons name="list-outline" size={size} color={color} />
           ),
