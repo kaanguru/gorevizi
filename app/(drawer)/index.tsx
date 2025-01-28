@@ -1,6 +1,7 @@
-import React, { useCallback, useState } from 'react';
-import { FlatList, GestureResponderEvent, Pressable } from 'react-native';
+import React, { useCallback, useMemo, useState } from 'react';
+import { FlatList, Pressable } from 'react-native';
 import { Stack, useFocusEffect, useRouter } from 'expo-router';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '~/utils/supabase';
 import { Tables } from '~/database.types';
 import { Fab, FabLabel, FabIcon } from '@/components/ui/fab';
@@ -11,69 +12,81 @@ import { Spinner } from '~/components/ui/spinner';
 import { TaskItem } from '~/components/DraggableTaskItem';
 import reOrder from '~/utils/reOrder';
 import isTaskDueToday from '~/utils/isTaskDueToday';
-import { Task } from '~/types';
+import useTasksQuery from '~/hooks/useTasksQuery';
+import useUpdateTaskPositions from '~/hooks/useUpdateTaskPositions';
 
 export default function TaskList() {
   const router = useRouter();
-  const [tasks, setTasks] = useState<ReadonlyArray<Task>>([]);
-  const [filteredTasks, setFilteredTasks] = useState<ReadonlyArray<Task>>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isFiltered, setIsFiltered] = useState<boolean>(false);
+  const queryClient = useQueryClient();
+  const [isFiltered, setIsFiltered] = useState(true);
 
-  const fetchDueTasks = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const { data, error } = await supabase
+  const { data: tasks = [], isLoading, isRefetching, refetch } = useTasksQuery();
+  const updateTaskPositionsMutation = useUpdateTaskPositions();
+
+  const toggleCompleteMutation = useMutation({
+    mutationFn: async (params: Readonly<{ taskId: number; isComplete: boolean }>) => {
+      const { error } = await supabase
         .from('tasks')
-        .select('*')
-        .eq('is_complete', false)
-        .order('position', { ascending: true, nullsFirst: true });
+        .update({ is_complete: params.isComplete })
+        .eq('id', params.taskId);
 
-      error ? console.error('Error fetching tasks:', error.message) : setTasks(data ?? []);
+      if (error) return Promise.reject(new Error(error.message));
+    },
+    onMutate: async ({ taskId, isComplete }) => {
+      await queryClient.cancelQueries({ queryKey: ['tasks'] });
+      const previousTasks = queryClient.getQueryData<Tables<'tasks'>[]>(['tasks']);
+      const newTasks = previousTasks?.map((task) =>
+        task.id === taskId ? { ...task, is_complete: isComplete } : task
+      );
+      queryClient.setQueryData(['tasks'], newTasks);
+      return { previousTasks };
+    },
+    onError: (err, variables, context) => {
+      queryClient.setQueryData(['tasks'], context?.previousTasks);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['tasks'] });
+    },
+  });
+
+  const filteredTasks = useMemo(
+    () => (isFiltered ? tasks.filter(isTaskDueToday) : tasks),
+    [isFiltered, tasks]
+  );
+
+  const handleReorder = useCallback(
+    (from: number, to: number) => {
+      const currentTasks = queryClient.getQueryData<Tables<'tasks'>[]>(['tasks']) || [];
+      const currentFilteredTasks = isFiltered ? currentTasks.filter(isTaskDueToday) : currentTasks;
+      const sourceArray = [...currentFilteredTasks];
+
+      if (sourceArray.length === 0) {
+        console.error('No tasks to reorder');
+        return;
+      }
+
+      const reorderedTasks = reOrder(from, to, sourceArray);
+      updateTaskPositionsMutation.mutate(reorderedTasks);
+    },
+    [isFiltered, queryClient, updateTaskPositionsMutation]
+  );
+
+  const handleFilterTodayPress = useCallback(() => {
+    setIsFiltered(!isFiltered);
+  }, [isFiltered]);
+
+  const handleTaskUpdate = useCallback(async (updatedTask: Readonly<Tables<'tasks'>>) => {
+    try {
+      await supabase.from('tasks').update(updatedTask).eq('id', updatedTask.id).select().single();
     } catch (error) {
-      console.error('Error fetching tasks:', error);
-    } finally {
-      setIsLoading(false);
+      console.error('Task update failed:', error);
     }
   }, []);
 
-  const updateTaskPositions = async (tasks: ReadonlyArray<Tables<'tasks'>>) => {
-    try {
-      const updates = tasks.map((task, index) =>
-        supabase.from('tasks').update({ position: index }).eq('id', task.id)
-      );
-      await Promise.all(updates);
-    } catch (error) {
-      console.error('Error updating task positions:', error);
-    }
-  };
-
-  const handleReorder = async (from: number, to: number) => {
-    const mutableTasks = [...tasks];
-    const reorderedTasks = reOrder(from, to, mutableTasks);
-    setTasks(reorderedTasks);
-    await updateTaskPositions(reorderedTasks);
-  };
-
-  const handleToggleComplete = async (taskId: number, isComplete: boolean): Promise<void> => {
-    try {
-      await supabase.from('tasks').update({ is_complete: isComplete }).eq('id', taskId);
-      await fetchDueTasks();
-    } catch (error) {
-      console.error('Error toggling task completion:', error);
-    }
-  };
-
-  const handleFilterTodayPress = (event: GestureResponderEvent): void => {
-    const tempTasks = [...tasks];
-    setFilteredTasks(tempTasks.filter(isTaskDueToday));
-    setIsFiltered(!isFiltered);
-  };
-
   useFocusEffect(
     useCallback(() => {
-      fetchDueTasks();
-    }, [fetchDueTasks])
+      refetch();
+    }, [refetch])
   );
 
   const renderTaskItem = useCallback(
@@ -81,12 +94,14 @@ export default function TaskList() {
       <TaskItem
         task={item}
         index={index}
-        onTaskUpdate={fetchDueTasks}
         onReorder={handleReorder}
-        onToggleComplete={handleToggleComplete}
+        onTaskUpdate={handleTaskUpdate}
+        onToggleComplete={(taskId, isComplete) =>
+          toggleCompleteMutation.mutateAsync({ taskId, isComplete })
+        }
       />
     ),
-    [fetchDueTasks, handleReorder, handleToggleComplete]
+    [toggleCompleteMutation.mutate, handleReorder]
   );
 
   return (
@@ -96,7 +111,7 @@ export default function TaskList() {
           title: 'Tasks',
           headerRight: () => (
             <>
-              <Pressable onPress={fetchDueTasks} className="p-5">
+              <Pressable onPress={() => refetch()} className="p-5">
                 <Icon as={DownloadIcon} className="m-1 h-6 w-6 text-typography-100" />
               </Pressable>
 
@@ -111,7 +126,7 @@ export default function TaskList() {
         }}
       />
       <Container>
-        {isLoading ? (
+        {isLoading || isRefetching ? (
           <Box className="flex-1 items-center justify-center">
             <Spinner size="large" />
           </Box>
@@ -122,7 +137,7 @@ export default function TaskList() {
               padding: 16,
               paddingBottom: 80,
             }}
-            data={isFiltered ? filteredTasks : tasks}
+            data={filteredTasks}
             renderItem={renderTaskItem}
             keyExtractor={(item) => item.id.toString()}
           />

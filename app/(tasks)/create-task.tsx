@@ -2,8 +2,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import DateTimePicker from '@react-native-community/datetimepicker';
-
-// UI Components
 import { Input, InputField } from '@/components/ui/input';
 import { Box } from '@/components/ui/box';
 import { Button, ButtonText } from '@/components/ui/button';
@@ -22,23 +20,17 @@ import {
   SelectItem,
 } from '@/components/ui/select';
 import { Checkbox, CheckboxIndicator, CheckboxIcon, CheckboxLabel } from '@/components/ui/checkbox';
-
 import { AddIcon, ChevronDownIcon, Icon } from '~/components/ui/icon';
-
-// Layout Components
 import { HStack } from '@/components/ui/hstack';
 import { VStack } from '@/components/ui/vstack';
 import { ScrollView } from 'react-native';
 import { RepeatPeriod, TaskFormData } from '../../types';
 import { supabase } from '@/utils/supabase';
-
-// Custom components
+import { useMutation } from '@tanstack/react-query';
 import Header from '~/components/Header';
 import DraggableItem from '~/components/DraggableItem';
 import WeekdaySelector from '~/components/WeekDaySelector';
 import { RepeatFrequencySlider } from '~/components/RepeatFrequencySlider';
-
-// Components
 
 const ChecklistSection = ({
   items,
@@ -123,10 +115,9 @@ const ChecklistSection = ({
   );
 };
 
-// Main component
 export default function CreateTask() {
   const router = useRouter();
-  const [formData, setFormData] = React.useState<TaskFormData>({
+  const [formData, setFormData] = useState<TaskFormData>({
     title: '',
     notes: '',
     repeatPeriod: '',
@@ -136,21 +127,10 @@ export default function CreateTask() {
     isCustomStartDateEnabled: false,
     checklistItems: [],
   });
-  const [isSubmitting, setIsSubmitting] = React.useState(false);
-  const [showDatePicker, setShowDatePicker] = React.useState(false);
-
-  const handleCreate = async () => {
-    if (!formData.title.trim()) {
-      Alert.alert('Error', 'Title is required');
-      return;
-    }
-    if (formData.checklistItems.some((item) => !item.content.trim())) {
-      Alert.alert('Error', 'All checklist items must have content');
-      return;
-    }
-    setIsSubmitting(true);
-    try {
-      const { data, error } = await supabase
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const insertMutation = useMutation({
+    mutationFn: async (formData: Readonly<TaskFormData>) => {
+      const { data: taskData, error: taskError } = await supabase
         .from('tasks')
         .insert({
           title: formData.title.trim(),
@@ -163,19 +143,13 @@ export default function CreateTask() {
         .select()
         .single();
 
-      if (error) {
-        console.error('Error creating task:', error);
-        Alert.alert('Error', 'Failed to create task. Please try again.');
-        return;
-      }
-      if (!data) {
-        Alert.alert('Error', 'Failed to create task. No data returned.');
-        return;
-      }
+      if (taskError) throw new Error('Failed to create task. Please try again.');
+      if (!taskData) throw new Error('Failed to create task. No data returned.');
+
       if (formData.checklistItems.length > 0) {
         const { error: checklistError } = await supabase.from('checklistitems').insert(
           formData.checklistItems.map((item, index) => ({
-            task_id: data.id,
+            task_id: taskData.id,
             content: item.content.trim(),
             position: index,
             is_complete: false,
@@ -183,18 +157,29 @@ export default function CreateTask() {
         );
 
         if (checklistError) {
-          console.log('🚀 ~ handleCreate ~ checklistError:', checklistError);
-          Alert.alert('Error', 'Failed to create checklist items. Please try again.');
-          return;
+          console.error('Checklist error:', checklistError);
+          throw new Error('Failed to create checklist items. Please try again.');
         }
       }
-      router.back();
-    } catch (error) {
+
+      return taskData;
+    },
+    onSuccess: () => router.back(),
+    onError: (error) => {
       console.error('Error creating task:', error);
-      Alert.alert('Error', 'An unexpected error occurred');
-    } finally {
-      setIsSubmitting(false);
+      Alert.alert('Error', error.message || 'An unexpected error occurred');
+    },
+  });
+  const handleCreate = async () => {
+    if (!formData.title.trim()) {
+      Alert.alert('Error', 'Title is required');
+      return;
     }
+    if (formData.checklistItems.some((item) => !item.content.trim())) {
+      Alert.alert('Error', 'All checklist items must have content');
+      return;
+    }
+    insertMutation.mutate(formData);
   };
 
   const handleAddChecklistItem = () => {
@@ -378,8 +363,11 @@ export default function CreateTask() {
         </ScrollView>
       </Box>
       <Box className="px-4 py-2">
-        <Button onPress={handleCreate} testID="create-task-button" disabled={isSubmitting}>
-          <ButtonText>{isSubmitting ? 'Creating...' : 'Create'}</ButtonText>
+        <Button
+          onPress={handleCreate}
+          testID="create-task-button"
+          disabled={insertMutation.isPending}>
+          <ButtonText>{insertMutation.isPending ? 'Creating...' : 'Create'}</ButtonText>
         </Button>
       </Box>
     </VStack>
