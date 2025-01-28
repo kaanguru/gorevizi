@@ -14,6 +14,7 @@ import reOrder from '~/utils/reOrder';
 import isTaskDueToday from '~/utils/isTaskDueToday';
 import useTasksQuery from '~/hooks/useTasksQuery';
 import useUpdateTaskPositions from '~/hooks/useUpdateTaskPositions';
+import { Text } from '~/components/ui/text';
 
 export default function TaskList() {
   const router = useRouter();
@@ -131,16 +132,21 @@ export default function TaskList() {
             <Spinner size="large" />
           </Box>
         ) : (
-          <FlatList
-            contentContainerStyle={{
-              gap: 16,
-              padding: 16,
-              paddingBottom: 80,
-            }}
-            data={filteredTasks}
-            renderItem={renderTaskItem}
-            keyExtractor={(item) => item.id.toString()}
-          />
+          <>
+            <Text size="xs" className="text-right text-typography-500">
+              {isFiltered ? "Today's Tasks" : 'All Tasks'}
+            </Text>
+            <FlatList
+              contentContainerStyle={{
+                gap: 16,
+                padding: 16,
+                paddingBottom: 80,
+              }}
+              data={filteredTasks}
+              renderItem={renderTaskItem}
+              keyExtractor={(item) => item.id.toString()}
+            />
+          </>
         )}
         <Fab
           size="md"
