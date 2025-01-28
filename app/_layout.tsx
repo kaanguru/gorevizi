@@ -8,7 +8,15 @@ import { Stack } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { supabase } from '~/utils/supabase';
 import { View } from 'react-native';
-
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 3,
+      staleTime: 60_000, // Prevent over-fetching
+    },
+  },
+});
 export default function RootLayout() {
   const [isSupabaseInitialized, setSupabaseInitialized] = useState(false);
 
@@ -55,34 +63,36 @@ export default function RootLayout() {
   }
 
   return (
-    <GluestackUIProvider mode="light">
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <Stack
-          screenOptions={{
-            headerShown: false,
-            animation: 'slide_from_right',
-          }}>
-          <Stack.Screen
-            name="(auth)"
-            options={{
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen
-            name="(drawer)"
-            options={{
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen
-            name="(onboarding)"
-            options={{
+    <QueryClientProvider client={queryClient}>
+      <GluestackUIProvider mode="light">
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <Stack
+            screenOptions={{
               headerShown: false,
               animation: 'slide_from_right',
-            }}
-          />
-        </Stack>
-      </GestureHandlerRootView>
-    </GluestackUIProvider>
+            }}>
+            <Stack.Screen
+              name="(auth)"
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="(drawer)"
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="(onboarding)"
+              options={{
+                headerShown: false,
+                animation: 'slide_from_right',
+              }}
+            />
+          </Stack>
+        </GestureHandlerRootView>
+      </GluestackUIProvider>
+    </QueryClientProvider>
   );
 }

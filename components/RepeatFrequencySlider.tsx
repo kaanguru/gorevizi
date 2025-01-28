@@ -26,7 +26,7 @@ export const RepeatFrequencySlider = ({
           className="mt-8"
           defaultValue={1}
           minValue={1}
-          maxValue={period === 'Monthly' ? 12 : 30}
+          maxValue={period === 'Monthly' ? 6 : 15}
           onChange={onChange}
           size="lg"
           orientation="horizontal"

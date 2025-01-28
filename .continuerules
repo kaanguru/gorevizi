@@ -69,11 +69,13 @@ create index if not exists idx_checklistitems_task_id on public.checklistitems u
 - [Supabase Database](https://supabase.com/database): Open source, scalable PostgreSQL database trusted by millions; built-in auth, realtime capabilities, branching, and read replicas.
 - [Supabase Auth](https://supabase.com/blog/supabase-auth): Supabase Auth: Open-source Firebase alternative for user authentication and authorization with PostgreSQL Row Level Security and policies.
 - [eslint9 + functional lite](https://github.com/eslint-functional/eslint-plugin-functional)
+- [TanStack Query (FKA React Query)](https://tanstack.com/query/latest/docs/framework/react/overview)
 
 ## State Management
 
 - Don't change utils\supabase.ts file
 - Use react-native-async-storage/async-storage for global state when needed
+- Use TanStack Query (FKA React Query) for fetching, caching, synchronizing and updating server state
 
 ## Syntax and Formatting
 
