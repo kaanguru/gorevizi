@@ -77,12 +77,7 @@ export default function RootLayout() {
                 headerShown: false,
               }}
             />
-            <Stack.Screen
-              name="(drawer)"
-              options={{
-                headerShown: false,
-              }}
-            />
+            <Stack.Screen name="(drawer)" />
             <Stack.Screen
               name="(onboarding)"
               options={{

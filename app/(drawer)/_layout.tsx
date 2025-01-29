@@ -23,6 +23,16 @@ const DrawerLayout = () => {
         }}
       />
       <Drawer.Screen
+        name="stats"
+        options={{
+          headerTitle: 'Stats',
+          drawerLabel: 'Stats',
+          drawerIcon: ({ size, color }) => (
+            <Ionicons name="stats-chart-outline" size={size} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
         name="(settings)/index"
         options={{
           headerTitle: 'Settings',

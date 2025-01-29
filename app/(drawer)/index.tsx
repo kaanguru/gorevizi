@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { FlatList, Pressable } from 'react-native';
+import { FlatList, Pressable, RefreshControl } from 'react-native';
 import { Stack, useFocusEffect, useRouter } from 'expo-router';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '~/utils/supabase';
@@ -128,15 +128,17 @@ export default function TaskList() {
           headerRight: () => (
             <>
               <Pressable onPress={() => refetch()} className="p-5">
-                <Icon as={DownloadIcon} className="m-1 h-6 w-6 text-typography-100" />
+                <Icon as={DownloadIcon} className="m-1 h-5 w-5 text-typography-100" />
               </Pressable>
-
               <Pressable onPress={handleFilterTodayPress} className="p-5">
                 <Icon
                   as={isFiltered ? CalendarDaysIcon : EyeIcon}
                   className="m-1 h-6 w-6 text-typography-500"
                 />
               </Pressable>
+              <Text size="xs" className="absolute right-5 top-1 text-center text-typography-500">
+                {isFiltered ? "Today's" : 'All'}
+              </Text>
             </>
           ),
         }}
@@ -148,18 +150,25 @@ export default function TaskList() {
           </Box>
         ) : (
           <>
-            <Text size="xs" className="text-right text-typography-500">
-              {isFiltered ? "Today's Tasks" : 'All Tasks'}
-            </Text>
             <FlatList
               contentContainerStyle={{
                 gap: 16,
                 padding: 16,
-                paddingBottom: 80,
+                paddingBottom: 32,
+                marginTop: 24,
               }}
               data={filteredTasks}
               renderItem={renderTaskItem}
               keyExtractor={(item) => item.id.toString()}
+              refreshControl={
+                <RefreshControl
+                  refreshing={isRefetching}
+                  onRefresh={refetch}
+                  progressViewOffset={100} // Adjust based on header height
+                  colors={['#000000']} // Use your app's primary color
+                  progressBackgroundColor="#ffffff" // Use your background color
+                />
+              }
             />
           </>
         )}
