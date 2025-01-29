@@ -32,6 +32,16 @@ export default function TaskList() {
         .eq('id', params.taskId);
 
       if (error) return Promise.reject(new Error(error.message));
+      // If the task is being marked as completed, log the completion
+      if (params.isComplete) {
+        const { error: logError } = await supabase
+          .from('task_completion_history')
+          .insert([{ task_id: params.taskId }]);
+
+        if (logError) {
+          console.error('Error logging task completion:', logError);
+        }
+      }
     },
     onMutate: async ({ taskId, isComplete }) => {
       await queryClient.cancelQueries({ queryKey: ['tasks'] });
@@ -39,11 +49,16 @@ export default function TaskList() {
       const newTasks = previousTasks?.map((task) =>
         task.id === taskId ? { ...task, is_complete: isComplete } : task
       );
-      queryClient.setQueryData(['tasks'], newTasks);
+      if (newTasks) {
+        queryClient.setQueryData(['tasks'], newTasks);
+      }
       return { previousTasks };
     },
     onError: (err, variables, context) => {
-      queryClient.setQueryData(['tasks'], context?.previousTasks);
+      if (context?.previousTasks) {
+        queryClient.setQueryData(['tasks'], context?.previousTasks);
+      }
+      console.error('Error updating task:', err);
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
