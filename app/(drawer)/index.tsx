@@ -2,7 +2,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { FlatList, Pressable, RefreshControl } from 'react-native';
 import { Stack, useFocusEffect, useRouter } from 'expo-router';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '~/utils/supabase';
+import { supabase } from '~/utils/auth/supabase';
 import { Tables } from '~/database.types';
 import { Fab, FabLabel, FabIcon } from '@/components/ui/fab';
 import { Container } from '~/components/Container';
@@ -11,7 +11,7 @@ import { AddIcon, CalendarDaysIcon, Icon, DownloadIcon, EyeIcon } from '@/compon
 import { Spinner } from '~/components/ui/spinner';
 import { TaskItem } from '~/components/DraggableTaskItem';
 import reOrder from '~/utils/reOrder';
-import isTaskDueToday from '~/utils/isTaskDueToday';
+import isTaskDueToday from '~/utils/tasks/isTaskDueToday';
 import useTasksQuery from '~/hooks/useTasksQuery';
 import useUpdateTaskPositions from '~/hooks/useUpdateTaskPositions';
 import { Text } from '~/components/ui/text';

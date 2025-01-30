@@ -25,7 +25,7 @@ import { HStack } from '@/components/ui/hstack';
 import { VStack } from '@/components/ui/vstack';
 import { ScrollView } from 'react-native';
 import { RepeatPeriod, TaskFormData } from '../../types';
-import { supabase } from '@/utils/supabase';
+import { supabase } from '~/utils/auth/supabase';
 import { useMutation } from '@tanstack/react-query';
 import Header from '~/components/Header';
 import DraggableItem from '~/components/DraggableItem';

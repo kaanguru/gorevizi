@@ -1,8 +1,8 @@
 import { Text, View } from 'react-native';
 import { useQuery } from '@tanstack/react-query';
 import { Tables } from '@/database.types';
-import getTaskCompletionHistory from '@/utils/getTaskCompletionHistory';
-import calculateSuccessPercentage from '@/utils/calculateSuccessPercentage';
+import getTaskCompletionHistory from '~/utils/tasks/getTaskCompletionHistory';
+import calculateSuccessPercentage from '~/utils/tasks/calculateSuccessPercentage';
 
 function TaskSuccessPercentage({ task }: Readonly<{ task: Tables<'tasks'> }>) {
   const { data: completionHistory } = useQuery({

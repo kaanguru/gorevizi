@@ -6,7 +6,7 @@ import { isFirstVisit } from '~/utils/isFirstVisit';
 import { Text } from 'react-native';
 import { Stack } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { supabase } from '~/utils/supabase';
+import { supabase } from '~/utils/auth/supabase';
 import { View } from 'react-native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 const queryClient = new QueryClient({

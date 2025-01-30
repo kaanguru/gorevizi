@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Tables } from '~/database.types';
-import { supabase } from '~/utils/supabase';
+import { supabase } from '~/utils/auth/supabase';
 
 export default function useUpdateTaskPositions() {
   const queryClient = useQueryClient();

@@ -1,6 +1,6 @@
 import { renderHook, act } from '@testing-library/react-hooks';
 import { useAuth } from '../auth';
-import { supabase } from '../supabase';
+import { supabase } from '../auth/supabase';
 
 jest.mock('../supabase', () => ({
   supabase: {
