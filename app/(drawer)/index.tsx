@@ -10,7 +10,7 @@ import { Box } from '~/components/ui/box';
 import { AddIcon, CalendarDaysIcon, Icon, DownloadIcon, EyeIcon } from '@/components/ui/icon';
 import { Spinner } from '~/components/ui/spinner';
 import { TaskItem } from '~/components/DraggableTaskItem';
-import reOrder from '~/utils/reOrder';
+import reOrder from '~/utils/tasks/reOrder';
 import isTaskDueToday from '~/utils/tasks/isTaskDueToday';
 import useTasksQuery from '~/hooks/useTasksQuery';
 import useUpdateTaskPositions from '~/hooks/useUpdateTaskPositions';
