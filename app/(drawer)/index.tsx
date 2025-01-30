@@ -21,7 +21,7 @@ export default function TaskList() {
   const queryClient = useQueryClient();
   const [isFiltered, setIsFiltered] = useState(true);
 
-  const { data: tasks = [], isLoading, isRefetching, refetch } = useTasksQuery();
+  const { activeTasks: tasks = [], isLoading, isRefetching, refetch } = useTasksQuery();
   const updateTaskPositionsMutation = useUpdateTaskPositions();
 
   const toggleCompleteMutation = useMutation({
@@ -127,7 +127,7 @@ export default function TaskList() {
           title: 'Tasks',
           headerRight: () => (
             <>
-              <Pressable onPress={() => refetch()} className="p-5">
+              <Pressable onPress={refetch} className="p-5">
                 <Icon as={DownloadIcon} className="m-1 h-5 w-5 text-typography-100" />
               </Pressable>
               <Pressable onPress={handleFilterTodayPress} className="p-5">

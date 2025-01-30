@@ -2,7 +2,7 @@ import { View, Text, TextInput, Pressable, Alert, ActivityIndicator } from 'reac
 import { Href, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { resetFirstVisit } from '~/utils/isFirstVisit';
-import { useAuth } from '~/utils/auth';
+import { useAuth } from '~/utils/auth/auth';
 
 export default function Login() {
   const router = useRouter();

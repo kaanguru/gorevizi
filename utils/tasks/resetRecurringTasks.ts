@@ -4,7 +4,7 @@ async function resetRecurringTasks() {
   const { error } = await supabase
     .from('tasks')
     .update({ is_complete: false })
-    .eq('is_recurring', true);
+    .neq('repeat_period', null);
 
   if (error) {
     console.error('Error resetting recurring tasks:', error);

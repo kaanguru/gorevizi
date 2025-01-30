@@ -1,13 +1,12 @@
 import { View } from 'react-native';
 import { Tables } from '@/database.types';
+import useTasksQuery from '~/hooks/useTasksQuery';
 import TaskSuccessPercentage from '~/components/TaskSuccessPercentage';
 
 export default function Stats() {
-  const task = { id: '1', name: 'Sample Task', completed: false } as unknown as Tables<'tasks'>;
+  const { activeTasks, completedTasks } = useTasksQuery();
 
   return (
-    <View>
-      <TaskSuccessPercentage task={task} />
-    </View>
+    <View>{activeTasks?.map((task) => <TaskSuccessPercentage key={task.id} task={task} />)}</View>
   );
 }

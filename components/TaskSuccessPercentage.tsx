@@ -14,9 +14,7 @@ function TaskSuccessPercentage({ task }: Readonly<{ task: Tables<'tasks'> }>) {
 
   return (
     <View className="rounded-xl bg-white p-6 shadow-lg">
-      <Text className="mb-2 text-xl font-semibold text-gray-800">
-        sample task Success Percentage
-      </Text>
+      <Text className="mb-2 text-xl font-semibold text-gray-800">{task.title}</Text>
       <Text className="text-3xl font-bold text-green-600">{successPercentage.toFixed(2)}%</Text>
     </View>
   );
