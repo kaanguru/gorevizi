@@ -1,8 +1,8 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { FlatList, Pressable } from 'react-native';
+import { FlatList, Pressable, RefreshControl } from 'react-native';
 import { Stack, useFocusEffect, useRouter } from 'expo-router';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '~/utils/supabase';
+import { supabase } from '~/utils/auth/supabase';
 import { Tables } from '~/database.types';
 import { Fab, FabLabel, FabIcon } from '@/components/ui/fab';
 import { Container } from '~/components/Container';
@@ -10,8 +10,8 @@ import { Box } from '~/components/ui/box';
 import { AddIcon, CalendarDaysIcon, Icon, DownloadIcon, EyeIcon } from '@/components/ui/icon';
 import { Spinner } from '~/components/ui/spinner';
 import { TaskItem } from '~/components/DraggableTaskItem';
-import reOrder from '~/utils/reOrder';
-import isTaskDueToday from '~/utils/isTaskDueToday';
+import reOrder from '~/utils/tasks/reOrder';
+import isTaskDueToday from '~/utils/tasks/isTaskDueToday';
 import useTasksQuery from '~/hooks/useTasksQuery';
 import useUpdateTaskPositions from '~/hooks/useUpdateTaskPositions';
 import { Text } from '~/components/ui/text';
@@ -32,6 +32,16 @@ export default function TaskList() {
         .eq('id', params.taskId);
 
       if (error) return Promise.reject(new Error(error.message));
+      // If the task is being marked as completed, log the completion
+      if (params.isComplete) {
+        const { error: logError } = await supabase
+          .from('task_completion_history')
+          .insert([{ task_id: params.taskId }]);
+
+        if (logError) {
+          console.error('Error logging task completion:', logError);
+        }
+      }
     },
     onMutate: async ({ taskId, isComplete }) => {
       await queryClient.cancelQueries({ queryKey: ['tasks'] });
@@ -39,11 +49,16 @@ export default function TaskList() {
       const newTasks = previousTasks?.map((task) =>
         task.id === taskId ? { ...task, is_complete: isComplete } : task
       );
-      queryClient.setQueryData(['tasks'], newTasks);
+      if (newTasks) {
+        queryClient.setQueryData(['tasks'], newTasks);
+      }
       return { previousTasks };
     },
     onError: (err, variables, context) => {
-      queryClient.setQueryData(['tasks'], context?.previousTasks);
+      if (context?.previousTasks) {
+        queryClient.setQueryData(['tasks'], context?.previousTasks);
+      }
+      console.error('Error updating task:', err);
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
@@ -112,16 +127,18 @@ export default function TaskList() {
           title: 'Tasks',
           headerRight: () => (
             <>
-              <Pressable onPress={() => refetch()} className="p-5">
-                <Icon as={DownloadIcon} className="m-1 h-6 w-6 text-typography-100" />
+              <Pressable onPress={() => refetch} className="p-5">
+                <Icon as={DownloadIcon} className="m-1 h-5 w-5 text-typography-100" />
               </Pressable>
-
               <Pressable onPress={handleFilterTodayPress} className="p-5">
                 <Icon
                   as={isFiltered ? CalendarDaysIcon : EyeIcon}
                   className="m-1 h-6 w-6 text-typography-500"
                 />
               </Pressable>
+              <Text size="xs" className="absolute right-5 top-1 text-center text-typography-500">
+                {isFiltered ? "Today's" : 'All'}
+              </Text>
             </>
           ),
         }}
@@ -133,18 +150,25 @@ export default function TaskList() {
           </Box>
         ) : (
           <>
-            <Text size="xs" className="text-right text-typography-500">
-              {isFiltered ? "Today's Tasks" : 'All Tasks'}
-            </Text>
             <FlatList
               contentContainerStyle={{
                 gap: 16,
                 padding: 16,
-                paddingBottom: 80,
+                paddingBottom: 32,
+                marginTop: 24,
               }}
               data={filteredTasks}
               renderItem={renderTaskItem}
               keyExtractor={(item) => item.id.toString()}
+              refreshControl={
+                <RefreshControl
+                  refreshing={isRefetching}
+                  onRefresh={refetch}
+                  progressViewOffset={100} // Adjust based on header height
+                  colors={['#000000']} // Use your app's primary color
+                  progressBackgroundColor="#ffffff" // Use your background color
+                />
+              }
             />
           </>
         )}

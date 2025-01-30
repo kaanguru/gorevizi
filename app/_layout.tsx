@@ -3,10 +3,12 @@ import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
 import React, { useEffect, useState } from 'react';
 import { Href, useRouter, useSegments } from 'expo-router';
 import { isFirstVisit } from '~/utils/isFirstVisit';
+import { isFirstLaunchToday } from '~/utils/isFirstLaunchToday';
+import resetRecurringTasks from '~/utils/tasks/resetRecurringTasks';
 import { Text } from 'react-native';
 import { Stack } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { supabase } from '~/utils/supabase';
+import { supabase } from '~/utils/auth/supabase';
 import { View } from 'react-native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 const queryClient = new QueryClient({
@@ -17,12 +19,26 @@ const queryClient = new QueryClient({
     },
   },
 });
+
 export default function RootLayout() {
   const [isSupabaseInitialized, setSupabaseInitialized] = useState(false);
 
   const segments = useSegments();
   const router = useRouter();
+  useEffect(() => {
+    async function checkAndResetTasks() {
+      try {
+        const isFirstToday = await isFirstLaunchToday();
+        if (isFirstToday) {
+          await resetRecurringTasks();
+        }
+      } catch (error) {
+        console.error('Error initializing tasks:', error);
+      }
+    }
 
+    checkAndResetTasks();
+  }, []);
   useEffect(() => {
     const initializeSupabase = async () => {
       try {
@@ -77,12 +93,7 @@ export default function RootLayout() {
                 headerShown: false,
               }}
             />
-            <Stack.Screen
-              name="(drawer)"
-              options={{
-                headerShown: false,
-              }}
-            />
+            <Stack.Screen name="(drawer)" />
             <Stack.Screen
               name="(onboarding)"
               options={{

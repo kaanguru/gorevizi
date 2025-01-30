@@ -1,6 +1,6 @@
 import { Tables } from '~/database.types';
 import { DayOfWeek } from '~/types';
-import getCurrentDayOfWeek from '~/utils/getCurrentDayOfWeek';
+import getCurrentDayOfWeek from '~/utils/dates/getCurrentDayOfWeek';
 import {
   addMonths,
   addYears,
