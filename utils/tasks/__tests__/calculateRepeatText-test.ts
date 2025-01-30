@@ -1,4 +1,4 @@
-import { calculateRepeatText } from '../tasks/calculateRepeatText';
+import { calculateRepeatText } from '../calculateRepeatText';
 
 describe('calculateRepeatText', () => {
   it('should return an empty string if repeatPeriod is empty', () => {

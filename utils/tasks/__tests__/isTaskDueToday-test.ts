@@ -1,8 +1,6 @@
-// isTaskDueToday-test.ts
-import isTaskDueToday from '../tasks/isTaskDueToday';
+import isTaskDueToday from '../isTaskDueToday';
 import { Tables } from '~/database.types';
 import { addDays, addWeeks, addMonths, addYears } from 'date-fns';
-import getDayOfWeek from '~/utils/dates/getDayOfWeek';
 import { DayOfWeek } from '~/types';
 
 describe('isTaskDueToday', () => {
