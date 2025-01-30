@@ -1,4 +1,4 @@
-import { supabase } from './auth/supabase';
+import { supabase } from '../auth/supabase';
 
 async function resetRecurringTasks() {
   const { error } = await supabase
