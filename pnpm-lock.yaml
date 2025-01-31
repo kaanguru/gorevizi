@@ -90,8 +90,8 @@ importers:
         specifier: ^2.48.1
         version: 2.48.1
       '@tanstack/react-query':
-        specifier: ^5.65.1
-        version: 5.65.1(react@18.3.1)
+        specifier: ^5.66.0
+        version: 5.66.0(react@18.3.1)
       babel-plugin-module-resolver:
         specifier: ^5.0.2
         version: 5.0.2
@@ -1754,8 +1754,8 @@ packages:
     peerDependencies:
       react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
 
-  '@remix-run/node@2.15.2':
-    resolution: {integrity: sha512-NS/h5uxje7DYCNgcKqKAiUhf0r2HVnoYUBWLyIIMmCUP1ddWurBP6xTPcWzGhEvV/EvguniYi1wJZ5+X8sonWw==}
+  '@remix-run/node@2.15.3':
+    resolution: {integrity: sha512-TYfS6BPhbABBpSRZ6WBA4qIWSwWvJhRVQGXCHUtgOwkuW863rcFmjh9g2Xj/IHyTmbOYPdcjHsIgZ9el4CHOKQ==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       typescript: ^5.1.0
@@ -1763,12 +1763,12 @@ packages:
       typescript:
         optional: true
 
-  '@remix-run/router@1.21.0':
-    resolution: {integrity: sha512-xfSkCAchbdG5PnbrKqFWwia4Bi61nH+wm8wLEqfHDyp7Y3dZzgqS2itV8i4gAq9pC2HsTpwyBC6Ds8VHZ96JlA==}
+  '@remix-run/router@1.22.0':
+    resolution: {integrity: sha512-MBOl8MeOzpK0HQQQshKB7pABXbmyHizdTpqnrIseTbsv0nAepwC2ENZa1aaBExNQcpLoXmWthhak8SABLzvGPw==}
     engines: {node: '>=14.0.0'}
 
-  '@remix-run/server-runtime@2.15.2':
-    resolution: {integrity: sha512-OqiPcvEnnU88B8b1LIWHHkQ3Tz2GDAmQ1RihFNQsbrFKpDsQLkw0lJlnfgKA/uHd0CEEacpfV7C9qqJT3V6Z2g==}
+  '@remix-run/server-runtime@2.15.3':
+    resolution: {integrity: sha512-taHBe1DEqxZNjjj6OfkSYbup+sZPjbTgUhykaI+nHqrC2NDQuTiisBXhLwtx60GctONR/x0lWhF7R9ZGC5WsHw==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       typescript: ^5.1.0
@@ -1913,11 +1913,11 @@ packages:
   '@swc/helpers@0.5.15':
     resolution: {integrity: sha512-JQ5TuMi45Owi4/BIMAJBoSQoOJu12oOk/gADqlcUL9JEdHB8vyjUSsxqeNXnmXHjYKMi2WcYtezGEEhqUI/E2g==}
 
-  '@tanstack/query-core@5.65.0':
-    resolution: {integrity: sha512-Bnnq/1axf00r2grRT6gUyIkZRKzhHs+p4DijrCQ3wMlA3D3TTT71gtaSLtqnzGddj73/7X5JDGyjiSLdjvQN4w==}
+  '@tanstack/query-core@5.66.0':
+    resolution: {integrity: sha512-J+JeBtthiKxrpzUu7rfIPDzhscXF2p5zE/hVdrqkACBP8Yu0M96mwJ5m/8cPPYQE9aRNvXztXHlNwIh4FEeMZw==}
 
-  '@tanstack/react-query@5.65.1':
-    resolution: {integrity: sha512-BSpjo4RQdJ75Mw3pqM1AJYNhanNxJE3ct7RmCZUAv9cUJg/Qmonzc/Xy2kKXeQA1InuKATSuc6pOZciWOF8TYQ==}
+  '@tanstack/react-query@5.66.0':
+    resolution: {integrity: sha512-z3sYixFQJe8hndFnXgWu7C79ctL+pI0KAelYyW+khaNJ1m22lWrhJU2QrsTcRKMuVPtoZvfBYrTStIdKo+x0Xw==}
     peerDependencies:
       react: ^18 || ^19
 
@@ -2662,8 +2662,8 @@ packages:
     resolution: {integrity: sha512-NIxF55hv4nSqQswkAeiOi1r83xy8JldOFDTWiug55KBu9Jnblncd2U6ViHmYgHf01TPZS77NJBhBMKdWj9HQMQ==}
     engines: {node: '>=8'}
 
-  cjs-module-lexer@1.4.1:
-    resolution: {integrity: sha512-cuSVIHi9/9E/+821Qjdvngor+xpnlwnuwIyZOaLmHBVdXL+gP+I6QQB9VkO7RI77YIcTV+S1W9AreJ5eN63JBA==}
+  cjs-module-lexer@1.4.3:
+    resolution: {integrity: sha512-9z8TZaGM1pfswYeXrUpzPrkx8UnWYdhJclsiYMm6x/w5+nN+8Tf/LnAgfLGQCm59qAOxU8WwHEq2vNwF6i4j+Q==}
 
   clean-stack@2.2.0:
     resolution: {integrity: sha512-4diC9HaTE+KRAMWhDhrGOECgWZxoevMc5TlkObMqNSsVU62PYzXZ/SMTjzyGAFF1YusgxGcSWTEXBhp0CPwQ1A==}
@@ -3490,8 +3490,8 @@ packages:
   fast-uri@3.0.6:
     resolution: {integrity: sha512-Atfo14OibSv5wAp4VWNsFYE1AchQRTv9cBGWET4pZWHzYshFSS9NQI6I57rdKn9croWVMbYFbLhJ+yJvmZIIHw==}
 
-  fastq@1.18.0:
-    resolution: {integrity: sha512-QKHXPW0hD8g4UET03SdOdunzSouc9N4AuHdsX8XNcTsuz+yYFILVNIX4l9yHABMhiEI9Db0JTTIpu0wB+Y1QQw==}
+  fastq@1.19.0:
+    resolution: {integrity: sha512-7SFSRCNjBQIZH/xZR3iy5iQYR8aGBE0h3VG6/cwlbrpdciNYBMotQav8c1XI3HjHH+NikUpP53nPdlZSdWmFzA==}
 
   fb-watchman@2.0.2:
     resolution: {integrity: sha512-p5161BqbuCaSnB8jIbzQHOlpgsPmK5rJVDfDKO91Axs5NC1uu3HRQm6wt9cd9/+GtQQIO53JdGXXoyDpTAsgYA==}
@@ -7705,7 +7705,7 @@ snapshots:
 
   '@expo/server@0.5.1(typescript@5.3.3)':
     dependencies:
-      '@remix-run/node': 2.15.2(typescript@5.3.3)
+      '@remix-run/node': 2.15.3(typescript@5.3.3)
       abort-controller: 3.0.0
       debug: 4.4.0
       source-map-support: 0.5.21
@@ -8242,7 +8242,7 @@ snapshots:
   '@nodelib/fs.walk@1.2.8':
     dependencies:
       '@nodelib/fs.scandir': 2.1.5
-      fastq: 1.18.0
+      fastq: 1.19.0
 
   '@npmcli/fs@3.1.1':
     dependencies:
@@ -8884,9 +8884,9 @@ snapshots:
       '@react-types/shared': 3.27.0(react@18.3.1)
       react: 18.3.1
 
-  '@remix-run/node@2.15.2(typescript@5.3.3)':
+  '@remix-run/node@2.15.3(typescript@5.3.3)':
     dependencies:
-      '@remix-run/server-runtime': 2.15.2(typescript@5.3.3)
+      '@remix-run/server-runtime': 2.15.3(typescript@5.3.3)
       '@remix-run/web-fetch': 4.4.2
       '@web3-storage/multipart-parser': 1.0.0
       cookie-signature: 1.2.2
@@ -8896,11 +8896,11 @@ snapshots:
     optionalDependencies:
       typescript: 5.3.3
 
-  '@remix-run/router@1.21.0': {}
+  '@remix-run/router@1.22.0': {}
 
-  '@remix-run/server-runtime@2.15.2(typescript@5.3.3)':
+  '@remix-run/server-runtime@2.15.3(typescript@5.3.3)':
     dependencies:
-      '@remix-run/router': 1.21.0
+      '@remix-run/router': 1.22.0
       '@types/cookie': 0.6.0
       '@web3-storage/multipart-parser': 1.0.0
       cookie: 0.6.0
@@ -9088,11 +9088,11 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  '@tanstack/query-core@5.65.0': {}
+  '@tanstack/query-core@5.66.0': {}
 
-  '@tanstack/react-query@5.65.1(react@18.3.1)':
+  '@tanstack/react-query@5.66.0(react@18.3.1)':
     dependencies:
-      '@tanstack/query-core': 5.65.0
+      '@tanstack/query-core': 5.66.0
       react: 18.3.1
 
   '@testing-library/react-hooks@8.0.1(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react-test-renderer@18.3.1(react@18.3.1))(react@18.3.1)':
@@ -10003,7 +10003,7 @@ snapshots:
 
   ci-info@3.9.0: {}
 
-  cjs-module-lexer@1.4.1: {}
+  cjs-module-lexer@1.4.3: {}
 
   clean-stack@2.2.0: {}
 
@@ -10983,7 +10983,7 @@ snapshots:
 
   fast-uri@3.0.6: {}
 
-  fastq@1.18.0:
+  fastq@1.19.0:
     dependencies:
       reusify: 1.0.4
 
@@ -11885,7 +11885,7 @@ snapshots:
       '@jest/types': 29.6.3
       '@types/node': 22.12.0
       chalk: 4.1.2
-      cjs-module-lexer: 1.4.1
+      cjs-module-lexer: 1.4.3
       collect-v8-coverage: 1.0.2
       glob: 7.2.3
       graceful-fs: 4.2.11
