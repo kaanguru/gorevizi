@@ -157,6 +157,7 @@ export default function TaskList() {
             data={filteredTasks}
             renderItem={renderTaskItem}
             keyExtractor={(item) => item.id.toString()}
+            ListEmptyComponent={<Text>No tasks available. Add some tasks from below button</Text>}
             refreshControl={
               <RefreshControl
                 refreshing={isRefetching}
