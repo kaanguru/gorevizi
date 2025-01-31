@@ -32,7 +32,7 @@ export default function TaskList() {
         .eq('id', params.taskId);
 
       if (error) return Promise.reject(new Error(error.message));
-      // If the task is being marked as completed, log the completion
+
       if (params.isComplete) {
         const { error: logError } = await supabase
           .from('task_completion_history')
@@ -54,10 +54,8 @@ export default function TaskList() {
       }
       return { previousTasks };
     },
-    onError: (err, variables, context) => {
-      if (context?.previousTasks) {
-        queryClient.setQueryData(['tasks'], context?.previousTasks);
-      }
+    onError: (err, _variables, context) => {
+      context?.previousTasks && queryClient.setQueryData(['tasks'], context.previousTasks);
       console.error('Error updating task:', err);
     },
     onSettled: () => {
@@ -117,7 +115,7 @@ export default function TaskList() {
         }
       />
     ),
-    [toggleCompleteMutation.mutate, handleReorder]
+    [handleReorder, handleTaskUpdate, toggleCompleteMutation]
   );
 
   return (
@@ -149,35 +147,33 @@ export default function TaskList() {
             <Spinner size="large" />
           </Box>
         ) : (
-          <>
-            <FlatList
-              contentContainerStyle={{
-                gap: 16,
-                padding: 16,
-                paddingBottom: 32,
-                marginTop: 24,
-              }}
-              data={filteredTasks}
-              renderItem={renderTaskItem}
-              keyExtractor={(item) => item.id.toString()}
-              refreshControl={
-                <RefreshControl
-                  refreshing={isRefetching}
-                  onRefresh={refetch}
-                  progressViewOffset={100} // Adjust based on header height
-                  colors={['#000000']} // Use your app's primary color
-                  progressBackgroundColor="#ffffff" // Use your background color
-                />
-              }
-            />
-          </>
+          <FlatList
+            contentContainerStyle={{
+              gap: 16,
+              padding: 16,
+              paddingBottom: 32,
+              marginTop: 24,
+            }}
+            data={filteredTasks}
+            renderItem={renderTaskItem}
+            keyExtractor={(item) => item.id.toString()}
+            refreshControl={
+              <RefreshControl
+                refreshing={isRefetching}
+                onRefresh={refetch}
+                progressViewOffset={100}
+                colors={['#000000']}
+                progressBackgroundColor="#ffffff"
+              />
+            }
+          />
         )}
         <Fab
           size="md"
           className="absolute bottom-5 right-5"
           onPress={() => router.push('/(tasks)/create-task')}>
           <FabIcon as={AddIcon} color="white" />
-          <FabLabel> Add Task </FabLabel>
+          <FabLabel>Add Task</FabLabel>
         </Fab>
       </Container>
     </>

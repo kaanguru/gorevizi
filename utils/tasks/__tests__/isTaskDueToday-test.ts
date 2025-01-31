@@ -142,7 +142,7 @@ describe('isTaskDueToday', () => {
   it('should return true for a task with an unknown repeat period', () => {
     const task: Tables<'tasks'> = {
       created_at: today.toISOString(),
-      repeat_period: 'Unknown' as any,
+      repeat_period: null,
       id: 0,
       is_complete: false,
       notes: null,
