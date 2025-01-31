@@ -3,15 +3,17 @@ import { View, Text, FlatList } from 'react-native';
 import { Tables } from '@/database.types';
 import useTasksQuery from '~/hooks/useTasksQuery';
 import TaskSuccessPercentage from '~/components/TaskSuccessPercentage';
+import { Box } from '~/components/ui/box';
+import { Spinner } from '~/components/ui/spinner';
 
 export default function Stats() {
   const { data = [], isLoading, error } = useTasksQuery('completed');
 
   if (isLoading) {
     return (
-      <View>
-        <Text>Loading...</Text>
-      </View>
+      <Box className="flex-1 items-center justify-center">
+        <Spinner size="large" />
+      </Box>
     );
   }
 
@@ -25,6 +27,7 @@ export default function Stats() {
   const renderStatItem = ({ item }: Readonly<{ item: Readonly<Tables<'tasks'>> }>) => (
     <TaskSuccessPercentage key={item.id} task={item} />
   );
+
   return (
     <FlatList
       contentContainerStyle={{

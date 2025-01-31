@@ -33,7 +33,7 @@ const DrawerLayout = () => {
         }}
       />
       <Drawer.Screen
-        name="(settings)/index"
+        name="settings"
         options={{
           headerTitle: 'Settings',
           drawerLabel: 'Settings',
