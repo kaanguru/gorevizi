@@ -8,7 +8,7 @@ import resetRecurringTasks from '~/utils/tasks/resetRecurringTasks';
 import { Text } from 'react-native';
 import { Stack } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { supabase } from '~/utils/auth/supabase';
+import { supabase } from '~/utils/supabase';
 import { View } from 'react-native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 const queryClient = new QueryClient({

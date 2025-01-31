@@ -1,8 +1,8 @@
 import { renderHook, act } from '@testing-library/react-hooks';
 import { useAuth } from '../auth/auth';
-import { supabase } from '../auth/supabase';
+import { supabase } from '../supabase';
 
-jest.mock('../auth/supabase', () => ({
+jest.mock('../supabase', () => ({
   supabase: {
     auth: {
       signInWithPassword: jest.fn(),

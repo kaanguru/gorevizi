@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { AppState } from 'react-native';
-import { supabase } from './supabase';
+import { supabase } from '../supabase';
 
 AppState.addEventListener('change', (state) => {
   if (state === 'active') {

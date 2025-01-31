@@ -1,6 +1,6 @@
 /* eslint-disable functional/immutable-data */
 import React from 'react';
-import { Box } from './ui/box';
+import { Pressable } from './ui/pressable';
 import { Text } from '@/components/ui/text';
 import { Tables } from '~/database.types';
 import { Checkbox, CheckboxIcon, CheckboxIndicator, CheckboxLabel } from './ui/checkbox';
@@ -12,6 +12,7 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from 'react-native-reanimated';
+import { Box } from './ui/box';
 
 // eslint-disable-next-line functional/no-mixed-types
 interface TaskItemProps {
@@ -20,9 +21,16 @@ interface TaskItemProps {
   onTaskUpdate: (task: Readonly<Tables<'tasks'>>) => Promise<void>;
   onReorder: (from: number, to: number) => void;
   onToggleComplete: (taskId: number, isComplete: boolean) => Promise<void>;
+  onPress: () => void;
 }
 
-export function TaskItem({ task, index, onReorder, onToggleComplete }: Readonly<TaskItemProps>) {
+export function TaskItem({
+  task,
+  index,
+  onReorder,
+  onToggleComplete,
+  onPress,
+}: Readonly<TaskItemProps>) {
   const pressed = useSharedValue(false);
   const itemHeight = 94;
   const translateY = useSharedValue(0);
@@ -56,7 +64,11 @@ export function TaskItem({ task, index, onReorder, onToggleComplete }: Readonly<
   return (
     <GestureDetector gesture={panGesture}>
       <Animated.View style={animatedStyle}>
-        <Box className="flex flex-row border border-primary-800 p-6">
+        <Pressable
+          onPress={onPress}
+          accessibilityRole="button"
+          accessibilityLabel={`Task: ${task.title}`}
+          className="flex flex-row border border-primary-800 p-6">
           <Checkbox
             className="basis-1/6"
             value={task.id.toString()}
@@ -68,7 +80,7 @@ export function TaskItem({ task, index, onReorder, onToggleComplete }: Readonly<
             </CheckboxIndicator>
           </Checkbox>
           <Text className="basis-5/6">{task.title}</Text>
-        </Box>
+        </Pressable>
         {task.notes && (
           <Box className="mb-1 flex-row bg-background-300 p-1">
             <Text className="min-h-6 font-bold text-typography-700">{task.notes}</Text>

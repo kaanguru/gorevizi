@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Alert } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Input, InputField } from '@/components/ui/input';
 import { Box } from '@/components/ui/box';
@@ -24,99 +24,19 @@ import { AddIcon, ChevronDownIcon, Icon } from '~/components/ui/icon';
 import { HStack } from '@/components/ui/hstack';
 import { VStack } from '@/components/ui/vstack';
 import { ScrollView } from 'react-native';
-import { RepeatPeriod, TaskFormData } from '../../types';
+import { RepeatPeriod, TaskFormData } from '~/types';
 import { supabase } from '~/utils/supabase';
 import { useMutation } from '@tanstack/react-query';
 import Header from '~/components/Header';
 import DraggableItem from '~/components/DraggableItem';
 import WeekdaySelector from '~/components/WeekDaySelector';
 import { RepeatFrequencySlider } from '~/components/RepeatFrequencySlider';
+import updateTask from '~/utils/tasks/updateTask';
+import { ChecklistSection } from '~/app/(tasks)/create-task';
 
-export const ChecklistSection = ({
-  items,
-  onAdd,
-  onRemove,
-  onUpdate,
-  setFormData,
-}: Readonly<{
-  items: TaskFormData['checklistItems'];
-  onAdd: () => void;
-  onRemove: (index: number) => void;
-  onUpdate: (index: number, content: string) => void;
-  setFormData: React.Dispatch<React.SetStateAction<TaskFormData>>;
-}>) => {
-  const [draggingIndex, setDraggingIndex] = useState<number | null>(null);
-  const [positions, setPositions] = useState<number[]>([]);
-
-  useEffect(() => {
-    setPositions(items.map((_, i) => i));
-  }, [items.length]);
-
-  const handleDragStart = useCallback((index: number) => {
-    setDraggingIndex(index);
-  }, []);
-
-  const handleDragActive = useCallback(() => {
-    // Optional: Add any active drag handling logic
-  }, []);
-
-  const handleDragEnd = useCallback(
-    (index: number, translationY: number) => {
-      const newIndex = Math.round((translationY + index * 60) / 60);
-      const validIndex = Math.max(0, Math.min(newIndex, items.length - 1));
-
-      if (validIndex !== index) {
-        setFormData((prev) => {
-          const newItems = [...prev.checklistItems];
-          // eslint-disable-next-line functional/immutable-data
-          const [movedItem] = newItems.splice(index, 1);
-          // eslint-disable-next-line functional/immutable-data
-          newItems.splice(validIndex, 0, movedItem);
-
-          return {
-            ...prev,
-            checklistItems: newItems.map((item, idx) => ({
-              ...item,
-              position: idx,
-            })),
-          };
-        });
-      }
-      setDraggingIndex(null);
-    },
-    [items.length, setFormData]
-  );
-
-  return (
-    <VStack space="md">
-      <HStack space="md" className="items-center px-2">
-        <Text>Add Routines</Text>
-        <Button size="md" variant="link" onPress={onAdd}>
-          <Icon as={AddIcon} className="text-typography-500" />
-        </Button>
-      </HStack>
-      <Box className="relative" style={{ height: items.length * 60 + 16 }}>
-        {items.map((item, index) => (
-          <DraggableItem
-            key={`${index}-${item.content}`}
-            item={item}
-            index={index}
-            isDragging={draggingIndex === index}
-            onUpdate={onUpdate}
-            onRemove={onRemove}
-            position={positions[index] || index}
-            onDragStart={() => handleDragStart(index)}
-            onDragActive={handleDragActive}
-            onDragEnd={(translationY) => handleDragEnd(index, translationY)}
-          />
-        ))}
-      </Box>
-    </VStack>
-  );
-};
-
-export default function CreateTask() {
+export default function EditTask() {
   const router = useRouter();
+  const { id: taskID } = useLocalSearchParams<{ id: string }>();
   const [formData, setFormData] = useState<TaskFormData>({
     title: '',
     notes: '',
@@ -128,49 +48,105 @@ export default function CreateTask() {
     checklistItems: [],
   });
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const insertMutation = useMutation({
-    mutationFn: async (formData: Readonly<TaskFormData>) => {
+  const [initialLoad, setInitialLoad] = useState(true);
+
+  // Fetch existing task data
+  useEffect(() => {
+    const fetchTaskData = async () => {
+      if (!taskID) return;
+
+      // Fetch task
       const { data: taskData, error: taskError } = await supabase
         .from('tasks')
-        .insert({
-          title: formData.title.trim(),
-          notes: formData.notes.trim() || null,
-          created_at: (formData.customStartDate || new Date()).toISOString(),
-          repeat_on_wk: formData.repeatOnWk.length > 0 ? formData.repeatOnWk : null,
-          repeat_frequency: formData.repeatFrequency || null,
-          repeat_period: formData.repeatPeriod || null,
-        })
-        .select()
+        .select('*')
+        .eq('id', +taskID)
         .single();
 
-      if (taskError) throw new Error('Failed to create task. Please try again.');
-      if (!taskData) throw new Error('Failed to create task. No data returned.');
+      if (taskError) {
+        Alert.alert('Error', 'Failed to load task');
+        return;
+      }
+
+      // Fetch checklist items
+      const { data: checklistData, error: checklistError } = await supabase
+        .from('checklistitems')
+        .select('*')
+        .eq('task_id', +taskID)
+        .order('position', { ascending: true });
+
+      if (checklistError) {
+        console.error('Error fetching checklist items:', checklistError);
+      }
+
+      setFormData({
+        title: taskData.title || '',
+        notes: taskData.notes || '',
+        repeatPeriod: taskData.repeat_period || '',
+        repeatFrequency: taskData.repeat_frequency || 1,
+        repeatOnWk: taskData.repeat_on_wk || [],
+        customStartDate: taskData.created_at ? new Date(taskData.created_at) : null,
+        isCustomStartDateEnabled: !!taskData.created_at,
+        checklistItems:
+          checklistData?.map((item) => ({
+            content: item.content,
+            isComplete: item.is_complete,
+            position: item.position ?? 0,
+            id: item.id,
+          })) || [],
+      });
+      setInitialLoad(false);
+    };
+
+    fetchTaskData();
+  }, [taskID]);
+
+  const updateMutation = useMutation({
+    mutationFn: async (formData: Readonly<TaskFormData>) => {
+      if (!taskID) throw new Error('No task ID');
+
+      // Update task
+      const updatedTask = await updateTask(+taskID, {
+        title: formData.title.trim(),
+        notes: formData.notes.trim() || null,
+        created_at: (formData.customStartDate || new Date()).toISOString(),
+        repeat_on_wk: formData.repeatOnWk.length > 0 ? formData.repeatOnWk : null,
+        repeat_frequency: formData.repeatFrequency || null,
+        repeat_period: formData.repeatPeriod || null,
+      });
+
+      if (!updatedTask) throw new Error('Failed to update task');
+
+      // Update checklist items
+      const { error: deleteError } = await supabase
+        .from('checklistitems')
+        .delete()
+        .eq('task_id', +taskID);
+
+      if (deleteError) throw new Error('Failed to clear existing checklist items');
 
       if (formData.checklistItems.length > 0) {
-        const { error: checklistError } = await supabase.from('checklistitems').insert(
+        const { error: insertError } = await supabase.from('checklistitems').insert(
           formData.checklistItems.map((item, index) => ({
-            task_id: taskData.id,
+            task_id: +taskID,
             content: item.content.trim(),
             position: index,
-            is_complete: false,
+            is_complete: item.isComplete || false,
           }))
         );
 
-        if (checklistError) {
-          console.error('Checklist error:', checklistError);
-          throw new Error('Failed to create checklist items. Please try again.');
-        }
+        if (insertError) throw new Error('Failed to update checklist items');
       }
 
-      return taskData;
+      return updatedTask;
     },
     onSuccess: () => router.back(),
     onError: (error) => {
-      console.error('Error creating task:', error);
-      Alert.alert('Error', error.message || 'An unexpected error occurred');
+      console.error('Error updating task:', error);
+      Alert.alert('Error', error.message || 'Failed to update task');
     },
   });
-  const handleCreate = async () => {
+
+  const handleSave = async () => {
     if (!formData.title.trim()) {
       Alert.alert('Error', 'Title is required');
       return;
@@ -179,7 +155,20 @@ export default function CreateTask() {
       Alert.alert('Error', 'All checklist items must have content');
       return;
     }
-    insertMutation.mutate(formData);
+    updateMutation.mutate(formData);
+  };
+
+  const handleDelete = async () => {
+    if (!taskID) return;
+
+    const { error } = await supabase.from('tasks').delete().eq('id', +taskID);
+
+    if (error) {
+      Alert.alert('Error', 'Failed to delete task');
+      return;
+    }
+
+    router.back();
   };
 
   const handleAddChecklistItem = () => {
@@ -211,6 +200,14 @@ export default function CreateTask() {
       ),
     }));
   };
+
+  if (initialLoad) {
+    return (
+      <Box className="flex-1 items-center justify-center bg-white">
+        <Text>Loading task...</Text>
+      </Box>
+    );
+  }
 
   return (
     <VStack space="xl" className="flex-1 bg-white">
@@ -363,12 +360,18 @@ export default function CreateTask() {
         </ScrollView>
       </Box>
       <Box className="px-4 py-2">
-        <Button
-          onPress={handleCreate}
-          testID="create-task-button"
-          disabled={insertMutation.isPending}>
-          <ButtonText>{insertMutation.isPending ? 'Creating...' : 'Create'}</ButtonText>
-        </Button>
+        <HStack space="md" className="justify-between">
+          <Button variant="outline" onPress={handleDelete} className="flex-1">
+            <ButtonText className="text-destructive-500">Delete</ButtonText>
+          </Button>
+          <Button
+            onPress={handleSave}
+            testID="save-task-button"
+            className="flex-1"
+            disabled={updateMutation.isPending}>
+            <ButtonText>{updateMutation.isPending ? 'Saving...' : 'Save'}</ButtonText>
+          </Button>
+        </HStack>
       </Box>
     </VStack>
   );

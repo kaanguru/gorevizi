@@ -2,7 +2,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { FlatList, Pressable, RefreshControl } from 'react-native';
 import { Stack, useFocusEffect, useRouter } from 'expo-router';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '~/utils/auth/supabase';
+import { supabase } from '~/utils/supabase';
 import { Tables } from '~/database.types';
 import { Fab, FabLabel, FabIcon } from '@/components/ui/fab';
 import { Container } from '~/components/Container';
@@ -108,6 +108,12 @@ export default function TaskList() {
       <TaskItem
         task={item}
         index={index}
+        onPress={() => {
+          router.push({
+            pathname: '/(tasks)/edit/[id]',
+            params: { id: item.id },
+          });
+        }}
         onReorder={handleReorder}
         onTaskUpdate={handleTaskUpdate}
         onToggleComplete={(taskId, isComplete) =>

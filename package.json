@@ -16,7 +16,7 @@
     "lint": "eslint \"**/*.{js,jsx,ts,tsx}\" && prettier -c \"**/*.{js,jsx,ts,tsx,json}\"",
     "start": "expo start",
     "start:local": "supabase start && expo start",
-    "test": "jest --watch --coverage=false --changedSince=origin/main",
+    "test": "jest --watch --coverage=false --changedSince=master",
     "test:debug": "jest -o --watch --coverage=false",
     "test:final": "jest",
     "update:sdk": "expo install expo@latest && expo install --fix",

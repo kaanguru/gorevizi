@@ -1,4 +1,4 @@
-import { supabase } from '../auth/supabase';
+import { supabase } from '../supabase';
 
 async function getTaskCompletionHistory(taskId: number) {
   const { data, error } = await supabase

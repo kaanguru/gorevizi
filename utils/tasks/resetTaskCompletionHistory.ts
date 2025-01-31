@@ -1,4 +1,4 @@
-import { supabase } from '~/utils/auth/supabase';
+import { supabase } from '~/utils/supabase';
 import { Tables } from '~/database.types';
 
 export default async function resetTaskCompletionHistory(): Promise<{
