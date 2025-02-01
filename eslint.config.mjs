@@ -12,6 +12,7 @@ export default [
       ...functional.configs.lite.rules,
       ...functional.configs.stylistic.rules,
       'functional/no-return-void': 'off',
+      'functional/no-mixed-types': "off",
       '@typescript-eslint/prefer-readonly': 'error',
       // 'functional/prefer-immutable-types': 'warn'
     },
