@@ -11,7 +11,6 @@ import {
   SelectItem,
 } from '@/components/ui/select';
 import { ChevronDownIcon } from './ui/icon';
-// eslint-disable-next-line functional/no-mixed-types
 export interface RepeatPeriodSelectorProps {
   repeatPeriod: string;
   setRepeatPeriod: (period: string) => void;
