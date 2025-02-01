@@ -20,7 +20,7 @@ interface TaskItemProps {
   index: number;
   onTaskUpdate: (task: Readonly<Tables<'tasks'>>) => Promise<void>;
   onReorder: (from: number, to: number) => void;
-  onToggleComplete: (taskId: number, isComplete: boolean) => Promise<void>;
+  onToggleComplete: (params: Readonly<{ taskId: number; isComplete: boolean }>) => void;
   onPress: () => void;
 }
 
@@ -57,10 +57,9 @@ export function TaskItem({
     zIndex: isDragging.value ? 1 : 0,
   }));
 
-  const handleToggleComplete = (isChecked: boolean) => {
-    onToggleComplete(task.id, isChecked);
+  const handleToggleComplete = () => {
+    onToggleComplete({ taskId: task.id, isComplete: !task.is_complete });
   };
-
   return (
     <GestureDetector gesture={panGesture}>
       <Animated.View style={animatedStyle}>

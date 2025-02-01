@@ -1,11 +1,19 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { Alert } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Alert, ScrollView } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { Input, InputField } from '@/components/ui/input';
+import { useMutation } from '@tanstack/react-query';
+import { supabase } from '~/utils/supabase';
+import { RepeatPeriod, TaskFormData } from '~/types';
+import Header from '~/components/Header';
+import WeekdaySelector from '~/components/WeekDaySelector';
+import { RepeatFrequencySlider } from '~/components/RepeatFrequencySlider';
+import ChecklistSection from '../ChecklistSection';
+import { ChevronDownIcon, TrashIcon } from '~/components/ui/icon';
 import { Box } from '@/components/ui/box';
-import { Button, ButtonText } from '@/components/ui/button';
+import { Button, ButtonIcon, ButtonText } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
+import { Input, InputField } from '@/components/ui/input';
 import { Textarea, TextareaInput } from '@/components/ui/textarea';
 import {
   Select,
@@ -20,19 +28,10 @@ import {
   SelectItem,
 } from '@/components/ui/select';
 import { Checkbox, CheckboxIndicator, CheckboxIcon, CheckboxLabel } from '@/components/ui/checkbox';
-import { AddIcon, ChevronDownIcon, Icon } from '~/components/ui/icon';
 import { HStack } from '@/components/ui/hstack';
 import { VStack } from '@/components/ui/vstack';
-import { ScrollView } from 'react-native';
-import { RepeatPeriod, TaskFormData } from '~/types';
-import { supabase } from '~/utils/supabase';
-import { useMutation } from '@tanstack/react-query';
-import Header from '~/components/Header';
-import DraggableItem from '~/components/DraggableItem';
-import WeekdaySelector from '~/components/WeekDaySelector';
-import { RepeatFrequencySlider } from '~/components/RepeatFrequencySlider';
+import useTasksQuery, { useCreateTaskMutation } from '~/hooks/useTasksQuery';
 import updateTask from '~/utils/tasks/updateTask';
-import { ChecklistSection } from '~/app/(tasks)/create-task';
 
 export default function EditTask() {
   const router = useRouter();
@@ -219,7 +218,7 @@ export default function EditTask() {
               <InputField
                 placeholder="Task title"
                 value={formData.title}
-                onChangeText={(text) => setFormData((prev) => ({ ...prev, title: text }))}
+                onChangeText={(text: string) => setFormData((prev) => ({ ...prev, title: text }))}
                 className="min-h-[40px] py-2 text-typography-900"
                 placeholderTextColor="#9CA3AF"
               />
@@ -229,7 +228,7 @@ export default function EditTask() {
               <TextareaInput
                 placeholder="Notes"
                 value={formData.notes}
-                onChangeText={(text) => setFormData((prev) => ({ ...prev, notes: text }))}
+                onChangeText={(text: string) => setFormData((prev) => ({ ...prev, notes: text }))}
                 className="min-h-[80px] py-2 text-typography-900"
                 placeholderTextColor="#9CA3AF"
               />
@@ -237,7 +236,7 @@ export default function EditTask() {
 
             <Select
               selectedValue={formData.repeatPeriod}
-              onValueChange={(value) =>
+              onValueChange={(value: string) =>
                 setFormData((prev) => ({ ...prev, repeatPeriod: value as RepeatPeriod | '' }))
               }>
               <SelectTrigger variant="rounded" size="xl" className="justify-between">
@@ -309,7 +308,7 @@ export default function EditTask() {
                 <Checkbox
                   value="custom-start-date"
                   isChecked={formData.isCustomStartDateEnabled}
-                  onChange={(isSelected) => {
+                  onChange={(isSelected: boolean) => {
                     setFormData((prev) => ({
                       ...prev,
                       isCustomStartDateEnabled: isSelected,
@@ -361,8 +360,14 @@ export default function EditTask() {
       </Box>
       <Box className="px-4 py-2">
         <HStack space="md" className="justify-between">
-          <Button variant="outline" onPress={handleDelete} className="flex-1">
+          <Button
+            size="md"
+            variant="solid"
+            action="negative"
+            onPress={handleDelete}
+            className="flex-1">
             <ButtonText className="text-destructive-500">Delete</ButtonText>
+            <ButtonIcon className="text-white" as={TrashIcon} />
           </Button>
           <Button
             onPress={handleSave}

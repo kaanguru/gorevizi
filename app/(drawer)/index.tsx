@@ -1,7 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { FlatList, Pressable, RefreshControl } from 'react-native';
 import { Stack, useFocusEffect, useRouter } from 'expo-router';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '~/utils/supabase';
 import { Tables } from '~/database.types';
 import { Fab, FabLabel, FabIcon } from '@/components/ui/fab';
@@ -12,56 +11,19 @@ import { Spinner } from '~/components/ui/spinner';
 import { TaskItem } from '~/components/DraggableTaskItem';
 import reOrder from '~/utils/tasks/reOrder';
 import isTaskDueToday from '~/utils/tasks/isTaskDueToday';
-import useTasksQuery from '~/hooks/useTasksQuery';
+import useTasksQuery, { useToggleCompleteMutation } from '~/hooks/useTasksQuery';
 import useUpdateTaskPositions from '~/hooks/useUpdateTaskPositions';
 import { Text } from '~/components/ui/text';
+import { Success } from '~/types';
 
 export default function TaskList() {
   const router = useRouter();
-  const queryClient = useQueryClient();
   const [isFiltered, setIsFiltered] = useState(true);
 
   const { data: tasks = [], isLoading, isRefetching, refetch } = useTasksQuery();
   const updateTaskPositionsMutation = useUpdateTaskPositions();
 
-  const toggleCompleteMutation = useMutation({
-    mutationFn: async (params: Readonly<{ taskId: number; isComplete: boolean }>) => {
-      const { error } = await supabase
-        .from('tasks')
-        .update({ is_complete: params.isComplete })
-        .eq('id', params.taskId);
-
-      if (error) return Promise.reject(new Error(error.message));
-
-      if (params.isComplete) {
-        const { error: logError } = await supabase
-          .from('task_completion_history')
-          .insert([{ task_id: params.taskId }]);
-
-        if (logError) {
-          console.error('Error logging task completion:', logError);
-        }
-      }
-    },
-    onMutate: async ({ taskId, isComplete }) => {
-      await queryClient.cancelQueries({ queryKey: ['tasks'] });
-      const previousTasks = queryClient.getQueryData<Tables<'tasks'>[]>(['tasks']);
-      const newTasks = previousTasks?.map((task) =>
-        task.id === taskId ? { ...task, is_complete: isComplete } : task
-      );
-      if (newTasks) {
-        queryClient.setQueryData(['tasks'], newTasks);
-      }
-      return { previousTasks };
-    },
-    onError: (err, _variables, context) => {
-      context?.previousTasks && queryClient.setQueryData(['tasks'], context.previousTasks);
-      console.error('Error updating task:', err);
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['tasks'] });
-    },
-  });
+  const toggleCompleteMutation = useToggleCompleteMutation();
 
   const filteredTasks = useMemo(
     () => (isFiltered ? tasks.filter(isTaskDueToday) : tasks),
@@ -70,7 +32,7 @@ export default function TaskList() {
 
   const handleReorder = useCallback(
     (from: number, to: number) => {
-      const currentTasks = queryClient.getQueryData<Tables<'tasks'>[]>(['tasks']) || [];
+      const currentTasks = tasks;
       const currentFilteredTasks = isFiltered ? currentTasks.filter(isTaskDueToday) : currentTasks;
       const sourceArray = [...currentFilteredTasks];
 
@@ -82,7 +44,7 @@ export default function TaskList() {
       const reorderedTasks = reOrder(from, to, sourceArray);
       updateTaskPositionsMutation.mutate(reorderedTasks);
     },
-    [isFiltered, queryClient, updateTaskPositionsMutation]
+    [isFiltered, updateTaskPositionsMutation]
   );
 
   const handleFilterTodayPress = useCallback(() => {
@@ -116,9 +78,9 @@ export default function TaskList() {
         }}
         onReorder={handleReorder}
         onTaskUpdate={handleTaskUpdate}
-        onToggleComplete={(taskId, isComplete) =>
-          toggleCompleteMutation.mutateAsync({ taskId, isComplete })
-        }
+        onToggleComplete={({ taskId, isComplete }) => {
+          toggleCompleteMutation.mutate({ taskId, isComplete });
+        }}
       />
     ),
     [handleReorder, handleTaskUpdate, toggleCompleteMutation]

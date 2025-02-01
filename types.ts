@@ -21,5 +21,17 @@ interface TaskFormData {
 }
 type Task = Tables<'tasks'>;
 type Item = Tables<'checklistitems'>;
+type Success = {
+  success: boolean;
+  error?: string | null;
+};
+type Result<T> =
+  | {
+      data: T;
+    }
+  | {
+      error: string;
+    };
 
-export type { RepeatPeriod, DayOfWeek, TaskFormData, Task, Item };
+type TaskFilter = 'all' | 'completed' | 'not-completed';
+export type { RepeatPeriod, DayOfWeek, TaskFormData, Task, Success, Result, Item, TaskFilter };
