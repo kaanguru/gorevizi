@@ -3,7 +3,7 @@ import DraggableItem from '~/components/DraggableItem';
 import { Box } from '~/components/ui/box';
 import { HStack } from '~/components/ui/hstack';
 import { Icon, AddIcon } from '~/components/ui/icon';
-import { Button, ButtonText } from '@/components/ui/button';
+import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
 import { VStack } from '~/components/ui/vstack';
 import { TaskFormData } from '~/types';
