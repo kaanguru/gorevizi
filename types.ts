@@ -34,4 +34,21 @@ type Result<T> =
     };
 
 type TaskFilter = 'all' | 'completed' | 'not-completed';
-export type { RepeatPeriod, DayOfWeek, TaskFormData, Task, Success, Result, Item, TaskFilter };
+// eslint-disable-next-line functional/no-mixed-types
+interface FormInputProps {
+  title: string;
+  notes: string;
+  setTitle: (title: string) => void;
+  setNotes: (notes: string) => void;
+}
+export type {
+  RepeatPeriod,
+  FormInputProps,
+  DayOfWeek,
+  TaskFormData,
+  Task,
+  Success,
+  Result,
+  Item,
+  TaskFilter,
+};

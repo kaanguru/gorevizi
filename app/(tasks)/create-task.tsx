@@ -39,6 +39,8 @@ import Header from '~/components/Header';
 import DraggableItem from '~/components/DraggableItem';
 import WeekdaySelector from '~/components/WeekDaySelector';
 import { RepeatFrequencySlider } from '~/components/RepeatFrequencySlider';
+import { FormInput } from '~/components/FormInput';
+import { RepeatPeriodSelector } from '~/components/RepeatPeriodSelector';
 
 export default function CreateTask() {
   const router = useRouter();
@@ -105,53 +107,22 @@ export default function CreateTask() {
 
   return (
     <VStack space="xl" className="flex-1 bg-white">
-      <Header onBack={() => router.back()} />
+      <Header headerTitle="Create Task" />
       <Box className="flex-1">
         <ScrollView className="flex-1 px-4">
           <VStack space="md">
-            <Input size="md" variant="rounded" className="bg-white">
-              <InputField
-                placeholder="Task title"
-                value={formData.title}
-                onChangeText={(text: string) => setFormData((prev) => ({ ...prev, title: text }))}
-                className="min-h-[40px] py-2 text-typography-900"
-                placeholderTextColor="#9CA3AF"
-              />
-            </Input>
-
-            <Textarea size="md" className="bg-white">
-              <TextareaInput
-                placeholder="Notes"
-                value={formData.notes}
-                onChangeText={(text: string) => setFormData((prev) => ({ ...prev, notes: text }))}
-                className="min-h-[80px] py-2 text-typography-900"
-                placeholderTextColor="#9CA3AF"
-              />
-            </Textarea>
-
-            <Select
-              selectedValue={formData.repeatPeriod}
-              onValueChange={(value: string) =>
+            <FormInput
+              title={formData.title}
+              notes={formData.notes}
+              setTitle={(title: string) => setFormData((prev) => ({ ...prev, title }))}
+              setNotes={(notes: string) => setFormData((prev) => ({ ...prev, notes }))}
+            />
+            <RepeatPeriodSelector
+              repeatPeriod={formData.repeatPeriod}
+              setRepeatPeriod={(value: string) =>
                 setFormData((prev) => ({ ...prev, repeatPeriod: value as RepeatPeriod | '' }))
-              }>
-              <SelectTrigger variant="rounded" size="xl" className="justify-between">
-                <SelectInput placeholder="Select repeat period" />
-                <SelectIcon className="ml-auto" as={ChevronDownIcon} />
-              </SelectTrigger>
-              <SelectPortal>
-                <SelectBackdrop />
-                <SelectContent>
-                  <SelectDragIndicatorWrapper>
-                    <SelectDragIndicator />
-                  </SelectDragIndicatorWrapper>
-                  <SelectItem label="No Repeat" value="" />
-                  <SelectItem label="Daily" value="Daily" />
-                  <SelectItem label="Weekly" value="Weekly" />
-                  <SelectItem label="Monthly" value="Monthly" />
-                  <SelectItem label="Yearly" value="Yearly" />
-                </SelectContent>
-              </SelectPortal>
-            </Select>
+              }
+            />
 
             {(formData.repeatPeriod === 'Daily' || formData.repeatPeriod === 'Monthly') && (
               <RepeatFrequencySlider

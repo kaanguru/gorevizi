@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Alert, ScrollView } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '~/utils/supabase';
 import { RepeatPeriod, TaskFormData } from '~/types';
 import Header from '~/components/Header';
@@ -30,12 +30,16 @@ import {
 import { Checkbox, CheckboxIndicator, CheckboxIcon, CheckboxLabel } from '@/components/ui/checkbox';
 import { HStack } from '@/components/ui/hstack';
 import { VStack } from '@/components/ui/vstack';
-import useTasksQuery, { useCreateTaskMutation } from '~/hooks/useTasksQuery';
+import useTasksQuery from '~/hooks/useTasksQuery';
 import updateTask from '~/utils/tasks/updateTask';
+import { Spinner } from '~/components/ui/spinner';
+import { FormInput } from '~/components/FormInput';
+import { RepeatPeriodSelector } from '~/components/RepeatPeriodSelector';
 
 export default function EditTask() {
   const router = useRouter();
   const { id: taskID } = useLocalSearchParams<{ id: string }>();
+  const queryClient = useQueryClient();
   const [formData, setFormData] = useState<TaskFormData>({
     title: '',
     notes: '',
@@ -49,61 +53,31 @@ export default function EditTask() {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [initialLoad, setInitialLoad] = useState(true);
 
-  // Fetch existing task data
+  const { data: taskData, isLoading } = useTasksQuery('all');
+
   useEffect(() => {
-    const fetchTaskData = async () => {
-      if (!taskID) return;
-
-      // Fetch task
-      const { data: taskData, error: taskError } = await supabase
-        .from('tasks')
-        .select('*')
-        .eq('id', +taskID)
-        .single();
-
-      if (taskError) {
-        Alert.alert('Error', 'Failed to load task');
-        return;
+    if (taskData && taskID) {
+      const task = taskData.find((t) => t.id === +taskID);
+      if (task) {
+        setFormData({
+          title: task.title || '',
+          notes: task.notes || '',
+          repeatPeriod: task.repeat_period || '',
+          repeatFrequency: task.repeat_frequency || 1,
+          repeatOnWk: task.repeat_on_wk || [],
+          customStartDate: task.created_at ? new Date(task.created_at) : null,
+          isCustomStartDateEnabled: !!task.created_at,
+          checklistItems: [],
+        });
+        setInitialLoad(false);
       }
-
-      // Fetch checklist items
-      const { data: checklistData, error: checklistError } = await supabase
-        .from('checklistitems')
-        .select('*')
-        .eq('task_id', +taskID)
-        .order('position', { ascending: true });
-
-      if (checklistError) {
-        console.error('Error fetching checklist items:', checklistError);
-      }
-
-      setFormData({
-        title: taskData.title || '',
-        notes: taskData.notes || '',
-        repeatPeriod: taskData.repeat_period || '',
-        repeatFrequency: taskData.repeat_frequency || 1,
-        repeatOnWk: taskData.repeat_on_wk || [],
-        customStartDate: taskData.created_at ? new Date(taskData.created_at) : null,
-        isCustomStartDateEnabled: !!taskData.created_at,
-        checklistItems:
-          checklistData?.map((item) => ({
-            content: item.content,
-            isComplete: item.is_complete,
-            position: item.position ?? 0,
-            id: item.id,
-          })) || [],
-      });
-      setInitialLoad(false);
-    };
-
-    fetchTaskData();
-  }, [taskID]);
+    }
+  }, [taskData, taskID]);
 
   const updateMutation = useMutation({
     mutationFn: async (formData: Readonly<TaskFormData>) => {
       if (!taskID) throw new Error('No task ID');
 
-      // Update task
       const updatedTask = await updateTask(+taskID, {
         title: formData.title.trim(),
         notes: formData.notes.trim() || null,
@@ -115,7 +89,6 @@ export default function EditTask() {
 
       if (!updatedTask) throw new Error('Failed to update task');
 
-      // Update checklist items
       const { error: deleteError } = await supabase
         .from('checklistitems')
         .delete()
@@ -138,7 +111,10 @@ export default function EditTask() {
 
       return updatedTask;
     },
-    onSuccess: () => router.back(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['tasks'] });
+      router.back();
+    },
     onError: (error) => {
       console.error('Error updating task:', error);
       Alert.alert('Error', error.message || 'Failed to update task');
@@ -167,6 +143,7 @@ export default function EditTask() {
       return;
     }
 
+    queryClient.invalidateQueries({ queryKey: ['tasks'] });
     router.back();
   };
 
@@ -200,63 +177,33 @@ export default function EditTask() {
     }));
   };
 
-  if (initialLoad) {
+  if (initialLoad || isLoading) {
     return (
-      <Box className="flex-1 items-center justify-center bg-white">
-        <Text>Loading task...</Text>
+      <Box className="flex-1 items-center justify-center">
+        <Spinner size="large" />
       </Box>
     );
   }
 
   return (
     <VStack space="xl" className="flex-1 bg-white">
-      <Header onBack={() => router.back()} />
+      <Header headerTitle="Edit Task" />
       <Box className="flex-1">
         <ScrollView className="flex-1 px-4">
           <VStack space="md">
-            <Input size="md" variant="rounded" className="bg-white">
-              <InputField
-                placeholder="Task title"
-                value={formData.title}
-                onChangeText={(text: string) => setFormData((prev) => ({ ...prev, title: text }))}
-                className="min-h-[40px] py-2 text-typography-900"
-                placeholderTextColor="#9CA3AF"
-              />
-            </Input>
+            <FormInput
+              title={formData.title}
+              notes={formData.notes}
+              setTitle={(title: string) => setFormData((prev) => ({ ...prev, title }))}
+              setNotes={(notes: string) => setFormData((prev) => ({ ...prev, notes }))}
+            />
 
-            <Textarea size="md" className="bg-white">
-              <TextareaInput
-                placeholder="Notes"
-                value={formData.notes}
-                onChangeText={(text: string) => setFormData((prev) => ({ ...prev, notes: text }))}
-                className="min-h-[80px] py-2 text-typography-900"
-                placeholderTextColor="#9CA3AF"
-              />
-            </Textarea>
-
-            <Select
-              selectedValue={formData.repeatPeriod}
-              onValueChange={(value: string) =>
+            <RepeatPeriodSelector
+              repeatPeriod={formData.repeatPeriod}
+              setRepeatPeriod={(value: string) =>
                 setFormData((prev) => ({ ...prev, repeatPeriod: value as RepeatPeriod | '' }))
-              }>
-              <SelectTrigger variant="rounded" size="xl" className="justify-between">
-                <SelectInput placeholder="Select repeat period" />
-                <SelectIcon className="ml-auto" as={ChevronDownIcon} />
-              </SelectTrigger>
-              <SelectPortal>
-                <SelectBackdrop />
-                <SelectContent>
-                  <SelectDragIndicatorWrapper>
-                    <SelectDragIndicator />
-                  </SelectDragIndicatorWrapper>
-                  <SelectItem label="No Repeat" value="" />
-                  <SelectItem label="Daily" value="Daily" />
-                  <SelectItem label="Weekly" value="Weekly" />
-                  <SelectItem label="Monthly" value="Monthly" />
-                  <SelectItem label="Yearly" value="Yearly" />
-                </SelectContent>
-              </SelectPortal>
-            </Select>
+              }
+            />
 
             {(formData.repeatPeriod === 'Daily' || formData.repeatPeriod === 'Monthly') && (
               <RepeatFrequencySlider
