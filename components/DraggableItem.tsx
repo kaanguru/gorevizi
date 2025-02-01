@@ -36,11 +36,11 @@ const DraggableItem = ({
   onDragActive: (translationY: number) => void;
   onDragEnd: (translationY: number) => void;
 }>) => {
-  const animatedValue = useSharedValue(position * 60);
+  const animatedValue = useSharedValue(position * 20);
   const inputRef = useRef<TextInput>(null);
 
   useEffect(() => {
-    animatedValue.value = withSpring(position * 1);
+    animatedValue.value = position * 5;
   }, [position]);
 
   useEffect(() => {

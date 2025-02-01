@@ -34,7 +34,6 @@ type Result<T> =
     };
 
 type TaskFilter = 'all' | 'completed' | 'not-completed';
-// eslint-disable-next-line functional/no-mixed-types
 interface FormInputProps {
   title: string;
   notes: string;

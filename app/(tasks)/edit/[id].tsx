@@ -56,22 +56,44 @@ export default function EditTask() {
   const { data: taskData, isLoading } = useTasksQuery('all');
 
   useEffect(() => {
-    if (taskData && taskID) {
-      const task = taskData.find((t) => t.id === +taskID);
-      if (task) {
-        setFormData({
-          title: task.title || '',
-          notes: task.notes || '',
-          repeatPeriod: task.repeat_period || '',
-          repeatFrequency: task.repeat_frequency || 1,
-          repeatOnWk: task.repeat_on_wk || [],
-          customStartDate: task.created_at ? new Date(task.created_at) : null,
-          isCustomStartDateEnabled: !!task.created_at,
-          checklistItems: [],
-        });
-        setInitialLoad(false);
+    const loadTaskData = async () => {
+      if (taskData && taskID) {
+        const task = taskData.find((t) => t.id === +taskID);
+        if (task) {
+          // Fetch checklist items
+          const { data: checklistItems, error } = await supabase
+            .from('checklistitems')
+            .select('*')
+            .eq('task_id', +taskID)
+            .order('position', { ascending: true });
+
+          if (error) {
+            console.error('Error fetching checklist items:', error);
+            Alert.alert('Error', 'Failed to load checklist items');
+          }
+
+          // Update form data with checklist items
+          setFormData({
+            title: task.title || '',
+            notes: task.notes || '',
+            repeatPeriod: task.repeat_period || '',
+            repeatFrequency: task.repeat_frequency || 1,
+            repeatOnWk: task.repeat_on_wk || [],
+            customStartDate: task.created_at ? new Date(task.created_at) : null,
+            isCustomStartDateEnabled: !!task.created_at,
+            checklistItems:
+              checklistItems?.map((item) => ({
+                content: item.content,
+                isComplete: item.is_complete,
+                position: item.position ?? 0,
+              })) || [],
+          });
+          setInitialLoad(false);
+        }
       }
-    }
+    };
+
+    loadTaskData();
   }, [taskData, taskID]);
 
   const updateMutation = useMutation({
