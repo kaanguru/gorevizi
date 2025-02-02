@@ -1,4 +1,5 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { supabase } from '~/utils/supabase';
 import getTaskCompletionHistory from '~/utils/tasks/getTaskCompletionHistory';
 import resetTaskCompletionHistory from '~/utils/tasks/resetTaskCompletionHistory';
 
@@ -46,6 +47,17 @@ export function useResetCompletionHistory() {
         queryKey: ['taskCompletionHistory'],
         refetchType: 'active',
       });
+    },
+  });
+}
+export function useTaskCompletionCount() {
+  return useQuery({
+    queryKey: ['completedTasksCount'],
+    queryFn: async () => {
+      const { count } = await supabase
+        .from('task_completion_history')
+        .select('id', { count: 'exact', head: true });
+      return count;
     },
   });
 }

@@ -12,6 +12,7 @@ import { useState } from 'react';
 import { View } from 'react-native';
 import { Button, ButtonIcon, ButtonText } from '@/components/ui/button';
 import { useResetCompletionHistory } from '~/hooks/useTaskCompletionHistory';
+import { router } from 'expo-router';
 
 export default function SettingsScreen() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -38,6 +39,12 @@ export default function SettingsScreen() {
           isDisabled={isPending}>
           <ButtonText className="text-white">Reset Statistics</ButtonText>
           <ButtonIcon className="text-white" as={TrashIcon} />
+        </Button>
+        <Button
+          variant="solid"
+          action="positive"
+          onPress={() => router.push('/(tasks)/completed-tasks')}>
+          <Text>Show Completed Tasks</Text>
         </Button>
       </View>
 
