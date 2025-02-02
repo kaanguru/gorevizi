@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, FlatList } from 'react-native';
 import { Tables } from '@/database.types';
-import useTasksQuery from '~/hooks/useTasksQuery';
+import useTasksQuery from '~/hooks/useTasksQueries';
 import TaskSuccessPercentage from '~/components/TaskSuccessPercentage';
 import { Box } from '~/components/ui/box';
 import { Spinner } from '~/components/ui/spinner';

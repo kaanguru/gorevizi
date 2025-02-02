@@ -1,42 +1,19 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Alert, ScrollView } from 'react-native';
-
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useRouter } from 'expo-router';
 
-import {
-  AlertDialog,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogFooter,
-  AlertDialogBody,
-} from '@/components/ui/alert-dialog';
-import { Input, InputField } from '@/components/ui/input';
 import { Box } from '@/components/ui/box';
 import { Button, ButtonText } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
-import { Textarea, TextareaInput } from '@/components/ui/textarea';
-import {
-  Select,
-  SelectTrigger,
-  SelectInput,
-  SelectIcon,
-  SelectPortal,
-  SelectBackdrop,
-  SelectContent,
-  SelectDragIndicatorWrapper,
-  SelectDragIndicator,
-  SelectItem,
-} from '@/components/ui/select';
+
 import { Checkbox, CheckboxIndicator, CheckboxIcon, CheckboxLabel } from '@/components/ui/checkbox';
-import { AlertCircleIcon, TrashIcon, AddIcon, ChevronDownIcon, Icon } from '~/components/ui/icon';
 import { HStack } from '@/components/ui/hstack';
 import { VStack } from '@/components/ui/vstack';
 import { RepeatPeriod, TaskFormData } from '../../types';
-import { useCreateTaskMutation } from '~/hooks/useTasksQuery';
+import { useCreateTask } from '~/hooks/useTasksMutations';
 import ChecklistSection from './ChecklistSection';
 import Header from '~/components/Header';
-import DraggableItem from '~/components/DraggableItem';
 import WeekdaySelector from '~/components/WeekDaySelector';
 import { RepeatFrequencySlider } from '~/components/RepeatFrequencySlider';
 import { FormInput } from '~/components/FormInput';
@@ -55,7 +32,7 @@ export default function CreateTask() {
     checklistItems: [],
   });
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const { mutate: createTask, isPending: isCreatingTask } = useCreateTaskMutation();
+  const { mutate: createTask, isPending: isCreatingTask } = useCreateTask();
 
   const handleCreate = async () => {
     if (!formData.title.trim()) {

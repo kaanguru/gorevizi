@@ -1,52 +1,8 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Tables } from '~/database.types';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '~/utils/supabase';
-import { Success, TaskFilter, TaskFormData } from '~/types';
+import { Success, TaskFormData } from '~/types';
 
-export default function useTasksQuery(filter: TaskFilter = 'not-completed') {
-  return useQuery({
-    queryKey: ['tasks', filter],
-    queryFn: () => {
-      if (filter === 'completed') return fetchCompletedTasks();
-      if (filter === 'not-completed') return fetchNotCompletedTasks();
-      return fetchAllTasks();
-    },
-  });
-}
-
-async function fetchNotCompletedTasks(): Promise<Tables<'tasks'>[]> {
-  const { data, error } = await supabase
-    .from('tasks')
-    .select('*')
-    .eq('is_complete', false)
-    .order('position', { ascending: true, nullsFirst: true });
-
-  if (error) throw new Error(error.message);
-  return data;
-}
-
-async function fetchCompletedTasks(): Promise<Tables<'tasks'>[]> {
-  const { data, error } = await supabase
-    .from('tasks')
-    .select('*')
-    .eq('is_complete', true)
-    .order('position', { ascending: true, nullsFirst: true });
-
-  if (error) throw new Error(error.message);
-  return data;
-}
-
-async function fetchAllTasks(): Promise<Tables<'tasks'>[]> {
-  const { data, error } = await supabase
-    .from('tasks')
-    .select('*')
-    .order('position', { ascending: true, nullsFirst: true });
-
-  if (error) throw new Error(error.message);
-  return data;
-}
-
-export function useCreateTaskMutation() {
+export function useCreateTask() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (formData: Readonly<TaskFormData>) => {
@@ -94,7 +50,7 @@ export function useCreateTaskMutation() {
     },
   });
 }
-export function useToggleCompleteMutation() {
+export function useToggleComplete() {
   const queryClient = useQueryClient();
 
   return useMutation({

@@ -30,7 +30,7 @@ import {
 import { Checkbox, CheckboxIndicator, CheckboxIcon, CheckboxLabel } from '@/components/ui/checkbox';
 import { HStack } from '@/components/ui/hstack';
 import { VStack } from '@/components/ui/vstack';
-import useTasksQuery from '~/hooks/useTasksQuery';
+import useTasksQuery from '~/hooks/useTasksQueries';
 import updateTask from '~/utils/tasks/updateTask';
 import { Spinner } from '~/components/ui/spinner';
 import { FormInput } from '~/components/FormInput';

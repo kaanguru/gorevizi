@@ -11,19 +11,19 @@ import { Spinner } from '~/components/ui/spinner';
 import { TaskItem } from '~/components/DraggableTaskItem';
 import reOrder from '~/utils/tasks/reOrder';
 import isTaskDueToday from '~/utils/tasks/isTaskDueToday';
-import useTasksQuery, { useToggleCompleteMutation } from '~/hooks/useTasksQuery';
+import useTasksQueries from '~/hooks/useTasksQueries';
+import { useToggleComplete } from '~/hooks/useTasksMutations';
 import useUpdateTaskPositions from '~/hooks/useUpdateTaskPositions';
 import { Text } from '~/components/ui/text';
-import { Success } from '~/types';
 
 export default function TaskList() {
   const router = useRouter();
   const [isFiltered, setIsFiltered] = useState(true);
 
-  const { data: tasks = [], isLoading, isRefetching, refetch } = useTasksQuery();
+  const { data: tasks = [], isLoading, isRefetching, refetch } = useTasksQueries();
   const updateTaskPositionsMutation = useUpdateTaskPositions();
 
-  const toggleCompleteMutation = useToggleCompleteMutation();
+  const toggleComplete = useToggleComplete();
 
   const filteredTasks = useMemo(
     () => (isFiltered ? tasks.filter(isTaskDueToday) : tasks),
@@ -79,11 +79,11 @@ export default function TaskList() {
         onReorder={handleReorder}
         onTaskUpdate={handleTaskUpdate}
         onToggleComplete={({ taskId, isComplete }) => {
-          toggleCompleteMutation.mutate({ taskId, isComplete });
+          toggleComplete.mutate({ taskId, isComplete });
         }}
       />
     ),
-    [handleReorder, handleTaskUpdate, toggleCompleteMutation]
+    [handleReorder, handleTaskUpdate, toggleComplete]
   );
 
   return (

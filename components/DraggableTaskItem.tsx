@@ -14,7 +14,6 @@ import Animated, {
 } from 'react-native-reanimated';
 import { Box } from './ui/box';
 
-// eslint-disable-next-line functional/no-mixed-types
 interface TaskItemProps {
   task: Readonly<Tables<'tasks'>>;
   index: number;
