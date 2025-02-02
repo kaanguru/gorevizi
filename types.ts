@@ -14,6 +14,7 @@ interface TaskFormData {
   customStartDate: Date | null;
   isCustomStartDateEnabled: boolean;
   checklistItems: Array<{
+    id: string;
     content: string;
     isComplete: boolean;
     position: number;

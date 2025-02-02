@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Alert, ScrollView } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useRouter } from 'expo-router';
@@ -12,7 +12,7 @@ import { HStack } from '@/components/ui/hstack';
 import { VStack } from '@/components/ui/vstack';
 import { RepeatPeriod, TaskFormData } from '../../types';
 import { useCreateTask } from '~/hooks/useTasksMutations';
-import ChecklistSection from './ChecklistSection';
+import ChecklistSection from '../../components/ChecklistSection';
 import Header from '~/components/Header';
 import WeekdaySelector from '~/components/WeekDaySelector';
 import { RepeatFrequencySlider } from '~/components/RepeatFrequencySlider';
@@ -52,7 +52,8 @@ export default function CreateTask() {
     });
   };
 
-  const handleAddChecklistItem = () => {
+  const handleAddChecklistItem = useCallback(() => {
+    console.log('Adding checklist item');
     setFormData((prev) => ({
       ...prev,
       checklistItems: [
@@ -61,26 +62,28 @@ export default function CreateTask() {
           content: '',
           isComplete: false,
           position: prev.checklistItems.length,
+          id: Date.now().toString(),
         },
       ],
     }));
-  };
+  }, []);
 
-  const handleRemoveChecklistItem = (index: number) => {
+  const handleRemoveChecklistItem = useCallback((index: number) => {
     setFormData((prev) => ({
       ...prev,
       checklistItems: prev.checklistItems.filter((_, i) => i !== index),
     }));
-  };
+  }, []);
 
-  const handleUpdateChecklistItem = (index: number, content: string) => {
+  const handleUpdateChecklistItem = useCallback((index: number, content: string) => {
     setFormData((prev) => ({
       ...prev,
-      checklistItems: prev.checklistItems.map((item, i) =>
-        i === index ? { ...item, content } : item
-      ),
+      checklistItems: prev.checklistItems.toSpliced(index, 1, {
+        ...prev.checklistItems[index],
+        content,
+      }),
     }));
-  };
+  }, []);
 
   return (
     <VStack space="xl" className="flex-1 bg-white">

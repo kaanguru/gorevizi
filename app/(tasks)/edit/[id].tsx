@@ -8,7 +8,7 @@ import { RepeatPeriod, TaskFormData } from '~/types';
 import Header from '~/components/Header';
 import WeekdaySelector from '~/components/WeekDaySelector';
 import { RepeatFrequencySlider } from '~/components/RepeatFrequencySlider';
-import ChecklistSection from '../ChecklistSection';
+import ChecklistSection from '../../../components/ChecklistSection';
 import { ChevronDownIcon, TrashIcon } from '~/components/ui/icon';
 import { Box } from '@/components/ui/box';
 import { Button, ButtonIcon, ButtonText } from '@/components/ui/button';

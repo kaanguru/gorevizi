@@ -32,10 +32,6 @@ const ChecklistSection = ({
     setDraggingIndex(index);
   }, []);
 
-  const handleDragActive = useCallback(() => {
-    // Optional: Add any active drag handling logic
-  }, []);
-
   const handleDragEnd = useCallback(
     (index: number, translationY: number) => {
       const newIndex = Math.round((translationY + index * 60) / 60);
@@ -74,7 +70,7 @@ const ChecklistSection = ({
       <Box className="relative" style={{ height: items.length * 60 + 16 }}>
         {items.map((item, index) => (
           <DraggableItem
-            key={`${index}-${item.content}`}
+            key={item.id}
             item={item}
             index={index}
             isDragging={draggingIndex === index}
@@ -82,7 +78,6 @@ const ChecklistSection = ({
             onRemove={onRemove}
             position={positions[index] || index}
             onDragStart={() => handleDragStart(index)}
-            onDragActive={handleDragActive}
             onDragEnd={(translationY) => handleDragEnd(index, translationY)}
           />
         ))}
