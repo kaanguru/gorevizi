@@ -26,7 +26,8 @@ export const seedTasks = async (pieces: number) => {
 
     return {
       title: faker.word.verb(9) + ' ' + faker.word.noun(9),
-      notes: faker.lorem.words(9),
+      // randomly skip some notes
+      notes: Math.random() > 0.6 ? faker.lorem.words({ min: 5, max: 16 }) : null,
       repeat_period: repeatType,
       repeat_on_wk: repeatType === 'Weekly' ? [getRandomDayOfWeek()] : null,
       repeat_frequency: getRandomFrequency(repeatType),
