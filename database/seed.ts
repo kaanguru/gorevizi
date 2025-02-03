@@ -45,19 +45,22 @@ export const seedTasks = async (pieces: number) => {
     return;
   }
 
-  // Create checklist items for each task
   const checklistItems = insertedTasks.flatMap((task) => {
-    return Array.from({ length: 3 }, (_, index) => ({
+    return Array.from({ length: faker.number.int({ min: 2, max: 6 }) }, (_, index) => ({
       content: faker.word.verb(9) + ' ' + faker.word.noun(9),
       task_id: task.id,
       position: index,
     }));
   });
 
-  // Insert checklist items into the database
+  // randomly skip some checklist inserts
+
+  const checklistItemsToInsert = checklistItems.filter(() => Math.random() > 0.6);
+
   const { data: insertedChecklistItems, error: checklistError } = await supabase
     .from('checklistitems')
-    .insert(checklistItems);
+    .insert(checklistItemsToInsert)
+    .returns();
 
   if (checklistError) {
     console.error('Error seeding database with checklist items:', checklistError);
@@ -99,7 +102,7 @@ async function authenticateTestUser() {
 
 function getRandomDayOfWeek() {
   const daysOfWeek: DayOfWeek[] = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-  return daysOfWeek[Math.floor(Math.random() * daysOfWeek.length)];
+  return daysOfWeek[faker.number.int({ min: 1, max: daysOfWeek.length })];
 }
 
 function getRandomFrequency(repeatType: RepeatPeriod | null) {

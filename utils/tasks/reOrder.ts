@@ -8,12 +8,13 @@ import * as R from 'ramda';
  * @returns A new array with the item moved to the new position.
  */
 function reOrder<T>(from: number, to: number, array: T[]): T[] {
+  console.log('Send from  to index: ' + from + ' ' + to);
   if (array.length === 0) {
     console.error('Array is empty');
     return array;
   }
-  if (from < 0 || from >= array.length || to < 0 || to >= array.length) {
-    console.error('Invalid from or to index');
+  if (from < 0 || from >= array.length || to < 0) {
+    console.error('Invalid from or to index: ' + from + ' ' + to);
     return array; // Return the original array if indices are invalid
   }
 
