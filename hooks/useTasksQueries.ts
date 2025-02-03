@@ -44,3 +44,9 @@ async function fetchAllTasks(): Promise<Tables<'tasks'>[]> {
   if (error) throw new Error(error.message);
   return data;
 }
+export async function fetchTaskById(id: string | number): Promise<Tables<'tasks'> | null> {
+  const { data, error } = await supabase.from('tasks').select('*').eq('id', +id).single();
+
+  if (error) throw new Error(error.message);
+  return data;
+}

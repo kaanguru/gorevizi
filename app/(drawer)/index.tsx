@@ -72,7 +72,7 @@ export default function TaskList() {
         index={index}
         onPress={() => {
           router.push({
-            pathname: '/(tasks)/edit/[id]',
+            pathname: '/(tasks)/[id]',
             params: { id: item.id },
           });
         }}
