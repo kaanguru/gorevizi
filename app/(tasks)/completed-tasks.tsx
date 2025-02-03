@@ -19,8 +19,6 @@ export default function CompletedTasks() {
   const { mutate } = useToggleComplete();
 
   const handleMarkIncomplete = async (taskId: number) => {
-    console.log('🚀 ~ file: completed-tasks.tsx:21 ~ taskId:', taskId);
-
     try {
       mutate({ taskId, isComplete: false });
     } catch (error) {

@@ -11,9 +11,11 @@ import {
   SelectItem,
 } from '@/components/ui/select';
 import { ChevronDownIcon } from './ui/icon';
+import { RepeatPeriod } from '~/types'; // Import the type
+
 export interface RepeatPeriodSelectorProps {
-  repeatPeriod: string;
-  setRepeatPeriod: (period: string) => void;
+  repeatPeriod: RepeatPeriod | ''; // Use the imported type
+  setRepeatPeriod: (period: RepeatPeriod | '') => void; // Use the imported type
 }
 
 export function RepeatPeriodSelector({
@@ -21,7 +23,10 @@ export function RepeatPeriodSelector({
   setRepeatPeriod,
 }: Readonly<RepeatPeriodSelectorProps>) {
   return (
-    <Select selectedValue={repeatPeriod} onValueChange={setRepeatPeriod} className="h-6">
+    <Select
+      selectedValue={repeatPeriod}
+      onValueChange={setRepeatPeriod as () => void}
+      className="h-6">
       <SelectTrigger size="lg">
         <SelectInput size="md" className="py-2 text-base" placeholder="Select repeat period" />
         <SelectIcon as={ChevronDownIcon} />

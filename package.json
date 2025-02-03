@@ -16,7 +16,7 @@
     "lint": "eslint \"**/*.{js,jsx,ts,tsx}\" && prettier -c \"**/*.{js,jsx,ts,tsx,json}\"",
     "start": "expo start",
     "start:local": "supabase start && expo start",
-    "seed": "node --env-file=.env ./database/seed.mjs",
+    "seed": "bun --env-file=.env  ./database/seed.ts",
     "test": "jest --watch --coverage=false --changedSince=master",
     "test:debug": "jest -o --watch --coverage=false",
     "test:final": "jest",
