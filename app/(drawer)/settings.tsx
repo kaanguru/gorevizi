@@ -26,11 +26,7 @@ export default function SettingsScreen() {
 
   return (
     <View className="flex-1 bg-white p-5">
-      <Text className="mb-5 text-2xl font-bold">Settings</Text>
-
-      <View className="mb-5">
-        <Text className="mb-3 text-lg font-semibold">App Settings</Text>
-
+      <View className="mb-5 flex-1 flex-col items-center ">
         <Button
           size="md"
           variant="solid"
@@ -42,9 +38,11 @@ export default function SettingsScreen() {
         </Button>
         <Button
           variant="solid"
+          size="md"
           action="positive"
+          className="mt-5 "
           onPress={() => router.push('/(tasks)/completed-tasks')}>
-          <Text>Show Completed Tasks</Text>
+          <ButtonText className="text-white">Show Completed Tasks</ButtonText>
         </Button>
       </View>
 

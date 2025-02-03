@@ -4,6 +4,7 @@ import useTasksQueries from '~/hooks/useTasksQueries';
 import { useToggleComplete } from '~/hooks/useTasksMutations';
 import { TaskItem } from '~/components/DraggableTaskItem';
 import { Box } from '~/components/ui/box';
+import Header from '~/components/Header';
 interface CompletedTask {
   id: number;
   title: string;
@@ -45,7 +46,8 @@ export default function CompletedTasks() {
 
   return (
     <View className="p-4">
-      <Text className="mb-4 text-2xl font-bold text-gray-800">Completed Tasks</Text>
+      <Header headerTitle="Completed Tasks" />
+      {/* <Text className="mb-4 text-2xl font-bold text-gray-800">Completed Tasks</Text> */}
 
       {tasks?.length === 0 ? (
         <Text className="text-lg font-medium text-gray-500">No completed tasks</Text>
