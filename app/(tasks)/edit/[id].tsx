@@ -83,6 +83,7 @@ export default function EditTask() {
             isCustomStartDateEnabled: !!task.created_at,
             checklistItems:
               checklistItems?.map((item) => ({
+                id: item.id.toString(),
                 content: item.content,
                 isComplete: item.is_complete,
                 position: item.position ?? 0,
@@ -175,6 +176,7 @@ export default function EditTask() {
       checklistItems: [
         ...prev.checklistItems,
         {
+          id: (prev.checklistItems.length + 1).toString(),
           content: '',
           isComplete: false,
           position: prev.checklistItems.length,
