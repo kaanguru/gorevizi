@@ -53,10 +53,14 @@ export const seedTasks = async (pieces: number) => {
     }));
   });
 
-  // Insert checklist items into the database
+  // randomly skip some checklist inserts
+
+  const checklistItemsToInsert = checklistItems.filter(() => Math.random() > 0.6);
+
   const { data: insertedChecklistItems, error: checklistError } = await supabase
     .from('checklistitems')
-    .insert(checklistItems);
+    .insert(checklistItemsToInsert)
+    .returns();
 
   if (checklistError) {
     console.error('Error seeding database with checklist items:', checklistError);

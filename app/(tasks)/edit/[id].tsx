@@ -8,29 +8,17 @@ import { RepeatPeriod, TaskFormData } from '~/types';
 import Header from '~/components/Header';
 import WeekdaySelector from '~/components/WeekDaySelector';
 import { RepeatFrequencySlider } from '~/components/RepeatFrequencySlider';
-import ChecklistSection from '../../../components/ChecklistSection';
-import { ChevronDownIcon, TrashIcon } from '~/components/ui/icon';
+import ChecklistSection from '~/components/ChecklistSection';
+import { TrashIcon } from '~/components/ui/icon';
 import { Box } from '@/components/ui/box';
 import { Button, ButtonIcon, ButtonText } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
-import { Input, InputField } from '@/components/ui/input';
-import { Textarea, TextareaInput } from '@/components/ui/textarea';
-import {
-  Select,
-  SelectTrigger,
-  SelectInput,
-  SelectIcon,
-  SelectPortal,
-  SelectBackdrop,
-  SelectContent,
-  SelectDragIndicatorWrapper,
-  SelectDragIndicator,
-  SelectItem,
-} from '@/components/ui/select';
+
 import { Checkbox, CheckboxIndicator, CheckboxIcon, CheckboxLabel } from '@/components/ui/checkbox';
 import { HStack } from '@/components/ui/hstack';
 import { VStack } from '@/components/ui/vstack';
 import useTasksQuery from '~/hooks/useTasksQueries';
+import useChecklistItems from '~/hooks/useCheckListQueries';
 import updateTask from '~/utils/tasks/updateTask';
 import { Spinner } from '~/components/ui/spinner';
 import { FormInput } from '~/components/FormInput';
@@ -40,6 +28,9 @@ export default function EditTask() {
   const router = useRouter();
   const { id: taskID } = useLocalSearchParams<{ id: string }>();
   const queryClient = useQueryClient();
+  const { checkListItems, isCheckListItemsLoading, isCheckListItemsError } =
+    useChecklistItems(taskID);
+
   const [formData, setFormData] = useState<TaskFormData>({
     title: '',
     notes: '',
@@ -60,18 +51,6 @@ export default function EditTask() {
       if (taskData && taskID) {
         const task = taskData.find((t) => t.id === +taskID);
         if (task) {
-          // Fetch checklist items
-          const { data: checklistItems, error } = await supabase
-            .from('checklistitems')
-            .select('*')
-            .eq('task_id', +taskID)
-            .order('position', { ascending: true });
-
-          if (error) {
-            console.error('Error fetching checklist items:', error);
-            Alert.alert('Error', 'Failed to load checklist items');
-          }
-
           // Update form data with checklist items
           setFormData({
             title: task.title || '',
@@ -82,7 +61,7 @@ export default function EditTask() {
             customStartDate: task.created_at ? new Date(task.created_at) : null,
             isCustomStartDateEnabled: !!task.created_at,
             checklistItems:
-              checklistItems?.map((item) => ({
+              checkListItems?.map((item) => ({
                 id: item.id.toString(),
                 content: item.content,
                 isComplete: item.is_complete,
@@ -95,7 +74,7 @@ export default function EditTask() {
     };
 
     loadTaskData();
-  }, [taskData, taskID]);
+  }, [taskData, taskID, checkListItems]);
 
   const updateMutation = useMutation({
     mutationFn: async (formData: Readonly<TaskFormData>) => {
@@ -201,7 +180,7 @@ export default function EditTask() {
     }));
   };
 
-  if (initialLoad || isLoading) {
+  if (initialLoad || isLoading || isCheckListItemsLoading) {
     return (
       <Box className="flex-1 items-center justify-center">
         <Spinner size="large" />
@@ -318,14 +297,18 @@ export default function EditTask() {
                 }}
               />
             )}
-
-            <ChecklistSection
-              items={formData.checklistItems}
-              onAdd={handleAddChecklistItem}
-              onRemove={handleRemoveChecklistItem}
-              onUpdate={handleUpdateChecklistItem}
-              setFormData={setFormData}
-            />
+            {isCheckListItemsLoading && <Spinner accessibilityLabel="Loading checklist items" />}
+            {isCheckListItemsError ? (
+              <Text>Error loading checklist items</Text>
+            ) : (
+              <ChecklistSection
+                items={formData.checklistItems}
+                onAdd={handleAddChecklistItem}
+                onRemove={handleRemoveChecklistItem}
+                onUpdate={handleUpdateChecklistItem}
+                setFormData={setFormData}
+              />
+            )}
           </VStack>
         </ScrollView>
       </Box>
