@@ -1,82 +1,80 @@
-import { useState } from 'react';
-import { View, Text, Pressable, ScrollView, FlatList } from 'react-native';
+import React, { View, FlatList } from 'react-native';
+import { useCallback } from 'react';
+import { Tables } from '~/database.types';
+import { Button, ButtonText } from '~/components/ui/button';
+import { Text } from '~/components/ui/text';
 import useTasksQueries from '~/hooks/useTasksQueries';
 import { useToggleComplete } from '~/hooks/useTasksMutations';
-import { TaskItem } from '~/components/DraggableTaskItem';
-import { Box } from '~/components/ui/box';
 import Header from '~/components/Header';
-interface CompletedTask {
-  id: number;
-  title: string;
-  notes: string;
-  is_complete: boolean;
-  updated_at: string;
-}
+import { Card } from '@/components/ui/card';
+import { Pressable } from '~/components/ui/pressable';
+import { router } from 'expo-router';
 
 export default function CompletedTasks() {
   const { data: tasks, error, isLoading, refetch } = useTasksQueries('completed');
-  const [selectedTask, setSelectedTask] = useState<number | null>(null);
-  const { mutate } = useToggleComplete();
+  const { mutate: toggleComplete } = useToggleComplete();
 
-  const handleMarkIncomplete = async (taskId: number) => {
-    try {
-      mutate({ taskId, isComplete: false });
-    } catch (error) {
-      console.error('Error marking task as incomplete:', error);
-    }
-  };
+  const handleMarkIncomplete = useCallback(
+    (taskId: number) => toggleComplete({ taskId, isComplete: false }),
+    [toggleComplete]
+  );
 
-  if (isLoading) {
+  function renderItem({ item }: Readonly<{ item: Tables<'tasks'> }>) {
     return (
-      <View className="flex-1 items-center justify-center">
-        <Text className="text-lg font-medium text-gray-700">Loading...</Text>
-      </View>
-    );
-  }
-
-  if (error) {
-    return (
-      <View className="flex-1 items-center justify-center">
-        <Text className="text-lg font-medium text-red-500">Error loading tasks</Text>
-      </View>
+      <Card size="lg" variant="outline" className="m-3">
+        <Pressable
+          onPress={() => {
+            router.push({
+              pathname: '/(tasks)/[id]',
+              params: { id: item.id },
+            });
+          }}>
+          <View className="flex flex-row items-start justify-between">
+            <View className="flex-1">
+              <Text className="text-lg font-semibold text-gray-800 dark:text-gray-200">
+                {item.title}
+              </Text>
+              {item.notes && (
+                <Text className="mt-1 text-gray-600 dark:text-gray-400">{item.notes}</Text>
+              )}
+              {item.repeat_period && (
+                <Text className="mt-2 text-sm text-gray-500 dark:text-gray-500">
+                  Repeats: {item.repeat_frequency} times {item.repeat_period.toLowerCase()}
+                </Text>
+              )}
+              {item.updated_at && (
+                <Text className="mt-2 text-sm text-gray-500 dark:text-gray-500">
+                  Completed on: {new Date(item.updated_at).toLocaleDateString()}
+                </Text>
+              )}
+            </View>
+            <Button
+              variant="outline"
+              action="positive"
+              onPress={() => handleMarkIncomplete(item.id)}>
+              <ButtonText>Mark Incomplete</ButtonText>
+            </Button>
+          </View>
+        </Pressable>
+      </Card>
     );
   }
 
   return (
     <View className="p-4">
       <Header headerTitle="Completed Tasks" />
-      {/* <Text className="mb-4 text-2xl font-bold text-gray-800">Completed Tasks</Text> */}
 
-      {tasks?.length === 0 ? (
-        <Text className="text-lg font-medium text-gray-500">No completed tasks</Text>
-      ) : (
-        <FlatList
-          data={tasks}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={(item) => (
-            <Box
-              key={item.item.id}
-              className="mb-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
-              <View className="flex items-start justify-between">
-                <View>
-                  <Text className="text-lg font-semibold text-gray-800">{item.item.title}</Text>
-                  <Text className="mt-1 text-gray-600">{item.item.notes}</Text>
-                  <Text className="mt-2 text-sm text-gray-500">
-                    Completed on: TODO get from completion history table
-                  </Text>
-                </View>
-                <Pressable
-                  onPress={() => handleMarkIncomplete(item.item.id)}
-                  className="ml-4 rounded-md bg-red-500 px-3 py-1 text-white transition-colors hover:bg-red-600">
-                  <Text>Mark as Incomplete</Text>
-                </Pressable>
-              </View>
-            </Box>
-          )}
-          onRefresh={refetch}
-          refreshing={isLoading}
-        />
-      )}
+      <FlatList
+        data={tasks}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id.toString()}
+        ListEmptyComponent={
+          <Text className="m-4 text-center text-gray-500">No completed tasks found</Text>
+        }
+        onRefresh={refetch}
+        refreshing={isLoading}
+        contentContainerStyle={{ paddingBottom: 20 }}
+      />
     </View>
   );
 }

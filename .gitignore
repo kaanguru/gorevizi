@@ -25,3 +25,5 @@ android
 .metro-health-check*
 .windsurfrules
 coverage/**/*
+
+components/ui/*

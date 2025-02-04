@@ -65,7 +65,10 @@ export function useToggleComplete() {
       try {
         const { error: updateError } = await supabase
           .from('tasks')
-          .update({ is_complete: params.isComplete })
+          .update({
+            is_complete: params.isComplete,
+            updated_at: new Date().toISOString(),
+          })
           .eq('id', params.taskId);
 
         if (updateError) {

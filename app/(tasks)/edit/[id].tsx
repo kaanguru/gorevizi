@@ -44,7 +44,7 @@ export default function EditTask() {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [initialLoad, setInitialLoad] = useState(true);
 
-  const { data: taskData, isLoading } = useTasksQuery('not-completed');
+  const { data: taskData, isLoading } = useTasksQuery('all');
   // TODO: instead of all data fetch only the task with the id
   useEffect(() => {
     const loadTaskData = async () => {
