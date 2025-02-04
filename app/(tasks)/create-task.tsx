@@ -44,7 +44,7 @@ export default function CreateTask() {
       return;
     }
     createTask(formData, {
-      onSuccess: () => router.back(),
+      onSuccess: () => router.push('/(drawer)/'),
       onError: (error) => {
         console.error('Error creating task:', error);
         Alert.alert('Error', error.message || 'An unexpected error occurred');

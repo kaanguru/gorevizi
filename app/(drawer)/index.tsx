@@ -93,7 +93,7 @@ export default function TaskList() {
           title: 'Tasks',
           headerRight: () => (
             <>
-              <Pressable onPress={() => refetch} className="p-5">
+              <Pressable onPress={() => refetch()} className="p-5">
                 <Icon as={DownloadIcon} className="m-1 h-5 w-5 text-typography-100" />
               </Pressable>
               <Pressable onPress={handleFilterTodayPress} className="p-5">
@@ -140,7 +140,11 @@ export default function TaskList() {
         <Fab
           size="md"
           className="absolute bottom-5 right-5"
-          onPress={() => router.push('/(tasks)/create-task')}>
+          onPress={
+            tasks.filter(isTaskDueToday).length > 9
+              ? () => router.push('/(tasks)/soManyTasksWarning')
+              : () => router.push('/(tasks)/create-task')
+          }>
           <FabIcon as={AddIcon} color="white" />
           <FabLabel>Add Task</FabLabel>
         </Fab>

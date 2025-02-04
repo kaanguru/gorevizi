@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '~/utils/supabase';
 import { Success, TaskFormData } from '~/types';
+import { Tables } from '~/database.types';
 
 export function useCreateTask() {
   const queryClient = useQueryClient();
@@ -94,14 +95,28 @@ export function useToggleComplete() {
     onMutate: async (params) => {
       // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
       await queryClient.cancelQueries({ queryKey: ['tasks'] });
+      const previousTasks = queryClient.getQueryData<Tables<'tasks'>[]>(['tasks']);
+      // Optimistically update the task's is_complete status
+      queryClient.setQueryData(['tasks'], (old: Tables<'tasks'>[] | undefined) =>
+        (old || []).map((task) =>
+          task.id === params.taskId ? { ...task, is_complete: params.isComplete } : task
+        )
+      );
+
+      return { previousTasks };
     },
     onSuccess: () => {
       // Invalidate the query cache for the tasks list
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
     },
-    onError: (error) => {
+    onError: (error, variables, context) => {
+      if (context?.previousTasks) {
+        queryClient.setQueryData(['tasks'], context.previousTasks);
+      }
       console.error('Error toggling task completion:', error);
-      // Handle error appropriately, possibly with a toast or alert
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['tasks'] });
     },
   });
 }

@@ -85,7 +85,12 @@ export function TaskItem({
           </Checkbox>
           <Text className="ms-3 basis-5/6 text-typography-700">{task.title}</Text>
           {taskHasChecklistItems && !isCheckListItemsLoading && (
-            <Icon className="text-end text-typography-500" as={Waypoints} />
+            <>
+              <Text size="sm" className="me-2">
+                {checkListItemsLength}
+              </Text>
+              <Icon className="text-end text-typography-500" as={Waypoints} />
+            </>
           )}
           {isCheckListItemsLoading && <ActivityIndicator size="small" color="#0000ff" />}
           {task.notes && (

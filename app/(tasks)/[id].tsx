@@ -17,12 +17,14 @@ import Header from '~/components/Header';
 import { Button, ButtonText } from '~/components/ui/button';
 import { Badge, BadgeIcon, BadgeText } from '@/components/ui/badge';
 import getRepeatPeriodLabel from '~/utils/getRepeatPeriodLabel';
+import useChecklistItemMutations from '~/hooks/useCheckListMutations';
 
 export default function TaskDetailPage() {
   const { id: taskID } = useLocalSearchParams<{ id: string }>();
   const [task, setTask] = useState<Tables<'tasks'> | null>(null);
   const { data: checklistItems, isLoading: isChecklistItemsLoading } =
     useChecklistItemsQuery(taskID);
+  const { updateChecklistItemCompletion } = useChecklistItemMutations(taskID);
 
   useEffect(() => {
     async function fetchTask() {
@@ -97,7 +99,15 @@ export default function TaskDetailPage() {
             <Text className="text-muted.strong ">Routine Steps Checklist</Text>
             {checklistItems.map((item) => (
               <Box key={item.id} className="my-2 flex-row items-center py-2">
-                <Checkbox value={item.id.toString()} isChecked={item.is_complete} isDisabled={true}>
+                <Checkbox
+                  value={item.id.toString()}
+                  isChecked={item.is_complete}
+                  onPress={() =>
+                    updateChecklistItemCompletion({
+                      id: item.id,
+                      is_complete: !item.is_complete,
+                    })
+                  }>
                   <CheckboxIndicator size="lg" className="h-8 w-8">
                     <CheckboxIcon className="p-4" as={CheckIcon} />
                   </CheckboxIndicator>

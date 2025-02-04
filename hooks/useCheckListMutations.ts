@@ -1,3 +1,4 @@
+/* eslint-disable functional/prefer-immutable-types */
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Alert } from 'react-native';
 import { supabase } from '~/utils/supabase';
@@ -95,10 +96,34 @@ export default function useChecklistItemMutations(taskId: number | string) {
       Alert.alert('Error', error.message);
     },
   });
+  const updateChecklistItemCompletionMutation = useMutation({
+    async mutationFn({ id, is_complete }: { id: number; is_complete: boolean }) {
+      const { data, error } = await supabase
+        .from('checklistitems')
+        .update({ is_complete, updated_at: new Date().toISOString() })
+        .eq('id', id)
+        .select()
+        .single();
+
+      if (error) {
+        throw new Error(error.message);
+      }
+      return data;
+    },
+    async onSuccess() {
+      await queryClient.invalidateQueries({
+        queryKey: ['checklistItems', taskId],
+      });
+    },
+    onError(error) {
+      Alert.alert('Error', error.message);
+    },
+  });
 
   return {
     addChecklistItem: addChecklistItemMutation.mutateAsync,
     updateChecklistItem: updateChecklistItemMutation.mutateAsync,
     deleteChecklistItem: deleteChecklistItemMutation.mutateAsync,
+    updateChecklistItemCompletion: updateChecklistItemCompletionMutation.mutateAsync,
   };
 }
