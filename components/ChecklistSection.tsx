@@ -3,7 +3,7 @@ import DraggableItem from '~/components/DraggableItem';
 import { Box } from '~/components/ui/box';
 import { HStack } from '~/components/ui/hstack';
 import { Icon, AddIcon } from '~/components/ui/icon';
-import { Button } from '@/components/ui/button';
+import { Button, ButtonIcon, ButtonText } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
 import { VStack } from '~/components/ui/vstack';
 import { TaskFormData } from '~/types';
@@ -61,10 +61,10 @@ const ChecklistSection = ({
 
   return (
     <VStack space="md">
-      <HStack space="md" className="items-center px-2">
-        <Text>Add Routines</Text>
-        <Button size="md" variant="link" onPress={onAdd}>
-          <Icon as={AddIcon} className="text-typography-500" />
+      <HStack space="md" className="my-4 items-center px-2">
+        <Button size="md" variant="outline" action="secondary" onPress={onAdd}>
+          <ButtonText size="lg">Add Routines</ButtonText>
+          <ButtonIcon as={AddIcon} className="text-typography-500" />
         </Button>
       </HStack>
       <Box className="relative" style={{ height: items.length * 60 + 16 }}>

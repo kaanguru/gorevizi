@@ -17,7 +17,7 @@ import Animated, {
   withSpring,
 } from 'react-native-reanimated';
 import { ActivityIndicator } from 'react-native';
-
+import Markdown from 'react-native-markdown-display';
 interface TaskItemProps {
   task: Readonly<Tables<'tasks'>>;
   index: number;
@@ -98,7 +98,7 @@ export function TaskItem({
               <Text
                 numberOfLines={1}
                 ellipsizeMode="tail"
-                className="min-h-6 font-bold text-typography-700">
+                className=" overflow-hidden  text-typography-700">
                 {task.notes}
               </Text>
             </Box>

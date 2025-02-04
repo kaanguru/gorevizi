@@ -18,7 +18,7 @@ import { Button, ButtonText } from '~/components/ui/button';
 import { Badge, BadgeIcon, BadgeText } from '@/components/ui/badge';
 import getRepeatPeriodLabel from '~/utils/getRepeatPeriodLabel';
 import useChecklistItemMutations from '~/hooks/useCheckListMutations';
-
+import Markdown from 'react-native-markdown-display';
 export default function TaskDetailPage() {
   const { id: taskID } = useLocalSearchParams<{ id: string }>();
   const [task, setTask] = useState<Tables<'tasks'> | null>(null);
@@ -52,7 +52,7 @@ export default function TaskDetailPage() {
         </Heading>
         {task.notes && (
           <Text size="lg" className="p-4">
-            {task.notes}
+            <Markdown>{task.notes}</Markdown>
           </Text>
         )}
         <Divider />
