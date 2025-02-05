@@ -14,6 +14,7 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
+  withTiming,
 } from 'react-native-reanimated';
 import { ActivityIndicator, TextStyle } from 'react-native';
 import Markdown from 'react-native-markdown-display';
@@ -57,13 +58,20 @@ export function TaskItem({
       translateY.value = withSpring(0);
       pressed.value = false;
     });
-
+  const opacity = useSharedValue(1);
+  const handleFadeOut = () => {
+    opacity.value = withTiming(0, {
+      duration: 300,
+    });
+  };
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: translateY.value }],
     zIndex: isDragging.value ? 1 : 0,
+    opacity: opacity.value,
   }));
 
   const handleToggleComplete = () => {
+    handleFadeOut();
     onToggleComplete({ taskId: task.id, isComplete: !task.is_complete });
   };
   return (
