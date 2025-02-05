@@ -4,7 +4,6 @@ import { Pressable } from './ui/pressable';
 import { Text } from '@/components/ui/text';
 import { Tables } from '~/database.types';
 import useChecklistItems from '~/hooks/useCheckListQueries';
-
 import { Checkbox, CheckboxIcon, CheckboxIndicator } from './ui/checkbox';
 import { CheckIcon, Icon } from './ui/icon';
 import { Box } from './ui/box';
@@ -16,8 +15,9 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from 'react-native-reanimated';
-import { ActivityIndicator } from 'react-native';
+import { ActivityIndicator, TextStyle } from 'react-native';
 import Markdown from 'react-native-markdown-display';
+import shortenText from '~/utils/shortenText';
 interface TaskItemProps {
   task: Readonly<Tables<'tasks'>>;
   index: number;
@@ -94,13 +94,24 @@ export function TaskItem({
           )}
           {isCheckListItemsLoading && <ActivityIndicator size="small" color="#0000ff" />}
           {task.notes && (
-            <Box className="ms-safe-or-16 absolute bottom-0 left-0 right-0 bg-background-300 px-2">
-              <Text
-                numberOfLines={1}
-                ellipsizeMode="tail"
-                className=" overflow-hidden  text-typography-700">
-                {task.notes}
-              </Text>
+            <Box className="ms-safe-or-16 absolute bottom-0 left-2 right-0 -z-10 max-h-7 bg-background-300 px-2 py-0">
+              <Markdown
+                mergeStyle={false}
+                style={{
+                  body: {
+                    padding: 0,
+                    marginTop: -5,
+                    height: 40,
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                  },
+                  text: {
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                  },
+                }}>
+                {shortenText(task.notes)}
+              </Markdown>
             </Box>
           )}
         </Pressable>
