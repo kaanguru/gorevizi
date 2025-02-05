@@ -15,6 +15,7 @@ import useTasksQueries from '~/hooks/useTasksQueries';
 import { useToggleComplete } from '~/hooks/useTasksMutations';
 import useUpdateTaskPositions from '~/hooks/useUpdateTaskPositions';
 import { Text } from '~/components/ui/text';
+import LottieView from 'lottie-react-native';
 
 export default function TaskList() {
   const router = useRouter();
@@ -125,7 +126,21 @@ export default function TaskList() {
             data={filteredTasks}
             renderItem={renderTaskItem}
             keyExtractor={(item) => item.id.toString()}
-            ListEmptyComponent={<Text>No tasks available. Add some tasks from below button</Text>}
+            ListEmptyComponent={
+              <Box className="flex-1">
+                <LottieView
+                  autoPlay
+                  style={{
+                    width: 480,
+                    height: 480,
+                    alignSelf: 'center',
+                  }}
+                  source={require('~/assets/lottie/biri-birsey-desin.json')}
+                  resizeMode="cover"
+                />
+                <Text>No tasks available. Add some tasks from below button</Text>
+              </Box>
+            }
             refreshControl={
               <RefreshControl
                 refreshing={isRefetching}
