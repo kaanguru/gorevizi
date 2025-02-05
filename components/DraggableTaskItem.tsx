@@ -69,13 +69,10 @@ export function TaskItem({
     zIndex: isDragging.value ? 1 : 0,
     opacity: opacity.value,
   }));
-  const displayConfetti = () => {
-    console.log('YAŞASIN 🎉');
-  };
+
   const handleToggleComplete = () => {
     handleFadeOut();
     onToggleComplete({ taskId: task.id, isComplete: !task.is_complete });
-    displayConfetti();
   };
   return (
     <GestureDetector gesture={panGesture}>

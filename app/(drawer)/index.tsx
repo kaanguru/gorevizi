@@ -15,8 +15,8 @@ import useTasksQueries from '~/hooks/useTasksQueries';
 import { useToggleComplete } from '~/hooks/useTasksMutations';
 import useUpdateTaskPositions from '~/hooks/useUpdateTaskPositions';
 import { Text } from '~/components/ui/text';
-import LottieView from 'lottie-react-native';
-
+import Confetti from '~/components/lotties/Confetti';
+import BiriBirseyDesin from '~/components/lotties/BiriBirseyDesin';
 export default function TaskList() {
   const router = useRouter();
   const [isFiltered, setIsFiltered] = useState(true);
@@ -25,6 +25,7 @@ export default function TaskList() {
   const updateTaskPositionsMutation = useUpdateTaskPositions();
 
   const toggleComplete = useToggleComplete();
+  const [showConfetti, setConfetti] = useState(false);
 
   const filteredTasks = useMemo(
     () => (isFiltered ? tasks.filter(isTaskDueToday) : tasks),
@@ -81,6 +82,10 @@ export default function TaskList() {
         onTaskUpdate={handleTaskUpdate}
         onToggleComplete={({ taskId, isComplete }) => {
           toggleComplete.mutate({ taskId, isComplete });
+          setConfetti(true);
+          setTimeout(() => {
+            setConfetti(false);
+          }, 4000);
         }}
       />
     ),
@@ -112,9 +117,15 @@ export default function TaskList() {
       />
       <Container>
         {isLoading || isRefetching ? (
-          <Box className="flex-1 items-center justify-center">
-            <Spinner size="large" />
-          </Box>
+          showConfetti ? (
+            <Confetti />
+          ) : (
+            <Box className="flex-1 items-center justify-center">
+              <Spinner size="large" />
+            </Box>
+          )
+        ) : showConfetti ? (
+          <Confetti />
         ) : (
           <FlatList
             contentContainerStyle={{
@@ -128,16 +139,7 @@ export default function TaskList() {
             keyExtractor={(item) => item.id.toString()}
             ListEmptyComponent={
               <Box className="flex-1">
-                <LottieView
-                  autoPlay
-                  style={{
-                    width: 480,
-                    height: 480,
-                    alignSelf: 'center',
-                  }}
-                  source={require('~/assets/lottie/biri-birsey-desin.json')}
-                  resizeMode="cover"
-                />
+                <BiriBirseyDesin />
                 <Text>No tasks available. Add some tasks from below button</Text>
               </Box>
             }

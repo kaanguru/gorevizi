@@ -29,6 +29,9 @@ export const seedTasks = async (pieces: number) => {
       // randomly skip some notes
       notes: Math.random() > 0.6 ? faker.lorem.words({ min: 5, max: 16 }) : null,
       repeat_period: repeatType,
+      created_at: faker.date.past({ years: 2 }),
+      updated_at: faker.date.past({ years: 1 }),
+      is_complete: Math.random() > 0.6 ? true : false,
       repeat_on_wk: repeatType === 'Weekly' ? [getRandomDayOfWeek()] : null,
       repeat_frequency: getRandomFrequency(repeatType),
       user_id: user.id,
