@@ -19,12 +19,22 @@ import Confetti from '~/components/lotties/Confetti';
 import BiriBirseyDesin from '~/components/lotties/BiriBirseyDesin';
 import { Audio } from 'expo-av';
 const confettiSfxSource = require('../../assets/sound/confetti-sfx.mp3');
+const goreviziSoftSource = require('../../assets/sound/GorevIzi-soft-2.mp3');
+const goreviziNefesliSource = require('../../assets/sound/gorevizi-nefesli-2.mp3');
 export default function TaskList() {
   const [sound, setSound] = useState<Audio.Sound>();
+  const soundSources = [confettiSfxSource, goreviziSoftSource, goreviziNefesliSource];
 
+  // Helper function to get a random sound source
+  const getRandomSoundSource = useCallback(() => {
+    const randomIndex = Math.floor(Math.random() * soundSources.length);
+    return soundSources[randomIndex];
+  }, [soundSources]);
   const playSound = useCallback(async () => {
     try {
-      const { sound } = await Audio.Sound.createAsync(confettiSfxSource);
+      const selectedSoundSource = getRandomSoundSource();
+
+      const { sound } = await Audio.Sound.createAsync(selectedSoundSource);
       setSound(sound);
       await sound.playAsync();
     } catch (error) {
