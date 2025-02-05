@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { FlatList, Pressable, RefreshControl } from 'react-native';
 import { Stack, useFocusEffect, useRouter } from 'expo-router';
 import { supabase } from '~/utils/supabase';
@@ -17,7 +17,28 @@ import useUpdateTaskPositions from '~/hooks/useUpdateTaskPositions';
 import { Text } from '~/components/ui/text';
 import Confetti from '~/components/lotties/Confetti';
 import BiriBirseyDesin from '~/components/lotties/BiriBirseyDesin';
+import { Audio } from 'expo-av';
+const confettiSfxSource = require('../../assets/sound/confetti-sfx.mp3');
 export default function TaskList() {
+  const [sound, setSound] = useState<Audio.Sound>();
+
+  const playSound = useCallback(async () => {
+    try {
+      const { sound } = await Audio.Sound.createAsync(confettiSfxSource);
+      setSound(sound);
+      await sound.playAsync();
+    } catch (error) {
+      console.error('Error playing sound:', error);
+    }
+  }, []);
+  // Add cleanup effect
+  useEffect(() => {
+    return () => {
+      if (sound) {
+        sound.unloadAsync();
+      }
+    };
+  }, [sound]);
   const router = useRouter();
   const [isFiltered, setIsFiltered] = useState(true);
 
@@ -83,6 +104,8 @@ export default function TaskList() {
         onToggleComplete={({ taskId, isComplete }) => {
           toggleComplete.mutate({ taskId, isComplete });
           setConfetti(true);
+          playSound(); // Call the new playSound function
+
           setTimeout(() => {
             setConfetti(false);
           }, 4000);
