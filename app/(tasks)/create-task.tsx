@@ -53,7 +53,6 @@ export default function CreateTask() {
   };
 
   const handleAddChecklistItem = useCallback(() => {
-    console.log('Adding checklist item');
     setFormData((prev) => ({
       ...prev,
       checklistItems: [

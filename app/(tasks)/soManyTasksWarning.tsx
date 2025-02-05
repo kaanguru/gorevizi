@@ -2,8 +2,9 @@ import React from 'react';
 import { Text } from '~/components/ui/text';
 import { Card } from '~/components/ui/card';
 import Header from '~/components/Header';
-import { Button, ButtonText } from '~/components/ui/button';
+import { Button, ButtonIcon, ButtonText } from '~/components/ui/button';
 import { router } from 'expo-router';
+import { SmilePlus } from 'lucide-react-native';
 
 const WarningPage = () => {
   return (
@@ -18,7 +19,8 @@ const WarningPage = () => {
           Tasks are daily jobs or activities that will take more than 40 minutes...
         </Text>
         <Button size="lg" onPress={() => router.push('/(tasks)/create-task')}>
-          <ButtonText>Any way just add Task</ButtonText>
+          <ButtonText>I can handle more!</ButtonText>
+          <ButtonIcon as={SmilePlus} className="ms-3 text-typography-white"></ButtonIcon>
         </Button>
       </Card>
     </>

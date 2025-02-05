@@ -26,7 +26,7 @@ export function RepeatPeriodSelector({
     <Select
       selectedValue={repeatPeriod}
       onValueChange={setRepeatPeriod as () => void}
-      className="h-6">
+      className="my-4 h-6">
       <SelectTrigger size="lg">
         <SelectInput size="md" className="py-2 text-base" placeholder="Select repeat period" />
         <SelectIcon as={ChevronDownIcon} />
