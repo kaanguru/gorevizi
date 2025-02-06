@@ -3,33 +3,35 @@ import { Alert, ScrollView } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '~/utils/supabase';
 import { RepeatPeriod, TaskFormData } from '~/types';
-import Header from '~/components/Header';
-import WeekdaySelector from '~/components/WeekDaySelector';
+
+import { supabase } from '~/utils/supabase';
+import updateTask from '~/utils/tasks/updateTask';
+
+import { useTaskById } from '~/hooks/useTasksQueries';
+import useChecklistItems from '~/hooks/useCheckListQueries';
+
 import { RepeatFrequencySlider } from '~/components/RepeatFrequencySlider';
 import ChecklistSection from '~/components/ChecklistSection';
-import { TrashIcon } from '~/components/ui/icon';
 import { Box } from '@/components/ui/box';
 import { Button, ButtonIcon, ButtonText } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
-
+import { TrashIcon } from '~/components/ui/icon';
 import { Checkbox, CheckboxIndicator, CheckboxIcon, CheckboxLabel } from '@/components/ui/checkbox';
 import { HStack } from '@/components/ui/hstack';
-import { VStack } from '@/components/ui/vstack';
-import useTasksQuery, { useTaskById } from '~/hooks/useTasksQueries';
-import useChecklistItems from '~/hooks/useCheckListQueries';
-import updateTask from '~/utils/tasks/updateTask';
 import { Spinner } from '~/components/ui/spinner';
+import { VStack } from '@/components/ui/vstack';
 import { FormInput } from '~/components/FormInput';
-import { RepeatPeriodSelector } from '~/components/RepeatPeriodSelector';
+import RepeatPeriodSelector from '~/components/RepeatPeriodSelector';
+import WeekdaySelector from '~/components/WeekDaySelector';
+import Header from '~/components/Header';
 
 export default function EditTask() {
   const router = useRouter();
   const { id: taskID } = useLocalSearchParams<{ id: string }>();
-  const queryClient = useQueryClient();
   const { checkListItems, isCheckListItemsLoading, isCheckListItemsError } =
     useChecklistItems(taskID);
+  const { data: task, isLoading, isError, error: taskError } = useTaskById(taskID);
 
   const [formData, setFormData] = useState<TaskFormData>({
     title: '',
@@ -44,12 +46,9 @@ export default function EditTask() {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [initialLoad, setInitialLoad] = useState(true);
 
-  const { data: task, isLoading, isError, error } = useTaskById(taskID);
-  // TODO: instead of all data fetch only the task with the id
   useEffect(() => {
     const loadTaskData = async () => {
       if (task) {
-        // Update form data with checklist items
         setFormData({
           title: task.title || '',
           notes: task.notes || '',
@@ -73,6 +72,7 @@ export default function EditTask() {
     loadTaskData();
   }, [task, taskID, checkListItems]);
 
+  const queryClient = useQueryClient();
   const updateMutation = useMutation({
     mutationFn: async (formData: Readonly<TaskFormData>) => {
       if (!taskID) throw new Error('No task ID');

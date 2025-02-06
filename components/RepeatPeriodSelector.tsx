@@ -6,19 +6,17 @@ import {
   SelectPortal,
   SelectBackdrop,
   SelectContent,
-  SelectDragIndicatorWrapper,
-  SelectDragIndicator,
   SelectItem,
 } from '@/components/ui/select';
 import { ChevronDownIcon } from './ui/icon';
-import { RepeatPeriod } from '~/types'; // Import the type
+import { RepeatPeriod } from '~/types';
 
 export interface RepeatPeriodSelectorProps {
-  repeatPeriod: RepeatPeriod | ''; // Use the imported type
-  setRepeatPeriod: (period: RepeatPeriod | '') => void; // Use the imported type
+  repeatPeriod: RepeatPeriod | '';
+  setRepeatPeriod: (period: RepeatPeriod | '') => void;
 }
 
-export function RepeatPeriodSelector({
+export default function RepeatPeriodSelector({
   repeatPeriod,
   setRepeatPeriod,
 }: Readonly<RepeatPeriodSelectorProps>) {
