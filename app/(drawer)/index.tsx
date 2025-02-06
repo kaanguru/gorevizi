@@ -12,19 +12,23 @@ import { TaskItem } from '~/components/DraggableTaskItem';
 import reOrder from '~/utils/tasks/reOrder';
 import isTaskDueToday from '~/utils/tasks/isTaskDueToday';
 import useTasksQueries from '~/hooks/useTasksQueries';
+import useFilteredTasks from '~/hooks/useFilteredTasks';
+import useRefreshTasks from '~/hooks/useRefreshTasks';
 
 import { useToggleComplete, useUpdateTask } from '~/hooks/useTasksMutations';
 import useUpdateTaskPositions from '~/hooks/useUpdateTaskPositions';
 import useTaskCompleteSound from '~/hooks/useTaskCompleteSound';
 import { Text } from '~/components/ui/text';
 import Confetti from '~/components/lotties/Confetti';
-import BiriBirseyDesin from '~/components/lotties/BiriBirseyDesin';
+import TaskListEmptyComponent from '~/components/TaskListEmptyComponent';
 
 export default function TaskList() {
   const router = useRouter();
   const [isFiltered, setIsFiltered] = useState(true);
 
   const { data: tasks = [], isLoading, isRefetching, refetch } = useTasksQueries();
+  const { filteredTasks } = useFilteredTasks(tasks, isFiltered);
+  const { handleRefresh, isRefreshing } = useRefreshTasks();
   const updateTaskPositionsMutation = useUpdateTaskPositions();
 
   const toggleComplete = useToggleComplete();
@@ -32,26 +36,12 @@ export default function TaskList() {
   const [showConfetti, setConfetti] = useState(false);
   const { playSound } = useTaskCompleteSound();
 
-  const filteredTasks = useMemo(
-    () => (isFiltered ? tasks.filter(isTaskDueToday) : tasks),
-    [isFiltered, tasks]
-  );
-
   const handleReorder = useCallback(
     (from: number, to: number) => {
-      const currentTasks = tasks;
-      const currentFilteredTasks = isFiltered ? currentTasks.filter(isTaskDueToday) : currentTasks;
-      const sourceArray = [...currentFilteredTasks];
-
-      if (sourceArray.length === 0) {
-        console.error('No tasks to reorder');
-        return;
-      }
-
-      const reorderedTasks = reOrder(from, to, sourceArray);
+      const reorderedTasks = reOrder(from, to, isFiltered ? [...filteredTasks] : [...tasks]);
       updateTaskPositionsMutation.mutate(reorderedTasks);
     },
-    [isFiltered, updateTaskPositionsMutation]
+    [filteredTasks, updateTaskPositionsMutation]
   );
 
   const handleFilterTodayPress = useCallback(() => {
@@ -67,8 +57,8 @@ export default function TaskList() {
 
   useFocusEffect(
     useCallback(() => {
-      refetch();
-    }, [refetch])
+      handleRefresh();
+    }, [handleRefresh])
   );
 
   const handleOnToggleComplete = ({
@@ -147,12 +137,7 @@ export default function TaskList() {
             data={filteredTasks}
             renderItem={renderTaskItem}
             keyExtractor={(item) => item.id.toString()}
-            ListEmptyComponent={
-              <Box className="flex-1">
-                <BiriBirseyDesin />
-                <Text>No tasks available. Add some tasks from below button</Text>
-              </Box>
-            }
+            ListEmptyComponent={<TaskListEmptyComponent />}
             refreshControl={
               <RefreshControl
                 refreshing={isRefetching}

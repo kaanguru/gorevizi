@@ -34,7 +34,6 @@ async function fetchCompletedTasks(): Promise<Tables<'tasks'>[]> {
   if (error) throw new Error(error.message);
   return data;
 }
-
 async function fetchAllTasks(): Promise<Tables<'tasks'>[]> {
   const { data, error } = await supabase
     .from('tasks')

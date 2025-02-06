@@ -2,9 +2,9 @@ import { useEffect, useCallback, useState } from 'react';
 import { Audio } from 'expo-av';
 
 const soundSources = [
-  require('../assets/sound/confetti-sfx.mp3'),
-  require('../assets/sound/GorevIzi-soft-2.mp3'),
-  require('../assets/sound/gorevizi-nefesli-2.mp3'),
+  require('../assets/sound/confetti/sfx.mp3'),
+  require('../assets/sound/confetti/soft.mp3'),
+  require('../assets/sound/confetti/wind.mp3'),
 ];
 
 export default function useTaskCompleteSound() {
