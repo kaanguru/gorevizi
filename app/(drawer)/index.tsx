@@ -15,7 +15,7 @@ import useTasksQueries from '~/hooks/useTasksQueries';
 import useFilteredTasks from '~/hooks/useFilteredTasks';
 import useRefreshTasks from '~/hooks/useRefreshTasks';
 
-import { useToggleComplete, useUpdateTask } from '~/hooks/useTasksMutations';
+import { useToggleComplete } from '~/hooks/useTasksMutations';
 import useUpdateTaskPositions from '~/hooks/useUpdateTaskPositions';
 import useTaskCompleteSound from '~/hooks/useTaskCompleteSound';
 import { Text } from '~/components/ui/text';
@@ -32,7 +32,6 @@ export default function TaskList() {
   const updateTaskPositionsMutation = useUpdateTaskPositions();
 
   const toggleComplete = useToggleComplete();
-  const updateTaskMutation = useUpdateTask();
   const [showConfetti, setConfetti] = useState(false);
   const { playSound } = useTaskCompleteSound();
 
@@ -41,19 +40,12 @@ export default function TaskList() {
       const reorderedTasks = reOrder(from, to, isFiltered ? [...filteredTasks] : [...tasks]);
       updateTaskPositionsMutation.mutate(reorderedTasks);
     },
-    [filteredTasks, updateTaskPositionsMutation]
+    [filteredTasks, updateTaskPositionsMutation, tasks, isFiltered]
   );
 
   const handleFilterTodayPress = useCallback(() => {
     setIsFiltered(!isFiltered);
   }, [isFiltered]);
-
-  const handleTaskUpdate = useCallback(
-    async (updatedTask: Readonly<Tables<'tasks'>>): Promise<void> => {
-      updateTaskMutation.mutate(updatedTask);
-    },
-    [updateTaskMutation]
-  );
 
   useFocusEffect(
     useCallback(() => {
@@ -85,11 +77,10 @@ export default function TaskList() {
           });
         }}
         onReorder={handleReorder}
-        onTaskUpdate={handleTaskUpdate}
         onToggleComplete={handleOnToggleComplete}
       />
     ),
-    [handleReorder, handleTaskUpdate, handleOnToggleComplete]
+    [handleReorder, handleOnToggleComplete]
   );
 
   return (
