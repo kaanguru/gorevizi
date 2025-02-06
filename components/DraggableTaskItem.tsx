@@ -2,7 +2,7 @@
 import React from 'react';
 import { Pressable } from './ui/pressable';
 import { Text } from '@/components/ui/text';
-import { Tables } from '~/database.types';
+import { TaskItemProps } from '~/types';
 import useChecklistItems from '~/hooks/useCheckListQueries';
 import { Checkbox, CheckboxIcon, CheckboxIndicator } from './ui/checkbox';
 import { CheckIcon, Icon } from './ui/icon';
@@ -19,14 +19,6 @@ import Animated, {
 import { ActivityIndicator, TextStyle } from 'react-native';
 import Markdown from 'react-native-markdown-display';
 import shortenText from '~/utils/shortenText';
-interface TaskItemProps {
-  task: Readonly<Tables<'tasks'>>;
-  index: number;
-  onTaskUpdate: (task: Readonly<Tables<'tasks'>>) => Promise<void>;
-  onReorder: (from: number, to: number) => void;
-  onToggleComplete: (params: Readonly<{ taskId: number; isComplete: boolean }>) => void;
-  onPress: () => void;
-}
 
 export function TaskItem({
   task,

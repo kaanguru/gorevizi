@@ -52,3 +52,12 @@ export type {
   Item,
   TaskFilter,
 };
+
+export interface TaskItemProps {
+  task: Readonly<Tables<'tasks'>>;
+  index: number;
+  onTaskUpdate: (task: Readonly<Tables<'tasks'>>) => Promise<void>;
+  onReorder: (from: number, to: number) => void;
+  onToggleComplete: (params: Readonly<{ taskId: number; isComplete: boolean }>) => void;
+  onPress: () => void;
+}

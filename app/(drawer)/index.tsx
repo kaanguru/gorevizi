@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { FlatList, Pressable, RefreshControl } from 'react-native';
 import { Stack, useFocusEffect, useRouter } from 'expo-router';
-import { supabase } from '~/utils/supabase';
 import { Tables } from '~/database.types';
+
 import { Fab, FabLabel, FabIcon } from '@/components/ui/fab';
 import { Container } from '~/components/Container';
 import { Box } from '~/components/ui/box';
@@ -12,43 +12,15 @@ import { TaskItem } from '~/components/DraggableTaskItem';
 import reOrder from '~/utils/tasks/reOrder';
 import isTaskDueToday from '~/utils/tasks/isTaskDueToday';
 import useTasksQueries from '~/hooks/useTasksQueries';
-import { useToggleComplete } from '~/hooks/useTasksMutations';
+
+import { useToggleComplete, useUpdateTask } from '~/hooks/useTasksMutations';
 import useUpdateTaskPositions from '~/hooks/useUpdateTaskPositions';
+import useTaskCompleteSound from '~/hooks/useTaskCompleteSound';
 import { Text } from '~/components/ui/text';
 import Confetti from '~/components/lotties/Confetti';
 import BiriBirseyDesin from '~/components/lotties/BiriBirseyDesin';
-import { Audio } from 'expo-av';
-const confettiSfxSource = require('../../assets/sound/confetti-sfx.mp3');
-const goreviziSoftSource = require('../../assets/sound/GorevIzi-soft-2.mp3');
-const goreviziNefesliSource = require('../../assets/sound/gorevizi-nefesli-2.mp3');
+
 export default function TaskList() {
-  const [sound, setSound] = useState<Audio.Sound>();
-  const soundSources = [confettiSfxSource, goreviziSoftSource, goreviziNefesliSource];
-
-  // Helper function to get a random sound source
-  const getRandomSoundSource = useCallback(() => {
-    const randomIndex = Math.floor(Math.random() * soundSources.length);
-    return soundSources[randomIndex];
-  }, [soundSources]);
-  const playSound = useCallback(async () => {
-    try {
-      const selectedSoundSource = getRandomSoundSource();
-
-      const { sound } = await Audio.Sound.createAsync(selectedSoundSource);
-      setSound(sound);
-      await sound.playAsync();
-    } catch (error) {
-      console.error('Error playing sound:', error);
-    }
-  }, []);
-  // Add cleanup effect
-  useEffect(() => {
-    return () => {
-      if (sound) {
-        sound.unloadAsync();
-      }
-    };
-  }, [sound]);
   const router = useRouter();
   const [isFiltered, setIsFiltered] = useState(true);
 
@@ -56,7 +28,9 @@ export default function TaskList() {
   const updateTaskPositionsMutation = useUpdateTaskPositions();
 
   const toggleComplete = useToggleComplete();
+  const updateTaskMutation = useUpdateTask();
   const [showConfetti, setConfetti] = useState(false);
+  const { playSound } = useTaskCompleteSound();
 
   const filteredTasks = useMemo(
     () => (isFiltered ? tasks.filter(isTaskDueToday) : tasks),
@@ -84,19 +58,30 @@ export default function TaskList() {
     setIsFiltered(!isFiltered);
   }, [isFiltered]);
 
-  const handleTaskUpdate = useCallback(async (updatedTask: Readonly<Tables<'tasks'>>) => {
-    try {
-      await supabase.from('tasks').update(updatedTask).eq('id', updatedTask.id).select().single();
-    } catch (error) {
-      console.error('Task update failed:', error);
-    }
-  }, []);
+  const handleTaskUpdate = useCallback(
+    async (updatedTask: Readonly<Tables<'tasks'>>): Promise<void> => {
+      updateTaskMutation.mutate(updatedTask);
+    },
+    [updateTaskMutation]
+  );
 
   useFocusEffect(
     useCallback(() => {
       refetch();
     }, [refetch])
   );
+
+  const handleOnToggleComplete = ({
+    taskId,
+    isComplete,
+  }: Readonly<{ taskId: number; isComplete: boolean }>) => {
+    toggleComplete.mutate({ taskId, isComplete });
+    setConfetti(true);
+    playSound();
+    setTimeout(() => {
+      setConfetti(false);
+    }, 4000);
+  };
 
   const renderTaskItem = useCallback(
     ({ item, index }: Readonly<{ item: Tables<'tasks'>; index: number }>) => (
@@ -111,18 +96,10 @@ export default function TaskList() {
         }}
         onReorder={handleReorder}
         onTaskUpdate={handleTaskUpdate}
-        onToggleComplete={({ taskId, isComplete }) => {
-          toggleComplete.mutate({ taskId, isComplete });
-          setConfetti(true);
-          playSound(); // Call the new playSound function
-
-          setTimeout(() => {
-            setConfetti(false);
-          }, 4000);
-        }}
+        onToggleComplete={handleOnToggleComplete}
       />
     ),
-    [handleReorder, handleTaskUpdate, toggleComplete]
+    [handleReorder, handleTaskUpdate, handleOnToggleComplete]
   );
 
   return (

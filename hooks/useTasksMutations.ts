@@ -52,6 +52,30 @@ export function useCreateTask() {
   });
 }
 
+export function useUpdateTask() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (updatedTask: Readonly<Tables<'tasks'>>) => {
+      const { error } = await supabase
+        .from('tasks')
+        .update(updatedTask)
+        .eq('id', updatedTask.id)
+        .select()
+        .single();
+
+      if (error) throw new Error('Failed to update task. Please try again.');
+    },
+    onSuccess: () => {
+      // Invalidate the query cache for the tasks list
+      queryClient.invalidateQueries({ queryKey: ['tasks'] });
+    },
+    onError: (error) => {
+      console.error('Error updating task:', error);
+      // Handle error appropriately, possibly with a toast or alert
+    },
+  });
+}
+
 export function useToggleComplete() {
   const queryClient = useQueryClient();
 
