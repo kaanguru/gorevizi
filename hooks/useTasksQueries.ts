@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { Tables } from '~/database.types';
 import { supabase } from '~/utils/supabase';
-import { TaskFilter } from '~/types';
+import { TaskFilter, Task } from '~/types';
 
 export default function useTasksQuery(filter: TaskFilter = 'not-completed') {
   return useQuery({
@@ -43,9 +43,25 @@ async function fetchAllTasks(): Promise<Tables<'tasks'>[]> {
   if (error) throw new Error(error.message);
   return data;
 }
-export async function fetchTaskById(id: string | number): Promise<Tables<'tasks'> | null> {
-  const { data, error } = await supabase.from('tasks').select('*').eq('id', +id).single();
+export function useTaskById(taskId: string | number) {
+  return useQuery<Task, Error>({
+    queryKey: ['task', taskId],
+    queryFn: async () => {
+      const { data, error } = await supabase.from('tasks').select('*').eq('id', +taskId).single();
 
-  if (error) throw new Error(error.message);
-  return data;
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      return data;
+    },
+    enabled: !!taskId, // Only run the query if taskId is truthy
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    gcTime: 1000 * 60 * 10, // 10 minutes
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
+    retry: 3, // Retry on failure up to 3 times
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff with a max of 30 seconds
+  });
 }

@@ -17,7 +17,7 @@ import { Text } from '@/components/ui/text';
 import { Checkbox, CheckboxIndicator, CheckboxIcon, CheckboxLabel } from '@/components/ui/checkbox';
 import { HStack } from '@/components/ui/hstack';
 import { VStack } from '@/components/ui/vstack';
-import useTasksQuery from '~/hooks/useTasksQueries';
+import useTasksQuery, { useTaskById } from '~/hooks/useTasksQueries';
 import useChecklistItems from '~/hooks/useCheckListQueries';
 import updateTask from '~/utils/tasks/updateTask';
 import { Spinner } from '~/components/ui/spinner';
@@ -44,37 +44,34 @@ export default function EditTask() {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [initialLoad, setInitialLoad] = useState(true);
 
-  const { data: taskData, isLoading } = useTasksQuery('all');
+  const { data: task, isLoading, isError, error } = useTaskById(taskID);
   // TODO: instead of all data fetch only the task with the id
   useEffect(() => {
     const loadTaskData = async () => {
-      if (taskData && taskID) {
-        const task = taskData.find((t) => t.id === +taskID);
-        if (task) {
-          // Update form data with checklist items
-          setFormData({
-            title: task.title || '',
-            notes: task.notes || '',
-            repeatPeriod: task.repeat_period || '',
-            repeatFrequency: task.repeat_frequency || 1,
-            repeatOnWk: task.repeat_on_wk || [],
-            customStartDate: task.created_at ? new Date(task.created_at) : null,
-            isCustomStartDateEnabled: !!task.created_at,
-            checklistItems:
-              checkListItems?.map((item) => ({
-                id: item.id.toString(),
-                content: item.content,
-                isComplete: item.is_complete,
-                position: item.position ?? 0,
-              })) || [],
-          });
-          setInitialLoad(false);
-        }
+      if (task) {
+        // Update form data with checklist items
+        setFormData({
+          title: task.title || '',
+          notes: task.notes || '',
+          repeatPeriod: task.repeat_period || '',
+          repeatFrequency: task.repeat_frequency || 1,
+          repeatOnWk: task.repeat_on_wk || [],
+          customStartDate: task.created_at ? new Date(task.created_at) : null,
+          isCustomStartDateEnabled: !!task.created_at,
+          checklistItems:
+            checkListItems?.map((item) => ({
+              id: item.id.toString(),
+              content: item.content,
+              isComplete: item.is_complete,
+              position: item.position ?? 0,
+            })) || [],
+        });
+        setInitialLoad(false);
       }
     };
 
     loadTaskData();
-  }, [taskData, taskID, checkListItems]);
+  }, [task, taskID, checkListItems]);
 
   const updateMutation = useMutation({
     mutationFn: async (formData: Readonly<TaskFormData>) => {

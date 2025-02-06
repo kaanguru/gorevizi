@@ -1,7 +1,5 @@
-import { useEffect, useState } from 'react';
 import { router, useLocalSearchParams } from 'expo-router';
-import { fetchTaskById } from '~/hooks/useTasksQueries';
-import { Tables } from '~/database.types';
+import { useTaskById } from '~/hooks/useTasksQueries';
 import useChecklistItemsQuery from '~/hooks/useCheckListQueries';
 import { Box } from '~/components/ui/box';
 import { Text } from '~/components/ui/text';
@@ -19,21 +17,14 @@ import { Badge, BadgeIcon, BadgeText } from '@/components/ui/badge';
 import getRepeatPeriodLabel from '~/utils/getRepeatPeriodLabel';
 import useChecklistItemMutations from '~/hooks/useCheckListMutations';
 import Markdown from 'react-native-markdown-display';
+
 export default function TaskDetailPage() {
   const { id: taskID } = useLocalSearchParams<{ id: string }>();
-  const [task, setTask] = useState<Tables<'tasks'> | null>(null);
   const { data: checklistItems, isLoading: isChecklistItemsLoading } =
     useChecklistItemsQuery(taskID);
   const { updateChecklistItemCompletion } = useChecklistItemMutations(taskID);
 
-  useEffect(() => {
-    async function fetchTask() {
-      const taskData = await fetchTaskById(taskID);
-      setTask(taskData);
-    }
-
-    fetchTask();
-  }, [taskID]);
+  const { data: task, isLoading, isError, error } = useTaskById(taskID);
 
   if (!task || isChecklistItemsLoading) {
     return (
@@ -102,7 +93,7 @@ export default function TaskDetailPage() {
                 <Checkbox
                   value={item.id.toString()}
                   isChecked={item.is_complete}
-                  onPress={() =>
+                  onChange={() =>
                     updateChecklistItemCompletion({
                       id: item.id,
                       is_complete: !item.is_complete,
@@ -111,7 +102,7 @@ export default function TaskDetailPage() {
                   <CheckboxIndicator size="lg" className="h-8 w-8">
                     <CheckboxIcon className="p-4" as={CheckIcon} />
                   </CheckboxIndicator>
-                  <Text>{item.content}</Text>
+                  <CheckboxLabel>{item.content}</CheckboxLabel>
                 </Checkbox>
               </Box>
             ))}
