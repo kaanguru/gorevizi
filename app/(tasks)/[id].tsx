@@ -1,25 +1,28 @@
-import { router, useLocalSearchParams, useRouter } from 'expo-router';
+import React from 'react';
+import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
+import { ScrollView } from 'react-native';
+import Markdown from 'react-native-markdown-display';
+
+import getRepeatPeriodLabel from '~/utils/getRepeatPeriodLabel';
 import { useTaskById } from '~/hooks/useTasksQueries';
+import { useDeleteTask, useToggleComplete } from '~/hooks/useTasksMutations';
 import useChecklistItemsQuery from '~/hooks/useCheckListQueries';
+import useChecklistItemMutations from '~/hooks/useCheckListMutations';
+
 import { Box } from '~/components/ui/box';
 import { Text } from '~/components/ui/text';
-import { ScrollView } from 'react-native';
 import { VStack } from '~/components/ui/vstack';
 import { Heading } from '~/components/ui/heading';
 import { Spinner } from '~/components/ui/spinner';
 import { Divider } from '~/components/ui/divider';
 import { Checkbox, CheckboxIndicator, CheckboxLabel, CheckboxIcon } from '@/components/ui/checkbox';
 import { CheckIcon, Icon } from '@/components/ui/icon';
-import React from 'react';
-import Header from '~/components/Header';
-import { Button, ButtonText } from '~/components/ui/button';
-import { Badge, BadgeIcon, BadgeText } from '@/components/ui/badge';
-import getRepeatPeriodLabel from '~/utils/getRepeatPeriodLabel';
-import useChecklistItemMutations from '~/hooks/useCheckListMutations';
-import Markdown from 'react-native-markdown-display';
-import { Pencil } from 'lucide-react-native';
+import { Pencil, Trash2 } from 'lucide-react-native';
 import { HStack } from '~/components/ui/hstack';
+import { Badge } from '@/components/ui/badge';
 import { Pressable } from '~/components/ui/pressable';
+
+import Header from '~/components/Header';
 
 export default function TaskDetailPage() {
   const router = useRouter();
@@ -28,9 +31,13 @@ export default function TaskDetailPage() {
   const { data: checklistItems, isLoading: isChecklistItemsLoading } =
     useChecklistItemsQuery(taskID);
   const { updateChecklistItemCompletion } = useChecklistItemMutations(taskID);
-
-  const { data: task, isLoading, isError, error } = useTaskById(taskID);
-
+  const { data: task, isLoading, isError, error, refetch } = useTaskById(taskID);
+  const { mutate: deleteTask } = useDeleteTask();
+  useFocusEffect(
+    React.useCallback(() => {
+      refetch();
+    }, [refetch])
+  );
   if (!task || isChecklistItemsLoading) {
     return (
       <Box className="flex-1 items-center justify-center">
@@ -38,14 +45,39 @@ export default function TaskDetailPage() {
       </Box>
     );
   }
+  if (isError) {
+    return (
+      <Box className="flex-1 items-center justify-center">
+        <Text>Error: {error.message}</Text>
+      </Box>
+    );
+  }
+
+  // Added null check for task
+  if (!task) {
+    return (
+      <Box className="flex-1 items-center justify-center">
+        <Text>Task not found.</Text>
+      </Box>
+    );
+  }
+  const handleDeleteTask = (taskID: string): void => {
+    //TODO: ADD Confirmation dialog
+
+    deleteTask(taskID);
+    router.push('/(drawer)/');
+  };
 
   return (
-    <ScrollView>
-      <VStack space="xl" className="flex-1 bg-white">
-        <HStack className="items-center justify-between ">
+    <ScrollView className="flex-1 bg-background-50">
+      <VStack space="xl" className="flex-1 bg-background-50">
+        <HStack className="place-items-end justify-items-end ">
           <Header headerTitle="" />
           <Pressable onPress={() => router.push(`/(tasks)/edit/${taskID}`)}>
             <Icon size="xl" className="mx-5 my-0  py-0 text-typography-500" as={Pencil} />
+          </Pressable>
+          <Pressable onPress={() => handleDeleteTask(taskID)}>
+            <Icon size="xl" className="mx-5 my-0  py-0 text-typography-500" as={Trash2} />
           </Pressable>
         </HStack>
         <Heading size="2xl" className="justify-self-center p-4 text-center">
@@ -60,7 +92,6 @@ export default function TaskDetailPage() {
 
         {/* Task Status */}
         <VStack className="items-center px-4" space="xl">
-          {/* TODO: Add a button to mark the task as complete or incomplete */}
           <Text size="md" bold>
             {task.is_complete ? 'Completed' : 'Not Completed'}
           </Text>
@@ -79,15 +110,15 @@ export default function TaskDetailPage() {
               </Text>
             </VStack>
             {task.repeat_on_wk && task.repeat_on_wk.length > 0 && (
-              <VStack>
+              <HStack space="sm" className="flex-wrap justify-center">
                 {task.repeat_on_wk.map((day) => (
-                  <Badge key={day} variant="outline" className="px-2 py-1">
-                    <Text size="sm" className="text-gray.700">
+                  <Badge key={day} variant="outline" className="my-3 p-1">
+                    <Text size="md" bold className="text-gray.700 p-3">
                       {day}
                     </Text>
                   </Badge>
                 ))}
-              </VStack>
+              </HStack>
             )}
           </VStack>
         )}

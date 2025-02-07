@@ -2,14 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { Alert, ScrollView } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { RepeatPeriod, TaskFormData } from '~/types';
+import { RepeatPeriod, Task, TaskFormData } from '~/types';
 
 import { supabase } from '~/utils/supabase';
-import updateTask from '~/utils/tasks/updateTask';
 
 import { useTaskById } from '~/hooks/useTasksQueries';
 import useChecklistItems from '~/hooks/useCheckListQueries';
+import { useUpdateTask, useDeleteTask, useToggleComplete } from '~/hooks/useTasksMutations';
 
 import { RepeatFrequencySlider } from '~/components/RepeatFrequencySlider';
 import ChecklistSection from '~/components/ChecklistSection';
@@ -25,13 +24,22 @@ import { FormInput } from '~/components/FormInput';
 import RepeatPeriodSelector from '~/components/RepeatPeriodSelector';
 import WeekdaySelector from '~/components/WeekDaySelector';
 import Header from '~/components/Header';
+import { Tables } from '~/database.types';
+
+// In component props:
+type EditTaskProps = {
+  initialTask: Tables<'tasks'>;
+  checklistItems: Tables<'checklistitems'>[];
+};
 
 export default function EditTask() {
   const router = useRouter();
   const { id: taskID } = useLocalSearchParams<{ id: string }>();
   const { checkListItems, isCheckListItemsLoading, isCheckListItemsError } =
     useChecklistItems(taskID);
-  const { data: task, isLoading, isError, error: taskError } = useTaskById(taskID);
+  const { data: theTask, isLoading, isError, error: taskError } = useTaskById(taskID);
+  const updateTaskMutation = useUpdateTask();
+  const deleteTaskMutation = useDeleteTask();
 
   const [formData, setFormData] = useState<TaskFormData>({
     title: '',
@@ -48,15 +56,15 @@ export default function EditTask() {
 
   useEffect(() => {
     const loadTaskData = async () => {
-      if (task) {
+      if (theTask) {
         setFormData({
-          title: task.title || '',
-          notes: task.notes || '',
-          repeatPeriod: task.repeat_period || '',
-          repeatFrequency: task.repeat_frequency || 1,
-          repeatOnWk: task.repeat_on_wk || [],
-          customStartDate: task.created_at ? new Date(task.created_at) : null,
-          isCustomStartDateEnabled: !!task.created_at,
+          title: theTask.title || '',
+          notes: theTask.notes || '',
+          repeatPeriod: theTask.repeat_period || '',
+          repeatFrequency: theTask.repeat_frequency || 1,
+          repeatOnWk: theTask.repeat_on_wk || [],
+          customStartDate: theTask.created_at ? new Date(theTask.created_at) : null,
+          isCustomStartDateEnabled: !!theTask.created_at,
           checklistItems:
             checkListItems?.map((item) => ({
               id: item.id.toString(),
@@ -70,80 +78,46 @@ export default function EditTask() {
     };
 
     loadTaskData();
-  }, [task, taskID, checkListItems]);
+  }, [theTask, taskID, checkListItems]);
 
-  const queryClient = useQueryClient();
-  const updateMutation = useMutation({
-    mutationFn: async (formData: Readonly<TaskFormData>) => {
-      if (!taskID) throw new Error('No task ID');
-
-      const updatedTask = await updateTask(+taskID, {
-        title: formData.title.trim(),
-        notes: formData.notes.trim() || null,
-        created_at: (formData.customStartDate || new Date()).toISOString(),
-        repeat_on_wk: formData.repeatOnWk.length > 0 ? formData.repeatOnWk : null,
-        repeat_frequency: formData.repeatFrequency || null,
-        repeat_period: formData.repeatPeriod || null,
-      });
-
-      if (!updatedTask) throw new Error('Failed to update task');
-
-      const { error: deleteError } = await supabase
-        .from('checklistitems')
-        .delete()
-        .eq('task_id', +taskID);
-
-      if (deleteError) throw new Error('Failed to clear existing checklist items');
-
-      if (formData.checklistItems.length > 0) {
-        const { error: insertError } = await supabase.from('checklistitems').insert(
-          formData.checklistItems.map((item, index) => ({
-            task_id: +taskID,
-            content: item.content.trim(),
-            position: index,
-            is_complete: item.isComplete || false,
-          }))
-        );
-
-        if (insertError) throw new Error('Failed to update checklist items');
-      }
-
-      return updatedTask;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['tasks'] });
-      router.back();
-    },
-    onError: (error) => {
-      console.error('Error updating task:', error);
-      Alert.alert('Error', error.message || 'Failed to update task');
-    },
-  });
-
-  const handleSave = async () => {
-    if (!formData.title.trim()) {
-      Alert.alert('Error', 'Title is required');
+  const handleSave = () => {
+    if (!theTask) {
+      Alert.alert('Error', 'Task data is not available');
       return;
     }
-    if (formData.checklistItems.some((item) => !item.content.trim())) {
-      Alert.alert('Error', 'All checklist items must have content');
-      return;
-    }
-    updateMutation.mutate(formData);
+    // Convert form data to Task type
+    const taskToUpdate: Task = {
+      // You'll need to preserve existing task ID and other required fields
+      id: +taskID, // Get from your existing task data
+      user_id: theTask.user_id,
+      is_complete: theTask.is_complete,
+      position: theTask.position,
+      title: formData.title,
+      notes: formData.notes,
+      updated_at: new Date().toISOString(),
+      repeat_period: formData.repeatPeriod || null,
+      repeat_frequency: formData.repeatPeriod ? formData.repeatFrequency : null,
+      repeat_on_wk: formData.repeatPeriod
+        ? (formData.repeatOnWk as Tables<'tasks'>['repeat_on_wk'])
+        : null,
+      created_at: formData.customStartDate?.toISOString() || theTask.created_at,
+    };
+
+    updateTaskMutation.mutate(taskToUpdate, {
+      onSuccess: () => {
+        router.back();
+      },
+      onError: (error) => {
+        // Handle error
+        Alert.alert('Error', 'Failed to update task');
+        console.error(error);
+      },
+    });
   };
 
   const handleDelete = async () => {
-    if (!taskID) return;
-
-    const { error } = await supabase.from('tasks').delete().eq('id', +taskID);
-
-    if (error) {
-      Alert.alert('Error', 'Failed to delete task');
-      return;
-    }
-
-    queryClient.invalidateQueries({ queryKey: ['tasks'] });
-    router.back();
+    deleteTaskMutation.mutate(taskID);
+    router.push('/(drawer)/');
   };
 
   const handleAddChecklistItem = () => {
@@ -186,10 +160,10 @@ export default function EditTask() {
   }
 
   return (
-    <VStack space="xl" className="flex-1 bg-white">
-      <Header headerTitle="Edit Task" />
+    <VStack space="xl" className="bg-background  flex-1 justify-evenly ">
+      <Header headerTitle={formData.title} />
       <Box className="flex-1">
-        <ScrollView className="flex-1 px-4">
+        <ScrollView className="me-6 flex-1 ps-4">
           <VStack space="md">
             <FormInput
               title={formData.title}
@@ -324,8 +298,8 @@ export default function EditTask() {
             onPress={handleSave}
             testID="save-task-button"
             className="flex-1"
-            disabled={updateMutation.isPending}>
-            <ButtonText>{updateMutation.isPending ? 'Saving...' : 'Save'}</ButtonText>
+            disabled={updateTaskMutation.isPending}>
+            <ButtonText>{updateTaskMutation.isPending ? 'Saving...' : 'Save'}</ButtonText>
           </Button>
         </HStack>
       </Box>

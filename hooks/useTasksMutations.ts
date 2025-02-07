@@ -67,7 +67,7 @@ export function useUpdateTask() {
     },
     onSuccess: () => {
       // Invalidate the query cache for the tasks list
-      queryClient.invalidateQueries({ queryKey: ['tasks'] });
+      queryClient.invalidateQueries();
     },
     onError: (error) => {
       console.error('Error updating task:', error);
@@ -137,6 +137,32 @@ export function useToggleComplete() {
       if (context?.previousTasks) {
         queryClient.setQueryData(['tasks'], context.previousTasks);
       }
+      console.error('Error toggling task completion:', error);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['tasks'] });
+    },
+  });
+}
+
+export function useDeleteTask() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (taskID: number | string) => {
+      if (!taskID) return;
+
+      const { error } = await supabase.from('tasks').delete().eq('id', +taskID);
+    },
+    onMutate: async (params) => {
+      // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
+      await queryClient.cancelQueries({ queryKey: ['tasks'] });
+    },
+    onSuccess: () => {
+      // Invalidate the query cache for the tasks list
+      queryClient.invalidateQueries({ queryKey: ['tasks'] });
+    },
+    onError: (error, variables, context) => {
       console.error('Error toggling task completion:', error);
     },
     onSettled: () => {
