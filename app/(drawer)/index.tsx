@@ -1,7 +1,7 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useState, memo } from 'react';
 import { FlatList, Pressable, RefreshControl } from 'react-native';
 import { Stack, useFocusEffect, useRouter } from 'expo-router';
-import { Tables } from '~/database.types';
+import { Task } from '~/types';
 
 import { Fab, FabLabel, FabIcon } from '@/components/ui/fab';
 import { Container } from '~/components/Container';
@@ -13,7 +13,6 @@ import reOrder from '~/utils/tasks/reOrder';
 import isTaskDueToday from '~/utils/tasks/isTaskDueToday';
 import useTasksQueries from '~/hooks/useTasksQueries';
 import useFilteredTasks from '~/hooks/useFilteredTasks';
-import useRefreshTasks from '~/hooks/useRefreshTasks';
 
 import { useToggleComplete } from '~/hooks/useTasksMutations';
 import useUpdateTaskPositions from '~/hooks/useUpdateTaskPositions';
@@ -23,65 +22,73 @@ import Confetti from '~/components/lotties/Confetti';
 import TaskListEmptyComponent from '~/components/TaskListEmptyComponent';
 
 export default function TaskList() {
+  const [isFiltered, setIsFiltered] = useState<boolean>(true);
+  const [showConfetti, setShowConfetti] = useState<boolean>(false);
+
   const router = useRouter();
-  const [isFiltered, setIsFiltered] = useState(true);
-
-  const { data: tasks = [], isLoading, isRefetching, refetch } = useTasksQueries();
+  const { data: tasks = [], isLoading, isRefetching, refetch } = useTasksQueries('not-completed');
   const { filteredTasks } = useFilteredTasks(tasks, isFiltered);
-  const { handleRefresh, isRefreshing } = useRefreshTasks();
   const updateTaskPositionsMutation = useUpdateTaskPositions();
-
-  const toggleComplete = useToggleComplete();
-  const [showConfetti, setConfetti] = useState(false);
   const { playSound } = useTaskCompleteSound();
+  const toggleComplete = useToggleComplete();
 
   const handleReorder = useCallback(
     (from: number, to: number) => {
-      const reorderedTasks = reOrder(from, to, isFiltered ? [...filteredTasks] : [...tasks]);
-      updateTaskPositionsMutation.mutate(reorderedTasks);
+      updateTaskPositionsMutation.mutate(
+        reOrder(from, to, isFiltered ? [...filteredTasks] : [...tasks])
+      );
     },
-    [filteredTasks, updateTaskPositionsMutation, tasks, isFiltered]
+    [filteredTasks, tasks, isFiltered]
+  );
+  const handleFilterTodayPress = useCallback(() => {
+    setIsFiltered((prevIsFiltered) => !prevIsFiltered);
+  }, []);
+  const handleOnToggleComplete = useCallback(
+    ({ taskId, isComplete }: Readonly<{ taskId: number; isComplete: boolean }>) => {
+      toggleComplete.mutate(
+        { taskId, isComplete },
+        {
+          onSuccess: () => {
+            setShowConfetti(true);
+            playSound();
+            setTimeout(() => {
+              setShowConfetti(false);
+            }, 4000);
+          },
+        }
+      );
+    },
+    [toggleComplete, playSound]
   );
 
-  const handleFilterTodayPress = useCallback(() => {
-    setIsFiltered(!isFiltered);
-  }, [isFiltered]);
-
+  const refetchWrapper = useCallback(() => {
+    refetch();
+  }, [refetch]);
   useFocusEffect(
     useCallback(() => {
-      handleRefresh();
-    }, [handleRefresh])
+      refetch();
+    }, [refetch])
   );
 
-  const handleOnToggleComplete = ({
-    taskId,
-    isComplete,
-  }: Readonly<{ taskId: number; isComplete: boolean }>) => {
-    toggleComplete.mutate({ taskId, isComplete });
-    setConfetti(true);
-    playSound();
-    setTimeout(() => {
-      setConfetti(false);
-    }, 4000);
-  };
-
   const renderTaskItem = useCallback(
-    ({ item, index }: Readonly<{ item: Tables<'tasks'>; index: number }>) => (
+    ({ item, index }: Readonly<{ item: Task; index: number }>) => (
       <TaskItem
         task={item}
         index={index}
         onPress={() => {
           router.push({
             pathname: '/(tasks)/[id]',
-            params: { id: item.id },
+            params: { id: item.id.toString() },
           });
         }}
         onReorder={handleReorder}
         onToggleComplete={handleOnToggleComplete}
       />
     ),
-    [handleReorder, handleOnToggleComplete]
+    [router, handleReorder, handleOnToggleComplete]
   );
+
+  const showLoading = isLoading || isRefetching || showConfetti;
 
   return (
     <>
@@ -90,7 +97,7 @@ export default function TaskList() {
           title: 'Tasks',
           headerRight: () => (
             <>
-              <Pressable onPress={() => refetch()} className="p-5">
+              <Pressable onPress={refetchWrapper} className="p-5">
                 <Icon as={DownloadIcon} className="m-1 h-5 w-5 text-typography-100" />
               </Pressable>
               <Pressable onPress={handleFilterTodayPress} className="p-5">
@@ -107,21 +114,15 @@ export default function TaskList() {
         }}
       />
       <Container>
-        {isLoading || isRefetching ? (
-          showConfetti ? (
-            <Confetti />
-          ) : (
-            <Box className="flex-1 items-center justify-center">
-              <Spinner size="large" />
-            </Box>
-          )
-        ) : showConfetti ? (
-          <Confetti />
+        {showLoading ? (
+          <Box className="flex-1 items-center justify-center">
+            {showConfetti ? <Confetti /> : <Spinner size="large" />}
+          </Box>
         ) : (
           <FlatList
             contentContainerStyle={{
               gap: 16,
-              padding: 16,
+              paddingRight: 24,
               paddingBottom: 32,
               marginTop: 24,
             }}
@@ -138,16 +139,27 @@ export default function TaskList() {
                 progressBackgroundColor="#ffffff"
               />
             }
+            initialNumToRender={10}
+            maxToRenderPerBatch={3}
+            windowSize={6}
+            removeClippedSubviews={true}
+            getItemLayout={(data, index) => ({
+              length: 79,
+              offset: 79 * index,
+              index,
+            })}
           />
         )}
         <Fab
           size="md"
           className="absolute bottom-5 right-5"
-          onPress={
-            tasks.filter(isTaskDueToday).length > 9
-              ? () => router.push('/(tasks)/soManyTasksWarning')
-              : () => router.push('/(tasks)/create-task')
-          }>
+          onPress={() => {
+            if (tasks.filter(isTaskDueToday).length > 9) {
+              router.push('/(tasks)/soManyTasksWarning');
+            } else {
+              router.push('/(tasks)/create-task');
+            }
+          }}>
           <FabIcon as={AddIcon} color="white" />
           <FabLabel>Add Task</FabLabel>
         </Fab>

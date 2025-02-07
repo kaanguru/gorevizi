@@ -1,17 +1,23 @@
-import React, { View, FlatList } from 'react-native';
 import { useCallback } from 'react';
+import React, { View, FlatList } from 'react-native';
+import { router } from 'expo-router';
 import { Tables } from '~/database.types';
-import { Button, ButtonText } from '~/components/ui/button';
-import { Text } from '~/components/ui/text';
 import useTasksQueries from '~/hooks/useTasksQueries';
 import { useToggleComplete } from '~/hooks/useTasksMutations';
-import Header from '~/components/Header';
+import { Undo } from 'lucide-react-native';
+import { Button, ButtonIcon } from '~/components/ui/button';
+import { Text } from '~/components/ui/text';
 import { Card } from '@/components/ui/card';
 import { Pressable } from '~/components/ui/pressable';
-import { router } from 'expo-router';
+import Header from '~/components/Header';
 
 export default function CompletedTasks() {
-  const { data: tasks, error, isLoading, refetch } = useTasksQueries('completed');
+  const {
+    data: tasks,
+    error: completedTasksError,
+    isLoading,
+    refetch,
+  } = useTasksQueries('completed');
   const { mutate: toggleComplete } = useToggleComplete();
 
   const handleMarkIncomplete = useCallback(
@@ -52,7 +58,7 @@ export default function CompletedTasks() {
               variant="outline"
               action="positive"
               onPress={() => handleMarkIncomplete(item.id)}>
-              <ButtonText>Mark Incomplete</ButtonText>
+              <ButtonIcon as={Undo}></ButtonIcon>
             </Button>
           </View>
         </Pressable>
@@ -73,7 +79,10 @@ export default function CompletedTasks() {
         }
         onRefresh={refetch}
         refreshing={isLoading}
-        contentContainerStyle={{ paddingBottom: 20 }}
+        contentContainerStyle={{ paddingBottom: 20, paddingEnd: 20 }}
+        maxToRenderPerBatch={3}
+        windowSize={6}
+        removeClippedSubviews={true}
       />
     </View>
   );

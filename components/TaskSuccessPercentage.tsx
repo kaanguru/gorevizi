@@ -1,8 +1,11 @@
 import React, { Text, View } from 'react-native';
 import { useQuery } from '@tanstack/react-query';
+import { Progress, ProgressFilledTrack } from '@/components/ui/progress';
+
 import { Tables } from '@/database.types';
 import getTaskCompletionHistory from '~/utils/tasks/getTaskCompletionHistory';
 import calculateSuccessPercentage from '~/utils/tasks/calculateSuccessPercentage';
+import { Center } from './ui/center';
 
 function TaskSuccessPercentage({ task }: Readonly<{ task: Tables<'tasks'> }>) {
   const { data: completionHistory } = useQuery({
@@ -15,6 +18,11 @@ function TaskSuccessPercentage({ task }: Readonly<{ task: Tables<'tasks'> }>) {
   return successPercentage > 0 ? (
     <View className="rounded-xl bg-white p-6 shadow-lg">
       <Text className="mb-2 text-xl font-semibold text-gray-800">{task.title}</Text>
+      <Center className="my-3">
+        <Progress value={Number(successPercentage.toFixed(2))} size="md" orientation="horizontal">
+          <ProgressFilledTrack />
+        </Progress>
+      </Center>
       <Text className="text-3xl font-bold text-green-600">{successPercentage.toFixed(2)}%</Text>
     </View>
   ) : null;
