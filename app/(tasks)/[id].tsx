@@ -1,4 +1,4 @@
-import { router, useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams, useRouter } from 'expo-router';
 import { useTaskById } from '~/hooks/useTasksQueries';
 import useChecklistItemsQuery from '~/hooks/useCheckListQueries';
 import { Box } from '~/components/ui/box';
@@ -9,7 +9,7 @@ import { Heading } from '~/components/ui/heading';
 import { Spinner } from '~/components/ui/spinner';
 import { Divider } from '~/components/ui/divider';
 import { Checkbox, CheckboxIndicator, CheckboxLabel, CheckboxIcon } from '@/components/ui/checkbox';
-import { CheckIcon } from '@/components/ui/icon';
+import { CheckIcon, Icon } from '@/components/ui/icon';
 import React from 'react';
 import Header from '~/components/Header';
 import { Button, ButtonText } from '~/components/ui/button';
@@ -17,8 +17,13 @@ import { Badge, BadgeIcon, BadgeText } from '@/components/ui/badge';
 import getRepeatPeriodLabel from '~/utils/getRepeatPeriodLabel';
 import useChecklistItemMutations from '~/hooks/useCheckListMutations';
 import Markdown from 'react-native-markdown-display';
+import { Pencil } from 'lucide-react-native';
+import { HStack } from '~/components/ui/hstack';
+import { Pressable } from '~/components/ui/pressable';
 
 export default function TaskDetailPage() {
+  const router = useRouter();
+
   const { id: taskID } = useLocalSearchParams<{ id: string }>();
   const { data: checklistItems, isLoading: isChecklistItemsLoading } =
     useChecklistItemsQuery(taskID);
@@ -37,8 +42,13 @@ export default function TaskDetailPage() {
   return (
     <ScrollView>
       <VStack space="xl" className="flex-1 bg-white">
-        <Header headerTitle="Task Details" />
-        <Heading size="2xl" className="p-4 text-center">
+        <HStack className="items-center justify-between ">
+          <Header headerTitle="" />
+          <Pressable onPress={() => router.push(`/(tasks)/edit/${taskID}`)}>
+            <Icon size="xl" className="mx-5 my-0  py-0 text-typography-500" as={Pencil} />
+          </Pressable>
+        </HStack>
+        <Heading size="2xl" className="justify-self-center p-4 text-center">
           {task.title}
         </Heading>
         {task.notes && (
@@ -51,7 +61,9 @@ export default function TaskDetailPage() {
         {/* Task Status */}
         <VStack className="items-center px-4" space="xl">
           {/* TODO: Add a button to mark the task as complete or incomplete */}
-          <Text size="md">{task.is_complete ? 'Completed' : 'Not Completed'}</Text>
+          <Text size="md" bold>
+            {task.is_complete ? 'Completed' : 'Not Completed'}
+          </Text>
         </VStack>
         {!task.repeat_period && (
           <Text size="md" className="text-center">
@@ -112,20 +124,6 @@ export default function TaskDetailPage() {
         ) : (
           <Text className="text-muted.strong p-4 text-center">No checklist items found.</Text>
         )}
-
-        <Button
-          className="mx-4 my-2"
-          size="lg"
-          variant="solid"
-          action="primary"
-          onPress={() => {
-            router.push({
-              pathname: '/(tasks)/edit/[id]',
-              params: { id: taskID },
-            });
-          }}>
-          <ButtonText>Edit {task.title}</ButtonText>
-        </Button>
       </VStack>
     </ScrollView>
   );
