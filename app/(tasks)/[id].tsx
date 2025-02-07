@@ -50,6 +50,7 @@ export default function TaskDetailPage() {
 
         {/* Task Status */}
         <VStack className="items-center px-4" space="xl">
+          {/* TODO: Add a button to mark the task as complete or incomplete */}
           <Text size="md">{task.is_complete ? 'Completed' : 'Not Completed'}</Text>
         </VStack>
         {!task.repeat_period && (
