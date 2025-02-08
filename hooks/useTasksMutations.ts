@@ -3,7 +3,7 @@ import { supabase } from '~/utils/supabase';
 import { Success, TaskFormData } from '~/types';
 import { Tables } from '~/database.types';
 
-export function useCreateTask() {
+function useCreateTask() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (formData: Readonly<TaskFormData>) => {
@@ -52,11 +52,11 @@ export function useCreateTask() {
   });
 }
 
-export function useUpdateTask() {
+function useUpdateTask() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (updatedTask: Readonly<Tables<'tasks'>>) => {
-      const { error } = await supabase
+      const { error, data } = await supabase // Capture 'data'
         .from('tasks')
         .update(updatedTask)
         .eq('id', updatedTask.id)
@@ -64,69 +64,63 @@ export function useUpdateTask() {
         .single();
 
       if (error) throw new Error('Failed to update task. Please try again.');
+      return data;
     },
-    onSuccess: () => {
-      // Invalidate the query cache for the tasks list
-      queryClient.invalidateQueries();
+    onSuccess: (data) => {
+      if (data) {
+        queryClient.invalidateQueries({ queryKey: ['tasks'] });
+        queryClient.setQueryData(['tasks', data.id], data);
+      }
     },
     onError: (error) => {
       console.error('Error updating task:', error);
-      // Handle error appropriately, possibly with a toast or alert
     },
   });
 }
 
-export function useToggleComplete() {
+function useToggleComplete() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (
-      params: Readonly<{ taskId: number; isComplete: boolean }>
-    ): Promise<Success> => {
+    mutationFn: async (params: Readonly<{ taskID: number; isComplete: boolean }>) => {
       if (typeof params.isComplete === 'undefined') {
-        return { success: false, error: 'isComplete is undefined!' };
+        console.error('Cannot toggle completion - isComplete is undefined');
+        return;
       }
 
-      try {
-        const { error: updateError } = await supabase
-          .from('tasks')
-          .update({
-            is_complete: params.isComplete,
-            updated_at: new Date().toISOString(),
-          })
-          .eq('id', params.taskId);
+      const { error: updateError } = await supabase
+        .from('tasks')
+        .update({
+          is_complete: params.isComplete,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', params.taskID);
 
-        if (updateError) {
-          return { success: false, error: updateError.message };
+      if (updateError) {
+        console.error('Task update failed:', updateError.message);
+        return;
+      }
+
+      if (params.isComplete) {
+        const { error: logError } = await supabase
+          .from('task_completion_history')
+          .insert([{ task_id: params.taskID }]);
+
+        if (logError) {
+          console.error('Completion logging failed:', logError.message);
         }
-
-        if (params.isComplete) {
-          const { error: logError } = await supabase
-            .from('task_completion_history')
-            .insert([{ task_id: params.taskId }]);
-
-          if (logError) {
-            return { success: false, error: logError.message };
-          }
-        }
-
-        return { success: true };
-      } catch (err) {
-        console.error('Mutation failed:', err);
-        return { success: false, error: 'An unexpected error occurred.' };
       }
     },
     onMutate: async (params) => {
-      // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
       await queryClient.cancelQueries({ queryKey: ['tasks'] });
       const previousTasks = queryClient.getQueryData<Tables<'tasks'>[]>(['tasks']);
-      // Optimistically update the task's is_complete status
       queryClient.setQueryData(['tasks'], (old: Tables<'tasks'>[] | undefined) =>
         (old || []).map((task) =>
-          task.id === params.taskId ? { ...task, is_complete: params.isComplete } : task
+          task.id === params.taskID
+            ? { ...task, is_complete: params.isComplete, updated_at: new Date().toISOString() }
+            : old
         )
       );
-
       return { previousTasks };
     },
     onSuccess: () => {
@@ -145,7 +139,7 @@ export function useToggleComplete() {
   });
 }
 
-export function useDeleteTask() {
+function useDeleteTask() {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -170,3 +164,4 @@ export function useDeleteTask() {
     },
   });
 }
+export { useToggleComplete, useUpdateTask, useDeleteTask, useCreateTask };

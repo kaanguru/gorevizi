@@ -1,3 +1,10 @@
+import { useState } from 'react';
+import { View } from 'react-native';
+import { router } from 'expo-router';
+
+import { useResetCompletionHistory } from '~/hooks/useTaskCompletionHistory';
+import { useSoundSettings } from '~/hooks/useSoundSettings';
+import { useUser } from '~/hooks/useUser';
 import {
   AlertDialog,
   AlertDialogContent,
@@ -8,15 +15,18 @@ import {
 import { Text } from '@/components/ui/text';
 import { Heading } from '@/components/ui/heading';
 import { AlertCircleIcon, Icon, TrashIcon } from '@/components/ui/icon';
-import { useState } from 'react';
-import { View } from 'react-native';
 import { Button, ButtonIcon, ButtonText } from '@/components/ui/button';
-import { useResetCompletionHistory } from '~/hooks/useTaskCompletionHistory';
-import { router } from 'expo-router';
+import { Pressable } from '~/components/ui/pressable';
+import { Switch } from '~/components/ui/switch';
+import { Volume2, VolumeX } from 'lucide-react-native';
+import { HStack } from '~/components/ui/hstack';
 
 export default function SettingsScreen() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { mutate: resetStats, isPending } = useResetCompletionHistory();
+  const { isSoundEnabled, toggleSound } = useSoundSettings();
+  const { data: user } = useUser();
+  const userEmail = user?.email;
 
   function handleReset() {
     resetStats(undefined, {
@@ -25,8 +35,8 @@ export default function SettingsScreen() {
   }
 
   return (
-    <View className="flex-1 bg-white p-5">
-      <View className="mb-5 flex-1 flex-col items-center ">
+    <View className="flex-1 bg-background-50 p-5">
+      <View className="mb-5 flex-1 flex-col items-center justify-evenly p-12 ">
         <Button
           size="md"
           variant="solid"
@@ -44,6 +54,12 @@ export default function SettingsScreen() {
           onPress={() => router.push('/(tasks)/completed-tasks')}>
           <ButtonText className="text-white">Show Completed Tasks</ButtonText>
         </Button>
+        <HStack>
+          <Text size="md" bold>
+            Your e-mail:
+          </Text>
+          <Text size="md"> {userEmail}</Text>
+        </HStack>
       </View>
 
       <AlertDialog isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
@@ -73,6 +89,24 @@ export default function SettingsScreen() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+      <Pressable
+        className="mt-5 flex-row items-center justify-between rounded-lg bg-primary-0 p-4"
+        onPress={toggleSound}>
+        <View className="flex-row items-center">
+          <Icon
+            as={isSoundEnabled ? Volume2 : VolumeX}
+            size="lg"
+            className="me-3 text-typography-500"
+          />
+          <Text>{isSoundEnabled ? 'Sound Enabled' : 'Sound Disabled'}</Text>
+        </View>
+        <Switch
+          value={isSoundEnabled}
+          onValueChange={toggleSound}
+          trackColor={{ true: '#4F46E5', false: '#E5E7EB' }}
+          thumbColor="#FFFFFF"
+        />
+      </Pressable>
     </View>
   );
 }

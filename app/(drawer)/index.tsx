@@ -13,6 +13,7 @@ import reOrder from '~/utils/tasks/reOrder';
 import isTaskDueToday from '~/utils/tasks/isTaskDueToday';
 import useTasksQueries from '~/hooks/useTasksQueries';
 import useFilteredTasks from '~/hooks/useFilteredTasks';
+import { useSoundSettings } from '~/hooks/useSoundSettings';
 
 import { useToggleComplete } from '~/hooks/useTasksMutations';
 import useUpdateTaskPositions from '~/hooks/useUpdateTaskPositions';
@@ -20,6 +21,7 @@ import useTaskCompleteSound from '~/hooks/useTaskCompleteSound';
 import { Text } from '~/components/ui/text';
 import Confetti from '~/components/lotties/Confetti';
 import TaskListEmptyComponent from '~/components/TaskListEmptyComponent';
+import { Volume2, VolumeX } from 'lucide-react-native';
 
 export default function TaskList() {
   const [isFiltered, setIsFiltered] = useState<boolean>(true);
@@ -31,6 +33,7 @@ export default function TaskList() {
   const updateTaskPositionsMutation = useUpdateTaskPositions();
   const { playSound } = useTaskCompleteSound();
   const toggleComplete = useToggleComplete();
+  const { isSoundEnabled, toggleSound } = useSoundSettings();
 
   const handleReorder = useCallback(
     (from: number, to: number) => {
@@ -44,26 +47,29 @@ export default function TaskList() {
     setIsFiltered((prevIsFiltered) => !prevIsFiltered);
   }, []);
   const handleOnToggleComplete = useCallback(
-    ({ taskId, isComplete }: Readonly<{ taskId: number; isComplete: boolean }>) => {
+    ({ taskID, isComplete }: Readonly<{ taskID: number; isComplete: boolean }>) => {
       toggleComplete.mutate(
-        { taskId, isComplete },
+        { taskID, isComplete },
         {
           onSuccess: () => {
             setShowConfetti(true);
-            playSound();
+            if (isSoundEnabled) {
+              playSound();
+            }
             setTimeout(() => {
               setShowConfetti(false);
-            }, 4000);
+            }, 2000);
           },
         }
       );
     },
-    [toggleComplete, playSound]
+    [toggleComplete, playSound, isSoundEnabled]
   );
 
   const refetchWrapper = useCallback(() => {
     refetch();
   }, [refetch]);
+
   useFocusEffect(
     useCallback(() => {
       refetch();
@@ -94,12 +100,16 @@ export default function TaskList() {
     <>
       <Stack.Screen
         options={{
-          title: 'Tasks',
+          title: 'Due Tasks',
           headerRight: () => (
             <>
-              <Pressable onPress={refetchWrapper} className="p-5">
-                <Icon as={DownloadIcon} className="m-1 h-5 w-5 text-typography-100" />
-              </Pressable>
+              {/*         <Pressable onPress={toggleSound} className="p-5">
+                <Icon
+                  as={isSoundEnabled ? Volume2 : VolumeX}
+                  size="lg"
+                  className="text-typography-500"
+                />
+              </Pressable> */}
               <Pressable onPress={handleFilterTodayPress} className="p-5">
                 <Icon
                   as={isFiltered ? CalendarDaysIcon : EyeIcon}
@@ -139,6 +149,8 @@ export default function TaskList() {
                 progressBackgroundColor="#ffffff"
               />
             }
+            showsVerticalScrollIndicator={true}
+            persistentScrollbar={true} // Android-only prop
             initialNumToRender={10}
             maxToRenderPerBatch={3}
             windowSize={6}

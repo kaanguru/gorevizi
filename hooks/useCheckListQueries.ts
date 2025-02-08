@@ -4,14 +4,14 @@ import { Database } from '~/database.types';
 
 type ChecklistItem = Database['public']['Tables']['checklistitems']['Row'];
 
-export default function useChecklistItems(taskId: number | string) {
+export default function useChecklistItems(taskID: number | string) {
   const checklistItemsQuery = useQuery<ChecklistItem[], Error>({
-    queryKey: ['checklistItems', taskId],
+    queryKey: ['checklistItems', taskID],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('checklistitems')
         .select('*')
-        .eq('task_id', +taskId)
+        .eq('task_id', +taskID)
         .order('position', { ascending: true });
 
       if (error) {
@@ -20,7 +20,7 @@ export default function useChecklistItems(taskId: number | string) {
 
       return data;
     },
-    enabled: !!taskId, // Only run the query if taskId is truthy
+    enabled: !!taskID, // Only run the query if taskID is truthy
     staleTime: 1000 * 60 * 5, // 5 minutes
     gcTime: 1000 * 60 * 10, // 10 minutes
     refetchOnMount: true,

@@ -5,8 +5,8 @@ export default async function getUserID(): Promise<string | undefined> {
     data: { session },
     error,
   } = await supabase.auth.getSession();
-  return session?.user.id;
   if (error) {
     console.error('Error creating task: User not authenticated', error);
   }
+  return session?.user.id;
 }

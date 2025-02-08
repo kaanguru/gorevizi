@@ -57,6 +57,6 @@ export interface TaskItemProps {
   task: Readonly<Tables<'tasks'>>;
   index: number;
   onReorder: (from: number, to: number) => void;
-  onToggleComplete: (params: Readonly<{ taskId: number; isComplete: boolean }>) => void;
+  onToggleComplete: (params: Readonly<{ taskID: number; isComplete: boolean }>) => void;
   onPress: () => void;
 }

@@ -11,7 +11,13 @@ const DrawerLayout = () => {
   };
 
   return (
-    <Drawer screenOptions={{ headerShown: true }}>
+    <Drawer
+      screenOptions={{
+        headerShown: true,
+        headerStyle: {
+          backgroundColor: '#ff006e',
+        },
+      }}>
       <Drawer.Screen
         name="index"
         options={{

@@ -1,11 +1,12 @@
 import React from 'react';
-import { View, Text, FlatList } from 'react-native';
+import { View, FlatList } from 'react-native';
 import { Tables } from '@/database.types';
 import useTasksQuery from '~/hooks/useTasksQueries';
 import { useTaskCompletionCount } from '~/hooks/useTaskCompletionHistory';
 
 import TaskSuccessPercentage from '~/components/TaskSuccessPercentage';
 import { Box } from '~/components/ui/box';
+import { Text } from '~/components/ui/text';
 import { Spinner } from '~/components/ui/spinner';
 
 export default function Stats() {
@@ -32,18 +33,21 @@ export default function Stats() {
     );
   }
   const renderStatItem = ({ item }: Readonly<{ item: Readonly<Tables<'tasks'>> }>) => (
-    <TaskSuccessPercentage key={item.id} task={item} />
+    <TaskSuccessPercentage key={item.id.toString()} task={item} />
   );
 
   return (
-    <View>
-      <Text className="mb-4 text-lg font-bold">Total Completed Tasks: {completedTasksCount}</Text>
+    <View className="flex-1 justify-evenly">
+      <Text size="sm" className="text-center text-lg font-bold">
+        Total Completed Tasks: {completedTasksCount}
+      </Text>
       <FlatList
         contentContainerStyle={{
-          gap: 16,
-          padding: 16,
-          paddingBottom: 32,
-          marginTop: 24,
+          gap: 8,
+          padding: 8,
+          paddingBottom: 16,
+          marginTop: 12,
+          justifyContent: 'space-evenly',
         }}
         data={data || []}
         keyExtractor={(task: Readonly<Tables<'tasks'>>) => task.id.toString()}

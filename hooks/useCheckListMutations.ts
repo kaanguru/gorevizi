@@ -6,14 +6,14 @@ import updateTask from '~/utils/tasks/updateTask';
 import { TaskFormData } from '~/types';
 import { router } from 'expo-router';
 
-export default function useChecklistItemMutations(taskId: number | string) {
+export default function useChecklistItemMutations(taskID: number | string) {
   const queryClient = useQueryClient();
 
   const addChecklistItemMutation = useMutation({
     async mutationFn(content: string) {
       const { data, error } = await supabase
         .from('checklistitems')
-        .insert({ content, task_id: +taskId })
+        .insert({ content, task_id: +taskID })
         .select()
         .single();
 
@@ -24,7 +24,7 @@ export default function useChecklistItemMutations(taskId: number | string) {
     },
     async onSuccess() {
       await queryClient.invalidateQueries({
-        queryKey: ['checklistItems', taskId],
+        queryKey: ['checklistItems', taskID],
       });
     },
     onError(error) {
@@ -34,9 +34,9 @@ export default function useChecklistItemMutations(taskId: number | string) {
 
   const updateChecklistItemMutation = useMutation({
     mutationFn: async (formData: Readonly<TaskFormData>) => {
-      if (!taskId) throw new Error('No task ID');
+      if (!taskID) throw new Error('No task ID');
 
-      const updatedTask = await updateTask(+taskId, {
+      const updatedTask = await updateTask(+taskID, {
         title: formData.title.trim(),
         notes: formData.notes.trim() || null,
         created_at: (formData.customStartDate || new Date()).toISOString(),
@@ -50,14 +50,14 @@ export default function useChecklistItemMutations(taskId: number | string) {
       const { error: deleteError } = await supabase
         .from('checklistitems')
         .delete()
-        .eq('task_id', +taskId);
+        .eq('task_id', +taskID);
 
       if (deleteError) throw new Error('Failed to clear existing checklist items');
 
       if (formData.checklistItems.length > 0) {
         const { error: insertError } = await supabase.from('checklistitems').insert(
           formData.checklistItems.map((item, index) => ({
-            task_id: +taskId,
+            task_id: +taskID,
             content: item.content.trim(),
             position: index,
             is_complete: item.isComplete || false,
@@ -89,7 +89,7 @@ export default function useChecklistItemMutations(taskId: number | string) {
     },
     async onSuccess() {
       await queryClient.invalidateQueries({
-        queryKey: ['checklistItems', taskId],
+        queryKey: ['checklistItems', taskID],
       });
     },
     onError(error) {
@@ -112,7 +112,7 @@ export default function useChecklistItemMutations(taskId: number | string) {
     },
     async onSuccess() {
       await queryClient.invalidateQueries({
-        queryKey: ['checklistItems', taskId],
+        queryKey: ['checklistItems', taskID],
       });
     },
     onError(error) {

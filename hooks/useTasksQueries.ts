@@ -29,7 +29,8 @@ async function fetchCompletedTasks(): Promise<Tables<'tasks'>[]> {
     .from('tasks')
     .select('*')
     .eq('is_complete', true)
-    .order('position', { ascending: true, nullsFirst: true });
+    .order('position', { ascending: true, nullsFirst: true })
+    .order('updated_at', { ascending: false });
 
   if (error) throw new Error(error.message);
   return data;
@@ -43,11 +44,11 @@ async function fetchAllTasks(): Promise<Tables<'tasks'>[]> {
   if (error) throw new Error(error.message);
   return data;
 }
-export function useTaskById(taskId: string | number) {
+export function useTaskById(taskID: string | number) {
   return useQuery<Task, Error>({
-    queryKey: ['task', taskId],
+    queryKey: ['task', taskID],
     queryFn: async () => {
-      const { data, error } = await supabase.from('tasks').select('*').eq('id', +taskId).single();
+      const { data, error } = await supabase.from('tasks').select('*').eq('id', +taskID).single();
 
       if (error) {
         throw new Error(error.message);
@@ -55,7 +56,7 @@ export function useTaskById(taskId: string | number) {
 
       return data;
     },
-    enabled: !!taskId, // Only run the query if taskId is truthy
+    enabled: !!taskID, // Only run the query if taskID is truthy
     staleTime: 1000 * 60 * 5, // 5 minutes
     gcTime: 1000 * 60 * 10, // 10 minutes
     refetchOnMount: true,

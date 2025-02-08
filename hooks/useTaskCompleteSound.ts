@@ -1,5 +1,6 @@
 import { useEffect, useCallback, useState } from 'react';
 import { Audio } from 'expo-av';
+import { useSoundSettings } from './useSoundSettings'; // Add this import
 
 const soundSources = [
   require('../assets/sound/confetti/sfx.mp3'),
@@ -9,9 +10,12 @@ const soundSources = [
 
 export default function useTaskCompleteSound() {
   const [sound, setSound] = useState<Audio.Sound>();
+  const { isSoundEnabled } = useSoundSettings(); // Add this line
 
   const playSound = useCallback(async () => {
     try {
+      if (!isSoundEnabled) return;
+
       const randomIndex = Math.floor(Math.random() * soundSources.length);
       const { sound: newSound } = await Audio.Sound.createAsync(soundSources[randomIndex]);
 
@@ -20,7 +24,7 @@ export default function useTaskCompleteSound() {
     } catch (error) {
       console.error('Error playing sound:', error);
     }
-  }, []);
+  }, [isSoundEnabled]);
 
   useEffect(() => {
     return () => {

@@ -21,8 +21,8 @@ export default function CompletedTasks() {
   const { mutate: toggleComplete } = useToggleComplete();
 
   const handleMarkIncomplete = useCallback(
-    (taskId: number) => toggleComplete({ taskId, isComplete: false }),
-    [toggleComplete]
+    (taskID: number) => toggleComplete({ taskID, isComplete: false }),
+    []
   );
 
   function renderItem({ item }: Readonly<{ item: Tables<'tasks'> }>) {
@@ -69,7 +69,6 @@ export default function CompletedTasks() {
   return (
     <View className="p-4">
       <Header headerTitle="Completed Tasks" />
-
       <FlatList
         data={tasks}
         renderItem={renderItem}

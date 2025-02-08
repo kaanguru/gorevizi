@@ -59,7 +59,7 @@ export const TaskItem = memo(
 
     const handleToggleComplete = () => {
       handleFadeOut();
-      onToggleComplete({ taskId: task.id, isComplete: !task.is_complete });
+      onToggleComplete({ taskID: task.id, isComplete: !task.is_complete });
     };
     return (
       // TODO: gesture handler for dragging task items
