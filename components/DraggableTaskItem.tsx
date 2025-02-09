@@ -7,7 +7,7 @@ import useChecklistItems from '~/hooks/useCheckListQueries';
 import { Checkbox, CheckboxIcon, CheckboxIndicator } from './ui/checkbox';
 import { CheckIcon, Icon } from './ui/icon';
 import { Box } from './ui/box';
-import { Waypoints } from 'lucide-react-native';
+import { Waypoints, GripVertical } from 'lucide-react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   runOnJS,
@@ -62,35 +62,42 @@ export const TaskItem = memo(
       onToggleComplete({ taskID: task.id, isComplete: !task.is_complete });
     };
     return (
-      // TODO: gesture handler for dragging task items
-      <GestureDetector gesture={panGesture}>
-        <Animated.View style={animatedStyle}>
+      <Animated.View style={animatedStyle}>
+        <Box className="flex flex-row items-center justify-between border border-primary-800 pe-4">
+          <GestureDetector gesture={panGesture}>
+            <Box className="m-auto h-12 w-8  border border-primary-600">
+              <Icon as={GripVertical} size="xl" className="text-typography-500" />
+            </Box>
+          </GestureDetector>
+          <Checkbox
+            value={task.id.toString()}
+            isChecked={task.is_complete}
+            onChange={handleToggleComplete}
+            size="lg">
+            <CheckboxIndicator size="lg" className="ms-5 h-8 w-8 basis-1/12">
+              <CheckboxIcon className="p-1" as={CheckIcon} />
+            </CheckboxIndicator>
+          </Checkbox>
+
           <Pressable
             onPress={onPress}
             accessibilityRole="button"
             accessibilityLabel={`Task: ${task.title}`}
-            className="flex flex-row border border-primary-800 p-7">
-            <Checkbox
-              value={task.id.toString()}
-              isChecked={task.is_complete}
-              onChange={handleToggleComplete}
-              size="lg">
-              <CheckboxIndicator size="lg" className="h-8 w-8 basis-1/12">
-                <CheckboxIcon className="p-4" as={CheckIcon} />
-              </CheckboxIndicator>
-            </Checkbox>
-            <Text className="ms-3 basis-5/6 text-typography-700">{task.title}</Text>
-            {taskHasChecklistItems && !isCheckListItemsLoading && (
-              <>
-                <Text size="sm" className="me-2">
-                  {checkListItemsLength}
-                </Text>
-                <Icon className="text-end text-typography-500" as={Waypoints} />
-              </>
-            )}
-            {isCheckListItemsLoading && <ActivityIndicator size="small" color="#0000ff" />}
+            className="flex flex-row p-7">
+            <Text className="ms-3 basis-4/6 text-typography-700">{task.title}</Text>
+            <Box className="flex flex-row items-center">
+              {taskHasChecklistItems && !isCheckListItemsLoading && (
+                <>
+                  <Text size="sm" className="me-2">
+                    {checkListItemsLength}
+                  </Text>
+                  <Icon className="text-end text-typography-500" as={Waypoints} />
+                </>
+              )}
+              {isCheckListItemsLoading && <ActivityIndicator size="small" color="#0000ff" />}
+            </Box>
             {task.notes && (
-              <Box className="ms-safe-or-16 absolute bottom-0 left-2 right-0 -z-10 max-h-7 bg-background-300 px-2 py-0">
+              <Box className="ms-safe-or-6 absolute bottom-0 left-0 right-7 -z-10 max-h-7 bg-background-300 px-1 py-0">
                 <Markdown
                   mergeStyle={false}
                   style={{
@@ -111,8 +118,8 @@ export const TaskItem = memo(
               </Box>
             )}
           </Pressable>
-        </Animated.View>
-      </GestureDetector>
+        </Box>
+      </Animated.View>
     );
   }
 );

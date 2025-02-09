@@ -21,7 +21,6 @@ import useTaskCompleteSound from '~/hooks/useTaskCompleteSound';
 import { Text } from '~/components/ui/text';
 import Confetti from '~/components/lotties/Confetti';
 import TaskListEmptyComponent from '~/components/TaskListEmptyComponent';
-import { Volume2, VolumeX } from 'lucide-react-native';
 
 export default function TaskList() {
   const [isFiltered, setIsFiltered] = useState<boolean>(true);
@@ -132,7 +131,7 @@ export default function TaskList() {
           <FlatList
             contentContainerStyle={{
               gap: 16,
-              paddingRight: 24,
+              paddingRight: 16,
               paddingBottom: 32,
               marginTop: 24,
             }}
