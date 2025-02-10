@@ -65,10 +65,6 @@ export default function TaskList() {
     [toggleComplete, playSound, isSoundEnabled]
   );
 
-  const refetchWrapper = useCallback(() => {
-    refetch();
-  }, [refetch]);
-
   useFocusEffect(
     useCallback(() => {
       refetch();
@@ -102,20 +98,13 @@ export default function TaskList() {
           title: 'Due Tasks',
           headerRight: () => (
             <>
-              {/*         <Pressable onPress={toggleSound} className="p-5">
-                <Icon
-                  as={isSoundEnabled ? Volume2 : VolumeX}
-                  size="lg"
-                  className="text-typography-500"
-                />
-              </Pressable> */}
               <Pressable onPress={handleFilterTodayPress} className="p-5">
                 <Icon
                   as={isFiltered ? CalendarDaysIcon : EyeIcon}
-                  className="m-1 h-6 w-6 text-typography-500"
+                  className="m-1 h-6 w-6 text-typography-white"
                 />
               </Pressable>
-              <Text size="xs" className="absolute right-5 top-1 text-center text-typography-500">
+              <Text size="xs" className="absolute right-5 top-1 text-center text-typography-white">
                 {isFiltered ? "Today's" : 'All'}
               </Text>
             </>
@@ -149,7 +138,7 @@ export default function TaskList() {
               />
             }
             showsVerticalScrollIndicator={true}
-            persistentScrollbar={true} // Android-only prop
+            persistentScrollbar={true}
             initialNumToRender={10}
             maxToRenderPerBatch={3}
             windowSize={6}
@@ -172,7 +161,7 @@ export default function TaskList() {
             }
           }}>
           <FabIcon as={AddIcon} color="white" />
-          <FabLabel>Add Task</FabLabel>
+          <FabLabel className="font-[DelaGothicOne_400Regular]">Add Task</FabLabel>
         </Fab>
       </Container>
     </>

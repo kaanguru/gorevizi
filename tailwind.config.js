@@ -118,9 +118,9 @@ module.exports = {
           800: 'rgb(var(--color-typography-800)/<alpha-value>)',
           900: 'rgb(var(--color-typography-900)/<alpha-value>)',
           950: 'rgb(var(--color-typography-950)/<alpha-value>)',
-          white: '#FFFFFF',
-          gray: '#D4D4D4',
-          black: '#181718',
+          white: '#FFEFC2',
+          gray: '#FD905E',
+          black: '#00173D',
         },
         outline: {
           0: 'rgb(var(--color-outline-0)/<alpha-value>)',
@@ -168,6 +168,7 @@ module.exports = {
         body: undefined,
         mono: undefined,
         roboto: ['Roboto', 'sans-serif'],
+        delaGothicOne: ['DelaGothicOne_400Regular'],
       },
       fontWeight: {
         extrablack: '950',

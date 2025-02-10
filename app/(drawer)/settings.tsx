@@ -20,6 +20,7 @@ import { Pressable } from '~/components/ui/pressable';
 import { Switch } from '~/components/ui/switch';
 import { Volume2, VolumeX } from 'lucide-react-native';
 import { HStack } from '~/components/ui/hstack';
+import { Box } from '~/components/ui/box';
 
 export default function SettingsScreen() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -89,9 +90,7 @@ export default function SettingsScreen() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-      <Pressable
-        className="mt-5 flex-row items-center justify-between rounded-lg bg-primary-0 p-4"
-        onPress={toggleSound}>
+      <Box className="mt-5 flex-row items-center justify-between rounded-lg bg-primary-0 p-4">
         <View className="flex-row items-center">
           <Icon
             as={isSoundEnabled ? Volume2 : VolumeX}
@@ -106,7 +105,7 @@ export default function SettingsScreen() {
           trackColor={{ true: '#4F46E5', false: '#E5E7EB' }}
           thumbColor="#FFFFFF"
         />
-      </Pressable>
+      </Box>
     </View>
   );
 }

@@ -63,19 +63,15 @@ export const TaskItem = memo(
     };
     return (
       <Animated.View style={animatedStyle}>
-        <Box className="flex flex-row items-center justify-between border border-primary-800 pe-4">
-          <GestureDetector gesture={panGesture}>
-            <Box className="m-auto h-12 w-8  border border-primary-600">
-              <Icon as={GripVertical} size="xl" className="text-typography-500" />
-            </Box>
-          </GestureDetector>
+        <Box className="flex h-[94px] flex-row place-content-baseline justify-between gap-3 bg-background-200 pe-0">
           <Checkbox
             value={task.id.toString()}
             isChecked={task.is_complete}
             onChange={handleToggleComplete}
-            size="lg">
-            <CheckboxIndicator size="lg" className="ms-5 h-8 w-8 basis-1/12">
-              <CheckboxIcon className="p-1" as={CheckIcon} />
+            size="lg"
+            className="ms-3 ">
+            <CheckboxIndicator size="lg" className=" h-8 w-8  bg-background-400 text-black">
+              <CheckboxIcon as={CheckIcon} />
             </CheckboxIndicator>
           </Checkbox>
 
@@ -83,21 +79,24 @@ export const TaskItem = memo(
             onPress={onPress}
             accessibilityRole="button"
             accessibilityLabel={`Task: ${task.title}`}
-            className="flex flex-row p-7">
-            <Text className="ms-3 basis-4/6 text-typography-700">{task.title}</Text>
-            <Box className="flex flex-row items-center">
-              {taskHasChecklistItems && !isCheckListItemsLoading && (
+            className="flex grow flex-col ">
+            <Box className="my-auto flex-row justify-center  py-2">
+              <Text bold className="grow text-typography-500">
+                {task.title}
+              </Text>
+              {taskHasChecklistItems && !isCheckListItemsLoading ? (
                 <>
                   <Text size="sm" className="me-2">
                     {checkListItemsLength}
                   </Text>
                   <Icon className="text-end text-typography-500" as={Waypoints} />
                 </>
+              ) : (
+                isCheckListItemsLoading && <ActivityIndicator size="small" color="#FF006E" />
               )}
-              {isCheckListItemsLoading && <ActivityIndicator size="small" color="#0000ff" />}
             </Box>
             {task.notes && (
-              <Box className="ms-safe-or-6 absolute bottom-0 left-0 right-7 -z-10 max-h-7 bg-background-300 px-1 py-0">
+              <Box className="absolute bottom-0 left-0 right-0 -z-10 max-h-7 bg-background-100 px-1 py-0">
                 <Markdown
                   mergeStyle={false}
                   style={{
@@ -118,6 +117,15 @@ export const TaskItem = memo(
               </Box>
             )}
           </Pressable>
+          <GestureDetector gesture={panGesture}>
+            <Box className=" h-full w-9">
+              <Icon
+                as={GripVertical}
+                size="xl"
+                className="m-auto text-typography-black dark:text-typography-gray"
+              />
+            </Box>
+          </GestureDetector>
         </Box>
       </Animated.View>
     );

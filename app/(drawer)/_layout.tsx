@@ -15,13 +15,17 @@ const DrawerLayout = () => {
       screenOptions={{
         headerShown: true,
         headerStyle: {
-          backgroundColor: '#ff006e',
+          backgroundColor: '#8AC926',
         },
       }}>
       <Drawer.Screen
         name="index"
         options={{
           headerTitle: 'Due Tasks',
+          headerTitleStyle: {
+            color: '#FFEFC2',
+            fontFamily: 'DelaGothicOne_400Regular',
+          },
           drawerLabel: 'Due Tasks',
           drawerIcon: ({ size, color }) => (
             <Ionicons name="list-outline" size={size} color={color} />
