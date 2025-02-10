@@ -6,11 +6,21 @@ const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL || '';
 const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || '';
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-// Get test user credentials from environment variables
 const testUserEmail = process.env.EXPO_PUBLIC_TEST_USER_EMAIL;
 const testUserPassword = process.env.EXPO_PUBLIC_TEST_USER_PASSWORD;
+// Get the number of tasks to seed from the command line arguments
+const numberOfTasks = parseInt(process.argv[2]);
 
-export const seedTasks = async (pieces: number) => {
+// Check if the argument is a valid number
+if (isNaN(numberOfTasks) || numberOfTasks <= 0) {
+  console.error(
+    'Please provide a valid number of tasks to seed as a command line argument (e.g., "pnpm seed 12").'
+  );
+} else {
+  seedTasks(numberOfTasks);
+}
+
+export async function seedTasks(pieces: number): Promise<void> {
   const user = await authenticateTestUser();
   if (!user) {
     return;
@@ -31,7 +41,7 @@ export const seedTasks = async (pieces: number) => {
       repeat_period: repeatType,
       created_at: faker.date.past({ years: 2 }),
       updated_at: faker.date.past({ years: 1 }),
-      is_complete: Math.random() > 0.6 ? true : false,
+      is_complete: Math.random() > 0.33 ? true : false,
       repeat_on_wk: repeatType === 'Weekly' ? [getRandomDayOfWeek()] : null,
       repeat_frequency: getRandomFrequency(repeatType),
       user_id: user.id,
@@ -57,8 +67,6 @@ export const seedTasks = async (pieces: number) => {
     }));
   });
 
-  // randomly skip some checklist inserts
-
   const checklistItemsToInsert = checklistItems.filter(() => Math.random() > 0.6);
 
   const { data: insertedChecklistItems, error: checklistError } = await supabase
@@ -74,7 +82,7 @@ export const seedTasks = async (pieces: number) => {
       insertedChecklistItems
     );
   }
-};
+}
 
 async function authenticateTestUser() {
   // Check if test user credentials are provided
@@ -119,16 +127,4 @@ function getRandomFrequency(repeatType: RepeatPeriod | null) {
   } else if (repeatType === 'Yearly') {
     return 1;
   }
-}
-
-// Get the number of tasks to seed from the command line arguments
-const numberOfTasks = parseInt(process.argv[2]);
-
-// Check if the argument is a valid number
-if (isNaN(numberOfTasks) || numberOfTasks <= 0) {
-  console.error(
-    'Please provide a valid number of tasks to seed as a command line argument (e.g., "pnpm seed 12").'
-  );
-} else {
-  seedTasks(numberOfTasks);
 }
