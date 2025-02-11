@@ -5,13 +5,18 @@ import { Href, useRouter, useSegments } from 'expo-router';
 import { isFirstVisit } from '~/utils/isFirstVisit';
 import { isFirstLaunchToday } from '~/utils/isFirstLaunchToday';
 import resetRecurringTasks from '~/utils/tasks/resetRecurringTasks';
-import { Text } from 'react-native';
 import { Stack } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { supabase } from '~/utils/supabase';
 import { View } from 'react-native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Spinner } from '~/components/ui/spinner';
+import { Inter_900Black, useFonts } from '@expo-google-fonts/inter';
+import { DelaGothicOne_400Regular } from '@expo-google-fonts/dela-gothic-one';
+import { UbuntuMono_400Regular } from '@expo-google-fonts/ubuntu-mono';
+import { Ubuntu_400Regular, Ubuntu_500Medium, Ubuntu_700Bold } from '@expo-google-fonts/ubuntu';
+import * as SplashScreen from 'expo-splash-screen';
+SplashScreen.preventAutoHideAsync();
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -22,10 +27,24 @@ const queryClient = new QueryClient({
 });
 
 export default function RootLayout() {
+  const [loaded, error] = useFonts({
+    Inter_900Black,
+    DelaGothicOne_400Regular,
+    UbuntuMono_400Regular,
+    Ubuntu_400Regular,
+    Ubuntu_500Medium,
+    Ubuntu_700Bold,
+  });
+
   const [isSupabaseInitialized, setSupabaseInitialized] = useState(false);
 
   const segments = useSegments();
   const router = useRouter();
+  useEffect(() => {
+    if (loaded || error) {
+      SplashScreen.hideAsync();
+    }
+  }, [loaded, error]);
   useEffect(() => {
     async function checkAndResetTasks() {
       try {

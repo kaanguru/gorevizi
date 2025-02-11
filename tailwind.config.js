@@ -164,10 +164,10 @@ module.exports = {
         },
       },
       fontFamily: {
-        heading: undefined,
-        body: undefined,
-        mono: undefined,
-        roboto: ['Roboto', 'sans-serif'],
+        heading: 'Ubuntu_700Bold',
+        body: 'Ubuntu_400Regular',
+        mono: ['UbuntuMono_400Regular', 'sans-serif'],
+        inter: ['Inter_900Black', 'sans-serif'],
         delaGothicOne: ['DelaGothicOne_400Regular'],
       },
       fontWeight: {

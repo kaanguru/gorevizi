@@ -79,7 +79,7 @@ export const TaskItem = memo(
             onPress={onPress}
             accessibilityRole="button"
             accessibilityLabel={`Task: ${task.title}`}
-            className="flex grow flex-col ">
+            className=" flex grow flex-col ">
             <Box className="my-auto flex-row justify-center  py-2">
               <Text bold className="grow text-typography-500">
                 {task.title}

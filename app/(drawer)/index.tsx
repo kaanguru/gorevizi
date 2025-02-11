@@ -104,7 +104,9 @@ export default function TaskList() {
                   className="m-1 h-6 w-6 text-typography-white"
                 />
               </Pressable>
-              <Text size="xs" className="absolute right-5 top-1 text-center text-typography-white">
+              <Text
+                size="xs"
+                className="font-mono absolute right-5 top-1 text-center text-typography-white">
                 {isFiltered ? "Today's" : 'All'}
               </Text>
             </>
@@ -152,7 +154,7 @@ export default function TaskList() {
         )}
         <Fab
           size="md"
-          className="absolute bottom-5 right-5"
+          className="absolute bottom-5 right-5 bg-background-dark"
           onPress={() => {
             if (tasks.filter(isTaskDueToday).length > 9) {
               router.push('/(tasks)/soManyTasksWarning');
@@ -161,7 +163,7 @@ export default function TaskList() {
             }
           }}>
           <FabIcon as={AddIcon} color="white" />
-          <FabLabel className="font-[DelaGothicOne_400Regular]">Add Task</FabLabel>
+          <FabLabel className="p-2 font-delaGothicOne">Add Task</FabLabel>
         </Fab>
       </Container>
     </>
