@@ -22,6 +22,10 @@ import { Text } from '~/components/ui/text';
 import Confetti from '~/components/lotties/Confetti';
 import TaskListEmptyComponent from '~/components/TaskListEmptyComponent';
 import { useSoundContext } from '~/store/SoundContext';
+import { useUpdateHealthAndHappiness } from '~/hooks/useHealthAndHappinessMutations';
+import useHealthAndHappinessQuery from '~/hooks/useHealthAndHappinessQueries';
+import { useUser } from '~/hooks/useUser';
+import { faker } from '@faker-js/faker/.';
 
 export default function TaskList() {
   const [isFiltered, setIsFiltered] = useState<boolean>(true);
@@ -34,7 +38,9 @@ export default function TaskList() {
   const updateTaskPositionsMutation = useUpdateTaskPositions();
   const { playSound } = useTaskCompleteSound();
   const toggleComplete = useToggleComplete();
-
+  const userQuery = useUser();
+  const updateHealthAndHappiness = useUpdateHealthAndHappiness();
+  const { data: healthAndHappiness } = useHealthAndHappinessQuery(userQuery.data?.id);
   // Create a state variable to hold the reordered tasks
   const [reorderedTasks, setReorderedTasks] = useState<Task[]>([]);
 
@@ -67,6 +73,12 @@ export default function TaskList() {
         {
           onSuccess: () => {
             setShowConfetti(true);
+            updateHealthAndHappiness.mutate({
+              user_id: userQuery.data?.id,
+              health: (healthAndHappiness?.health ?? 0) + 10,
+              happiness:
+                (healthAndHappiness?.happiness ?? 0) + faker.number.int({ min: 2, max: 10 }),
+            });
             if (isSoundEnabled) {
               playSound();
             }
