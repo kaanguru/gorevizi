@@ -8,7 +8,7 @@ import * as R from 'ramda';
  * @returns A new array with the item moved to the new position.
  */
 function reOrder<T>(from: number, to: number, array: T[]): T[] {
-  console.log('Send from  to index: ' + from + ' ' + to);
+  console.log('Send from: ' + from + ' to: ' + to);
   if (array.length === 0) {
     console.error('Array is empty');
     return array;

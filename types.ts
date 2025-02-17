@@ -59,4 +59,5 @@ export interface TaskItemProps {
   onReorder: (from: number, to: number) => void;
   onToggleComplete: (params: Readonly<{ taskID: number; isComplete: boolean }>) => void;
   onPress: () => void;
+  isFiltered: boolean; // Add isFiltered to the props
 }

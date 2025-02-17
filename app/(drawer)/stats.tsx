@@ -37,8 +37,11 @@ export default function Stats() {
   );
 
   return (
-    <View className="flex-1 justify-evenly bg-background-0 dark:bg-background-900">
-      <Text size="sm" className="text-center text-lg font-bold">
+    <View className="flex-1 justify-evenly bg-background-light dark:bg-background-dark">
+      <Text
+        size="lg"
+        bold
+        className="mt-2 text-center font-heading text-typography-black dark:text-typography-white">
         Total Completed Tasks: {completedTasksCount}
       </Text>
       <FlatList

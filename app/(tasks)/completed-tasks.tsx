@@ -27,7 +27,7 @@ export default function CompletedTasks() {
 
   function renderItem({ item }: Readonly<{ item: Tables<'tasks'> }>) {
     return (
-      <Card size="lg" variant="outline" className="m-3">
+      <Card size="lg" variant="outline" className="m-3 bg-background-dark dark:bg-background-light">
         <Pressable
           onPress={() => {
             router.push({
@@ -37,19 +37,19 @@ export default function CompletedTasks() {
           }}>
           <View className="flex flex-row items-start justify-between">
             <View className="flex-1">
-              <Text className="text-lg font-semibold text-gray-800 dark:text-gray-200">
+              <Text bold size="lg" className=" text-typography-gray ">
                 {item.title}
               </Text>
               {item.notes && (
-                <Text className="mt-1 text-gray-600 dark:text-gray-400">{item.notes}</Text>
+                <Text className="mt-1 py-3 text-white dark:text-black">{item.notes}</Text>
               )}
               {item.repeat_period && (
-                <Text className="mt-2 text-sm text-gray-500 dark:text-gray-500">
+                <Text size="sm" className="mt-2  text-white dark:text-black">
                   Repeats: {item.repeat_frequency} times {item.repeat_period.toLowerCase()}
                 </Text>
               )}
               {item.updated_at && (
-                <Text className="mt-2 text-sm text-gray-500 dark:text-gray-500">
+                <Text size="sm" className="mt-2  text-white dark:text-black">
                   Completed on: {new Date(item.updated_at).toLocaleDateString()}
                 </Text>
               )}
@@ -67,7 +67,7 @@ export default function CompletedTasks() {
   }
 
   return (
-    <View className="p-4">
+    <View className="bg-background-light p-4 dark:bg-background-dark">
       <Header headerTitle="Completed Tasks" />
       <FlatList
         data={tasks}

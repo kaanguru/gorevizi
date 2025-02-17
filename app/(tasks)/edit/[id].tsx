@@ -160,7 +160,9 @@ export default function EditTask() {
   }
 
   return (
-    <VStack space="xl" className="bg-background  flex-1 justify-evenly ">
+    <VStack
+      space="xl"
+      className="flex-1  justify-evenly bg-background-light dark:bg-background-dark">
       {/* TODO: renkleri düzenle */}
       <Header headerTitle={formData.title} />
       <Box className="flex-1">

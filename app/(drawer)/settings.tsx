@@ -21,6 +21,7 @@ import { HStack } from '~/components/ui/hstack';
 import { Box } from '~/components/ui/box';
 import { useSoundContext } from '~/store/SoundContext';
 import { useTheme } from '~/components/ui/ThemeProvider/ThemeProvider';
+import LogoPortrait from '~/components/lotties/LogoPortrait';
 
 export default function SettingsScreen() {
   const { theme, toggleTheme } = useTheme();
@@ -40,6 +41,7 @@ export default function SettingsScreen() {
 
   return (
     <View className="flex-1 bg-background-light  p-5 dark:bg-background-dark">
+      <LogoPortrait height={290} width={110} />
       <View className="mb-5 flex-1 flex-col items-center justify-items-start gap-9 p-12 ">
         <Button
           variant="solid"
@@ -62,9 +64,12 @@ export default function SettingsScreen() {
           action="negative"
           onPress={() => setIsDialogOpen(true)}
           isDisabled={isPending}>
-          <ButtonText className="text-warning-100 dark:bg-warning-500">Reset Statistics</ButtonText>
+          <ButtonText className="text-typography-950 dark:text-typography-50">
+            Reset Statistics
+          </ButtonText>
           <ButtonIcon className="text-white" as={TrashIcon} />
         </Button>
+
         <Box className=" bg-background-light p-0 dark:bg-background-dark">
           <Button onPress={toggleTheme}>
             <ButtonIcon size="xl" as={theme === 'light' ? Moon : Sun} />
@@ -99,20 +104,22 @@ export default function SettingsScreen() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-      <Box className="mt-5 flex-row items-center justify-between rounded-lg bg-primary-0 p-4">
+      <Box className="mt-5 flex-row items-center justify-between rounded-lg bg-background-dark p-4 dark:bg-background-light">
         <View className="flex-row items-center">
           <Icon
             as={isSoundEnabled ? Volume2 : VolumeX}
             size="lg"
             className="me-3 text-typography-500"
           />
-          <Text>{isSoundEnabled ? 'Sound Enabled' : 'Sound Disabled'}</Text>
+          <Text className="text-typography-white dark:text-typography-black">
+            {isSoundEnabled ? 'Sound Enabled' : 'Sound Disabled'}
+          </Text>
         </View>
         <Switch
           value={isSoundEnabled}
           onValueChange={toggleSound}
-          trackColor={{ true: '#4F46E5', false: '#E5E7EB' }}
-          thumbColor="#FFFFFF"
+          trackColor={{ true: '#4F10A8', false: '#E5E7EB' }}
+          thumbColor="#FFCA3A"
         />
       </Box>
     </View>

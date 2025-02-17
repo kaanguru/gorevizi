@@ -1,10 +1,11 @@
-import React, { useCallback, useState, memo } from 'react';
-import { FlatList, Pressable, RefreshControl } from 'react-native';
+// index.tsx
+import React, { useCallback, useState, memo, useEffect } from 'react';
+import { FlatList, Pressable, RefreshControl, View } from 'react-native';
 import { Stack, useFocusEffect, useRouter } from 'expo-router';
 import { Task } from '~/types';
+import * as R from 'ramda';
 
 import { Fab, FabLabel, FabIcon } from '@/components/ui/fab';
-import { Container } from '~/components/Container';
 import { Box } from '~/components/ui/box';
 import { AddIcon, CalendarDaysIcon, Icon, DownloadIcon, EyeIcon } from '@/components/ui/icon';
 import { Spinner } from '~/components/ui/spinner';
@@ -34,17 +35,31 @@ export default function TaskList() {
   const { playSound } = useTaskCompleteSound();
   const toggleComplete = useToggleComplete();
 
+  // Create a state variable to hold the reordered tasks
+  const [reorderedTasks, setReorderedTasks] = useState<Task[]>([]);
+
+  // Update reorderedTasks whenever filteredTasks or tasks change
+  useEffect(() => {
+    const newReorderedTasks = isFiltered ? filteredTasks : tasks;
+    if (!R.equals(reorderedTasks, newReorderedTasks)) {
+      setReorderedTasks(newReorderedTasks);
+    }
+  }, [filteredTasks, tasks, isFiltered, reorderedTasks]);
+
   const handleReorder = useCallback(
     (from: number, to: number) => {
-      updateTaskPositionsMutation.mutate(
-        reOrder(from, to, isFiltered ? [...filteredTasks] : [...tasks])
-      );
+      const newTasks = reOrder(from, to, [...reorderedTasks]); // Create a new array
+      setReorderedTasks(newTasks); // Update the state with the new array
+
+      updateTaskPositionsMutation.mutate(newTasks);
     },
-    [filteredTasks, tasks, isFiltered]
+    [reorderedTasks, updateTaskPositionsMutation]
   );
+
   const handleFilterTodayPress = useCallback(() => {
     setIsFiltered((prevIsFiltered) => !prevIsFiltered);
   }, []);
+
   const handleOnToggleComplete = useCallback(
     ({ taskID, isComplete }: Readonly<{ taskID: number; isComplete: boolean }>) => {
       toggleComplete.mutate(
@@ -84,10 +99,13 @@ export default function TaskList() {
         }}
         onReorder={handleReorder}
         onToggleComplete={handleOnToggleComplete}
+        isFiltered={isFiltered} // Pass the isFiltered state
       />
     ),
-    [router, handleReorder, handleOnToggleComplete]
+    [router, handleReorder, handleOnToggleComplete, isFiltered]
   );
+
+  const keyExtractor = useCallback((item: Readonly<Task>) => item.id.toString(), []);
 
   const showLoading = isLoading || isRefetching || showConfetti;
 
@@ -96,6 +114,10 @@ export default function TaskList() {
       <Stack.Screen
         options={{
           title: 'Due Tasks',
+          headerStyle: {
+            backgroundColor: '#76AB21',
+          },
+
           headerRight: () => (
             <>
               <Pressable onPress={handleFilterTodayPress} className="p-5">
@@ -108,7 +130,7 @@ export default function TaskList() {
           ),
         }}
       />
-      <Container>
+      <View className="flex-1 bg-background-light  p-5 dark:bg-background-dark">
         {showLoading ? (
           <Box className="flex-1 items-center justify-center">
             {showConfetti ? <Confetti /> : <Spinner size="large" />}
@@ -117,17 +139,17 @@ export default function TaskList() {
           <>
             <Text
               size="xs"
-              className="absolute right-5 top-1 text-center font-mono text-typography-black">
+              className="absolute right-5 top-1 text-center font-mono text-typography-black dark:text-typography-white">
               {isFiltered ? "Today's" : 'All Tasks'}
             </Text>
             <FlatList
               contentContainerStyle={{
                 gap: 16,
-                marginTop: 24,
+                margin: 3,
               }}
-              data={filteredTasks}
+              data={reorderedTasks} // Use the reorderedTasks state
               renderItem={renderTaskItem}
-              keyExtractor={(item) => item.id.toString()}
+              keyExtractor={keyExtractor}
               ListEmptyComponent={<TaskListEmptyComponent />}
               refreshControl={
                 <RefreshControl
@@ -145,27 +167,29 @@ export default function TaskList() {
               windowSize={6}
               removeClippedSubviews={true}
               getItemLayout={(data, index) => ({
-                length: 79,
-                offset: 79 * index,
+                length: 94,
+                offset: 110 * index,
                 index,
               })}
             />
           </>
         )}
         <Fab
-          size="md"
-          className="absolute bottom-5 right-5 bg-background-dark"
+          size="lg"
+          className="absolute bottom-5 right-5 "
           onPress={() => {
-            if (tasks.filter(isTaskDueToday).length > 9) {
+            if (tasks.filter(isTaskDueToday).length > 8) {
               router.push('/(tasks)/soManyTasksWarning');
             } else {
               router.push('/(tasks)/create-task');
             }
           }}>
-          <FabIcon stroke={'#ff006e'} as={AddIcon} />
-          <FabLabel className="p-2 font-delaGothicOne">Add</FabLabel>
+          <FabIcon size="xl" stroke={'#ff006e'} as={AddIcon} />
+          <FabLabel style={{ color: '#ff006e' }} className="p-2 font-delaGothicOne ">
+            Add
+          </FabLabel>
         </Fab>
-      </Container>
+      </View>
     </>
   );
 }
