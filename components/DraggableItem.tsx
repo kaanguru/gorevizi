@@ -72,7 +72,7 @@ const DraggableItem = memo(
                   onChangeText={(text) => {
                     onUpdate(index, text);
                   }}
-                  className="min-h-[40px] py-2 text-typography-900"
+                  className="min-h-[40px] py-2 text-typography-black"
                   placeholderTextColor="#9CA3AF"
                   autoFocus
                 />

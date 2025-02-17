@@ -11,9 +11,19 @@ import {
   AlertDialogFooter,
   AlertDialogBody,
 } from '@/components/ui/alert-dialog';
+import {
+  Modal,
+  ModalBackdrop,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter,
+} from '@/components/ui/modal';
+import { Input, InputField } from '~/components/ui/input';
 import { Text } from '@/components/ui/text';
 import { Heading } from '@/components/ui/heading';
-import { AlertCircleIcon, Icon, TrashIcon } from '@/components/ui/icon';
+import { AlertCircleIcon, ArrowLeftIcon, EditIcon, Icon, TrashIcon } from '@/components/ui/icon';
 import { Button, ButtonIcon, ButtonText } from '@/components/ui/button';
 import { Switch } from '~/components/ui/switch';
 import { Moon, Sun, Volume2, VolumeX } from 'lucide-react-native';
@@ -25,6 +35,8 @@ import LogoPortrait from '~/components/lotties/LogoPortrait';
 
 export default function SettingsScreen() {
   const { theme, toggleTheme } = useTheme();
+  const [showModal, setShowModal] = useState(false);
+  const [newEmail, setNewEmail] = useState('');
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { mutate: resetStats, isPending } = useResetCompletionHistory();
@@ -38,26 +50,78 @@ export default function SettingsScreen() {
       onSuccess: () => setIsDialogOpen(false),
     });
   }
-
+  const handleEmailChange = (text: string) => {
+    setNewEmail(text);
+  };
+  const handleSubmit = () => {
+    console.log('New Email:', newEmail);
+    setShowModal(false);
+    // Here you would typically send the new email to your backend for verification and update
+  };
   return (
     <View className="flex-1 bg-background-light  p-5 dark:bg-background-dark">
       <LogoPortrait height={290} width={110} />
       <View className="mb-5 flex-1 flex-col items-center justify-items-start gap-9 p-12 ">
         <Button
-          variant="solid"
+          variant="outline"
           size="md"
           action="positive"
           className="mt-5 "
           onPress={() => router.push('/(tasks)/completed-tasks')}>
-          <ButtonText className="text-white">Show Completed Tasks</ButtonText>
+          <ButtonText className="text-typography-black dark:text-typography-white">
+            Show Completed Tasks
+          </ButtonText>
         </Button>
-        <HStack>
+        <HStack className="flex-row items-center justify-center gap-2">
           <Text size="md" bold>
             Your e-mail:
           </Text>
           <Text size="md"> {userEmail}</Text>
-          {/* //TODO: add edit email button */}
+          <Button
+            variant="link"
+            size="sm"
+            action="positive"
+            className="m-2"
+            onPress={() => setShowModal(true)}>
+            <ButtonIcon as={EditIcon} />
+          </Button>
         </HStack>
+        <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
+          <ModalBackdrop />
+          <ModalContent>
+            <ModalHeader className="flex-col items-start gap-0.5">
+              <Heading>Need to use a different email address?</Heading>
+              <Text size="sm">No worries, we’ll send you reset instructions</Text>
+            </ModalHeader>
+            <ModalCloseButton onPress={() => setShowModal(false)} />
+            <ModalBody className="flex flex-col gap-2">
+              Set your new mail address
+              <Input>
+                <InputField
+                  placeholder="New email address"
+                  onChangeText={handleEmailChange}
+                  value={newEmail}
+                  type="text"
+                />
+              </Input>
+            </ModalBody>
+            <ModalFooter className="flex-col items-start">
+              <Button variant="outline" onPress={handleSubmit}>
+                <ButtonText>Submit</ButtonText>
+              </Button>
+              <Button
+                variant="link"
+                size="sm"
+                onPress={() => {
+                  setShowModal(false);
+                }}
+                className="w-full">
+                <ButtonIcon as={ArrowLeftIcon} />
+                <ButtonText>Back to settings</ButtonText>
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
         <Button
           size="md"
           variant="solid"

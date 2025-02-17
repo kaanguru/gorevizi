@@ -7,6 +7,7 @@ import { Button, ButtonIcon, ButtonText } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
 import { VStack } from '~/components/ui/vstack';
 import { TaskFormData } from '~/types';
+import { Waypoints } from 'lucide-react-native';
 
 const ChecklistSection = ({
   items,
@@ -63,8 +64,11 @@ const ChecklistSection = ({
     <VStack space="md">
       <HStack space="md" className="my-4 items-center px-2">
         <Button size="md" variant="outline" action="secondary" onPress={onAdd}>
-          <ButtonText size="lg">Add Routines</ButtonText>
-          <ButtonIcon as={AddIcon} className="text-typography-500" />
+          <ButtonText size="lg" className="text-typography-black dark:text-typography-white">
+            Add Routines
+          </ButtonText>
+          <ButtonIcon as={AddIcon} className="text-typography-black dark:text-typography-white" />
+          <ButtonIcon className="me-2 text-end text-typography-white" as={Waypoints} />
         </Button>
       </HStack>
       <Box className="relative" style={{ height: items.length * 60 + 16 }}>
