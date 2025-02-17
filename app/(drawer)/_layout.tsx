@@ -30,7 +30,7 @@ const DrawerLayout = () => {
           headerTitleStyle: {
             color: '#FFEFC2',
             fontFamily: 'DelaGothicOne_400Regular',
-            fontSize: 20,
+            fontSize: 16,
           },
           drawerLabel: 'Due Tasks',
           drawerIcon: ({ size, color }) => (

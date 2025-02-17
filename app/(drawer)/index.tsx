@@ -104,11 +104,6 @@ export default function TaskList() {
                   className="m-1 h-6 w-6 text-typography-white"
                 />
               </Pressable>
-              <Text
-                size="xs"
-                className="absolute right-5 top-1 text-center font-mono text-typography-white">
-                {isFiltered ? "Today's" : 'All'}
-              </Text>
             </>
           ),
         }}
@@ -119,36 +114,43 @@ export default function TaskList() {
             {showConfetti ? <Confetti /> : <Spinner size="large" />}
           </Box>
         ) : (
-          <FlatList
-            contentContainerStyle={{
-              gap: 16,
-              marginTop: 24,
-            }}
-            data={filteredTasks}
-            renderItem={renderTaskItem}
-            keyExtractor={(item) => item.id.toString()}
-            ListEmptyComponent={<TaskListEmptyComponent />}
-            refreshControl={
-              <RefreshControl
-                refreshing={isRefetching}
-                onRefresh={refetch}
-                progressViewOffset={100}
-                colors={['#000000']}
-                progressBackgroundColor="#ffffff"
-              />
-            }
-            showsVerticalScrollIndicator={true}
-            persistentScrollbar={true}
-            initialNumToRender={10}
-            maxToRenderPerBatch={3}
-            windowSize={6}
-            removeClippedSubviews={true}
-            getItemLayout={(data, index) => ({
-              length: 79,
-              offset: 79 * index,
-              index,
-            })}
-          />
+          <>
+            <Text
+              size="xs"
+              className="absolute right-5 top-1 text-center font-mono text-typography-black">
+              {isFiltered ? "Today's" : 'All Tasks'}
+            </Text>
+            <FlatList
+              contentContainerStyle={{
+                gap: 16,
+                marginTop: 24,
+              }}
+              data={filteredTasks}
+              renderItem={renderTaskItem}
+              keyExtractor={(item) => item.id.toString()}
+              ListEmptyComponent={<TaskListEmptyComponent />}
+              refreshControl={
+                <RefreshControl
+                  refreshing={isRefetching}
+                  onRefresh={refetch}
+                  progressViewOffset={100}
+                  colors={['#000000']}
+                  progressBackgroundColor="#ffffff"
+                />
+              }
+              showsVerticalScrollIndicator={true}
+              persistentScrollbar={true}
+              initialNumToRender={10}
+              maxToRenderPerBatch={3}
+              windowSize={6}
+              removeClippedSubviews={true}
+              getItemLayout={(data, index) => ({
+                length: 79,
+                offset: 79 * index,
+                index,
+              })}
+            />
+          </>
         )}
         <Fab
           size="md"
@@ -160,8 +162,8 @@ export default function TaskList() {
               router.push('/(tasks)/create-task');
             }
           }}>
-          <FabIcon as={AddIcon} color="white" />
-          <FabLabel className="p-2 font-delaGothicOne">Add Task</FabLabel>
+          <FabIcon stroke={'#ff006e'} as={AddIcon} />
+          <FabLabel className="p-2 font-delaGothicOne">Add</FabLabel>
         </Fab>
       </Container>
     </>

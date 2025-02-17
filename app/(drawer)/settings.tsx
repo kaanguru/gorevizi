@@ -16,12 +16,15 @@ import { Heading } from '@/components/ui/heading';
 import { AlertCircleIcon, Icon, TrashIcon } from '@/components/ui/icon';
 import { Button, ButtonIcon, ButtonText } from '@/components/ui/button';
 import { Switch } from '~/components/ui/switch';
-import { Volume2, VolumeX } from 'lucide-react-native';
+import { Moon, Sun, Volume2, VolumeX } from 'lucide-react-native';
 import { HStack } from '~/components/ui/hstack';
 import { Box } from '~/components/ui/box';
 import { useSoundContext } from '~/store/SoundContext';
+import { useTheme } from '~/components/ui/ThemeProvider/ThemeProvider';
 
 export default function SettingsScreen() {
+  const { theme, toggleTheme } = useTheme();
+
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { mutate: resetStats, isPending } = useResetCompletionHistory();
   const { isSoundEnabled, toggleSound } = useSoundContext();
@@ -37,16 +40,7 @@ export default function SettingsScreen() {
 
   return (
     <View className="flex-1 bg-background-light  p-5 dark:bg-background-dark">
-      <View className="mb-5 flex-1 flex-col items-center justify-evenly p-12 ">
-        <Button
-          size="md"
-          variant="solid"
-          action="negative"
-          onPress={() => setIsDialogOpen(true)}
-          isDisabled={isPending}>
-          <ButtonText className="text-white">Reset Statistics</ButtonText>
-          <ButtonIcon className="text-white" as={TrashIcon} />
-        </Button>
+      <View className="mb-5 flex-1 flex-col items-center justify-items-start gap-9 p-12 ">
         <Button
           variant="solid"
           size="md"
@@ -62,6 +56,20 @@ export default function SettingsScreen() {
           <Text size="md"> {userEmail}</Text>
           {/* //TODO: add edit email button */}
         </HStack>
+        <Button
+          size="md"
+          variant="solid"
+          action="negative"
+          onPress={() => setIsDialogOpen(true)}
+          isDisabled={isPending}>
+          <ButtonText className="text-warning-100 dark:bg-warning-500">Reset Statistics</ButtonText>
+          <ButtonIcon className="text-white" as={TrashIcon} />
+        </Button>
+        <Box className=" bg-background-light p-0 dark:bg-background-dark">
+          <Button onPress={toggleTheme}>
+            <ButtonIcon size="xl" as={theme === 'light' ? Moon : Sun} />
+          </Button>
+        </Box>
       </View>
 
       <AlertDialog isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
