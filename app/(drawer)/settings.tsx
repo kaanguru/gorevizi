@@ -3,7 +3,6 @@ import { View } from 'react-native';
 import { router } from 'expo-router';
 
 import { useResetCompletionHistory } from '~/hooks/useTaskCompletionHistory';
-import { useSoundSettings } from '~/hooks/useSoundSettings';
 import { useUser } from '~/hooks/useUser';
 import {
   AlertDialog,
@@ -16,16 +15,17 @@ import { Text } from '@/components/ui/text';
 import { Heading } from '@/components/ui/heading';
 import { AlertCircleIcon, Icon, TrashIcon } from '@/components/ui/icon';
 import { Button, ButtonIcon, ButtonText } from '@/components/ui/button';
-import { Pressable } from '~/components/ui/pressable';
 import { Switch } from '~/components/ui/switch';
 import { Volume2, VolumeX } from 'lucide-react-native';
 import { HStack } from '~/components/ui/hstack';
 import { Box } from '~/components/ui/box';
+import { useSoundContext } from '~/store/SoundContext';
 
 export default function SettingsScreen() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { mutate: resetStats, isPending } = useResetCompletionHistory();
-  const { isSoundEnabled, toggleSound } = useSoundSettings();
+  const { isSoundEnabled, toggleSound } = useSoundContext();
+
   const { data: user } = useUser();
   const userEmail = user?.email;
 

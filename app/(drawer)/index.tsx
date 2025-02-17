@@ -13,7 +13,6 @@ import reOrder from '~/utils/tasks/reOrder';
 import isTaskDueToday from '~/utils/tasks/isTaskDueToday';
 import useTasksQueries from '~/hooks/useTasksQueries';
 import useFilteredTasks from '~/hooks/useFilteredTasks';
-import { useSoundSettings } from '~/hooks/useSoundSettings';
 
 import { useToggleComplete } from '~/hooks/useTasksMutations';
 import useUpdateTaskPositions from '~/hooks/useUpdateTaskPositions';
@@ -21,10 +20,12 @@ import useTaskCompleteSound from '~/hooks/useTaskCompleteSound';
 import { Text } from '~/components/ui/text';
 import Confetti from '~/components/lotties/Confetti';
 import TaskListEmptyComponent from '~/components/TaskListEmptyComponent';
+import { useSoundContext } from '~/store/SoundContext';
 
 export default function TaskList() {
   const [isFiltered, setIsFiltered] = useState<boolean>(true);
   const [showConfetti, setShowConfetti] = useState<boolean>(false);
+  const { isSoundEnabled } = useSoundContext();
 
   const router = useRouter();
   const { data: tasks = [], isLoading, isRefetching, refetch } = useTasksQueries('not-completed');
@@ -32,7 +33,6 @@ export default function TaskList() {
   const updateTaskPositionsMutation = useUpdateTaskPositions();
   const { playSound } = useTaskCompleteSound();
   const toggleComplete = useToggleComplete();
-  const { isSoundEnabled, toggleSound } = useSoundSettings();
 
   const handleReorder = useCallback(
     (from: number, to: number) => {

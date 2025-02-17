@@ -16,6 +16,7 @@ import { DelaGothicOne_400Regular } from '@expo-google-fonts/dela-gothic-one';
 import { UbuntuMono_400Regular } from '@expo-google-fonts/ubuntu-mono';
 import { Ubuntu_400Regular, Ubuntu_500Medium, Ubuntu_700Bold } from '@expo-google-fonts/ubuntu';
 import * as SplashScreen from 'expo-splash-screen';
+import { SoundProvider } from '~/store/SoundContext';
 SplashScreen.preventAutoHideAsync();
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -102,26 +103,28 @@ export default function RootLayout() {
     <QueryClientProvider client={queryClient}>
       <GluestackUIProvider mode="light">
         <GestureHandlerRootView style={{ flex: 1 }}>
-          <Stack
-            screenOptions={{
-              headerShown: false,
-              animation: 'slide_from_right',
-            }}>
-            <Stack.Screen
-              name="(auth)"
-              options={{
-                headerShown: false,
-              }}
-            />
-            <Stack.Screen name="(drawer)" />
-            <Stack.Screen
-              name="(onboarding)"
-              options={{
+          <SoundProvider>
+            <Stack
+              screenOptions={{
                 headerShown: false,
                 animation: 'slide_from_right',
-              }}
-            />
-          </Stack>
+              }}>
+              <Stack.Screen
+                name="(auth)"
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen name="(drawer)" />
+              <Stack.Screen
+                name="(onboarding)"
+                options={{
+                  headerShown: false,
+                  animation: 'slide_from_right',
+                }}
+              />
+            </Stack>
+          </SoundProvider>
         </GestureHandlerRootView>
       </GluestackUIProvider>
     </QueryClientProvider>

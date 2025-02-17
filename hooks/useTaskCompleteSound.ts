@@ -1,6 +1,6 @@
 import { useEffect, useCallback, useState } from 'react';
 import { Audio } from 'expo-av';
-import { useSoundSettings } from './useSoundSettings'; // Add this import
+import { useSoundSettings } from './useSoundSettings';
 
 const soundSources = [
   require('../assets/sound/confetti/sfx.mp3'),
@@ -10,7 +10,7 @@ const soundSources = [
 
 export default function useTaskCompleteSound() {
   const [sound, setSound] = useState<Audio.Sound>();
-  const { isSoundEnabled } = useSoundSettings(); // Add this line
+  const { isSoundEnabled } = useSoundSettings();
 
   const playSound = useCallback(async () => {
     try {
