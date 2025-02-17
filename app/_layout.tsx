@@ -17,12 +17,14 @@ import { UbuntuMono_400Regular } from '@expo-google-fonts/ubuntu-mono';
 import { Ubuntu_400Regular, Ubuntu_500Medium, Ubuntu_700Bold } from '@expo-google-fonts/ubuntu';
 import * as SplashScreen from 'expo-splash-screen';
 import { SoundProvider } from '~/store/SoundContext';
+import { ThemeProvider, useTheme } from '~/components/ui/ThemeProvider/ThemeProvider';
+
 SplashScreen.preventAutoHideAsync();
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       retry: 3,
-      staleTime: 60_000, // Prevent over-fetching
+      staleTime: 60_000,
     },
   },
 });
@@ -101,32 +103,42 @@ export default function RootLayout() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <GluestackUIProvider mode="light">
-        <GestureHandlerRootView style={{ flex: 1 }}>
-          <SoundProvider>
-            <Stack
-              screenOptions={{
+      <ThemeProvider>
+        <GluestackModeWrapper />
+      </ThemeProvider>
+    </QueryClientProvider>
+  );
+}
+
+function GluestackModeWrapper() {
+  const { theme } = useTheme();
+
+  return (
+    <GluestackUIProvider mode={theme}>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <SoundProvider>
+          <Stack
+            screenOptions={{
+              headerShown: false,
+              animation: 'slide_from_right',
+            }}>
+            <Stack.Screen
+              name="(auth)"
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen name="(drawer)" />
+            <Stack.Screen
+              name="(onboarding)"
+              options={{
                 headerShown: false,
                 animation: 'slide_from_right',
-              }}>
-              <Stack.Screen
-                name="(auth)"
-                options={{
-                  headerShown: false,
-                }}
-              />
-              <Stack.Screen name="(drawer)" />
-              <Stack.Screen
-                name="(onboarding)"
-                options={{
-                  headerShown: false,
-                  animation: 'slide_from_right',
-                }}
-              />
-            </Stack>
-          </SoundProvider>
-        </GestureHandlerRootView>
-      </GluestackUIProvider>
-    </QueryClientProvider>
+              }}
+            />
+          </Stack>
+        </SoundProvider>
+      </GestureHandlerRootView>
+    </GluestackUIProvider>
   );
 }

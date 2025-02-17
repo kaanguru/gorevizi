@@ -1,4 +1,5 @@
 /* eslint-disable functional/immutable-data */
+//DraggableTaskItem.tsx
 import React, { memo } from 'react';
 import { Pressable } from './ui/pressable';
 import { Text } from '@/components/ui/text';
@@ -16,12 +17,23 @@ import Animated, {
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
-import { ActivityIndicator } from 'react-native';
+import { ActivityIndicator, View } from 'react-native';
 import Markdown from 'react-native-markdown-display';
 import shortenText from '~/utils/shortenText';
 
+// Define a comparison function for memo
+const areEqual = (prevProps: Readonly<TaskItemProps>, nextProps: Readonly<TaskItemProps>) => {
+  // Compare relevant props that affect rendering
+  return (
+    prevProps.task.id === nextProps.task.id &&
+    prevProps.task.title === nextProps.task.title &&
+    prevProps.task.is_complete === nextProps.task.is_complete &&
+    prevProps.index === nextProps.index // Important: Compare the index
+  );
+};
+
 export const TaskItem = memo(
-  ({ task, index, onReorder, onToggleComplete, onPress }: Readonly<TaskItemProps>) => {
+  ({ task, index, onReorder, onToggleComplete, onPress, isFiltered }: Readonly<TaskItemProps>) => {
     const pressed = useSharedValue(false);
     const itemHeight = 94;
     const translateY = useSharedValue(0);
@@ -44,7 +56,9 @@ export const TaskItem = memo(
         }
         translateY.value = withSpring(0);
         pressed.value = false;
-      });
+      })
+      .enabled(isFiltered); // Conditionally enable/disable the gesture
+
     const opacity = useSharedValue(1);
     const handleFadeOut = () => {
       opacity.value = withTiming(0, {
@@ -63,14 +77,18 @@ export const TaskItem = memo(
     };
     return (
       <Animated.View style={animatedStyle}>
-        <Box className="flex h-[94px] flex-row place-content-baseline justify-between gap-3 bg-background-200 pe-0">
+        <Box
+          style={{ backgroundColor: '#4F10A8' }}
+          className="flex h-[94px] flex-row place-content-baseline justify-between gap-3 rounded-lg pe-0 opacity-100">
           <Checkbox
             value={task.id.toString()}
             isChecked={task.is_complete}
             onChange={handleToggleComplete}
             size="lg"
             className="ms-3 ">
-            <CheckboxIndicator size="lg" className=" h-8 w-8  bg-background-400 text-black">
+            <CheckboxIndicator
+              size="lg"
+              className="h-8 w-8  bg-background-400 text-white dark:bg-background-light">
               <CheckboxIcon as={CheckIcon} />
             </CheckboxIndicator>
           </Checkbox>
@@ -79,24 +97,27 @@ export const TaskItem = memo(
             onPress={onPress}
             accessibilityRole="button"
             accessibilityLabel={`Task: ${task.title}`}
-            className=" flex grow flex-col ">
+            className=" flex grow flex-col">
             <Box className="my-auto flex-row justify-center  py-2">
-              <Text bold className="grow text-typography-500">
+              <Text bold size="lg" className="grow text-typography-white">
                 {task.title}
               </Text>
+
               {taskHasChecklistItems && !isCheckListItemsLoading ? (
                 <>
-                  <Text size="sm" className="me-2">
+                  <Text size="sm" className="me-1 text-typography-white">
                     {checkListItemsLength}
                   </Text>
-                  <Icon className="text-end text-typography-500" as={Waypoints} />
+                  <Icon className="me-2 text-end text-typography-white" as={Waypoints} />
                 </>
               ) : (
                 isCheckListItemsLoading && <ActivityIndicator size="small" color="#FF006E" />
               )}
             </Box>
             {task.notes && (
-              <Box className="absolute bottom-0 left-0 right-0 -z-10 max-h-7 bg-background-100 px-1 py-0">
+              <Box
+                style={{ backgroundColor: '#23074B' }}
+                className="absolute bottom-0 left-0 right-1 -z-10 max-h-7 rounded-sm  px-1 py-0 ">
                 <Markdown
                   mergeStyle={false}
                   style={{
@@ -110,6 +131,7 @@ export const TaskItem = memo(
                     text: {
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
+                      color: '#fff',
                     },
                   }}>
                   {shortenText(task.notes)}
@@ -117,17 +139,16 @@ export const TaskItem = memo(
               </Box>
             )}
           </Pressable>
-          <GestureDetector gesture={panGesture}>
-            <Box className=" h-full w-9">
-              <Icon
-                as={GripVertical}
-                size="xl"
-                className="m-auto text-typography-black dark:text-typography-gray"
-              />
-            </Box>
-          </GestureDetector>
+          {isFiltered && (
+            <GestureDetector gesture={panGesture}>
+              <Box className=" h-full w-9">
+                <Icon as={GripVertical} size="xl" className="m-auto  text-white" />
+              </Box>
+            </GestureDetector>
+          )}
         </Box>
       </Animated.View>
     );
-  }
+  },
+  areEqual // Pass the comparison function to memo
 );

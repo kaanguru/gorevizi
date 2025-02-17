@@ -5,11 +5,13 @@ import Header from '~/components/Header';
 import { Button, ButtonIcon, ButtonText } from '~/components/ui/button';
 import { router } from 'expo-router';
 import { SmilePlus } from 'lucide-react-native';
+import TiredOfWorking from '~/components/lotties/TiredOfWorking';
 
 const WarningPage = () => {
   return (
     <>
       <Header headerTitle="Over Load Warning" />
+      <TiredOfWorking />
       <Card size="lg">
         <Text size="lg">
           You have so much uncompleted tasks. Please go back and finish some tasks before adding

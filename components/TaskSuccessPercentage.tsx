@@ -1,4 +1,4 @@
-import React, { Text, View } from 'react-native';
+import React, { View } from 'react-native';
 import { useQuery } from '@tanstack/react-query';
 import { Progress, ProgressFilledTrack } from '@/components/ui/progress';
 
@@ -7,7 +7,9 @@ import getTaskCompletionHistory from '~/utils/tasks/getTaskCompletionHistory';
 import calculateSuccessPercentage from '~/utils/tasks/calculateSuccessPercentage';
 import { Center } from './ui/center';
 import { Pressable } from './ui/pressable';
+import { Text } from './ui/text';
 import { router } from 'expo-router';
+import { Card } from './ui/card';
 
 function TaskSuccessPercentage({ task }: Readonly<{ task: Tables<'tasks'> }>) {
   const { data: completionHistory } = useQuery({
@@ -20,17 +22,27 @@ function TaskSuccessPercentage({ task }: Readonly<{ task: Tables<'tasks'> }>) {
   }
 
   return successPercentage > 0 ? (
-    <View className="rounded-xl bg-white p-6 shadow-lg">
+    <Card
+      size="lg"
+      variant="elevated"
+      className="rounded-xl bg-background-50 p-6 shadow-lg dark:bg-background-info">
       <Pressable onPress={onPress}>
-        <Text className="mb-2 text-xl font-semibold text-gray-800">{task.title}</Text>
+        <Text
+          bold
+          size="2xl"
+          className="text-typography-dark mb-2  p-2 font-semibold dark:text-white">
+          {task.title}
+        </Text>
         <Center className="my-3">
           <Progress value={Number(successPercentage.toFixed(2))} size="md" orientation="horizontal">
             <ProgressFilledTrack />
           </Progress>
         </Center>
-        <Text className="text-3xl font-bold text-green-600">{successPercentage.toFixed(2)}%</Text>
+        <Text className="text-3xl font-bold text-[#537817] dark:text-success-300">
+          {successPercentage.toFixed(2)}%
+        </Text>
       </Pressable>
-    </View>
+    </Card>
   ) : null;
 }
 

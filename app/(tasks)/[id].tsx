@@ -94,15 +94,23 @@ export default function TaskDetailPage() {
   };
 
   return (
-    <ScrollView className="flex-1 bg-background-50">
+    <ScrollView className="flex-1 bg-background-light dark:bg-background-dark">
       <VStack space="sm" className="flex-1 ">
         <Header headerTitle="" />
         <HStack className="justify-end ">
           <Pressable onPress={() => router.push(`/(tasks)/edit/${taskID}`)}>
-            <Icon size="xl" className="mx-5 my-0  py-0 text-typography-500" as={Pencil} />
+            <Icon
+              size="xl"
+              className="mx-5 my-0  py-0 text-typography-black dark:text-typography-white"
+              as={Pencil}
+            />
           </Pressable>
           <Pressable onPress={() => setShowAlertDialog(true)}>
-            <Icon size="xl" className="mx-5 my-0  py-0 text-typography-500" as={Trash2} />
+            <Icon
+              size="xl"
+              className="mx-5 my-0  py-0 text-typography-black dark:text-typography-white"
+              as={Trash2}
+            />
           </Pressable>
           <AlertDialog isOpen={showAlertDialog} onClose={handleClose}>
             <AlertDialogBackdrop />
@@ -138,15 +146,21 @@ export default function TaskDetailPage() {
             </AlertDialogContent>
           </AlertDialog>
         </HStack>
-        <Card className="mx-5">
-          <Heading size="2xl" className="justify-self-center p-4 text-center">
+        <Card className="mx-5 bg-background-dark text-typography-white dark:bg-background-light dark:text-typography-black">
+          <Heading
+            size="2xl"
+            className="justify-self-center p-4 text-center text-typography-white dark:text-typography-black">
             {task.title}
           </Heading>
-          {task.notes && <Markdown>{task.notes}</Markdown>}
-          <Divider className="my-2" />
+          {task.notes && (
+            <Box className="rounded-sm bg-background-light p-3">
+              <Markdown>{task.notes}</Markdown>
+            </Box>
+          )}
+          <Divider className="my-3" />
 
           {/* Task Status */}
-          <VStack className="my-5 items-center px-4" space="xl">
+          <VStack className="mx-auto my-5 w-full items-center justify-center px-4" space="xl">
             {toggleCompleteIsPending ? (
               <Spinner size="small" />
             ) : (
@@ -154,24 +168,27 @@ export default function TaskDetailPage() {
                 size="lg"
                 isChecked={task.is_complete}
                 onChange={handleToggleComplete}
+                className="mx-auto bg-background-500 p-2"
                 value="is_complete">
+                <CheckboxLabel>{task.is_complete ? 'Completed' : 'Not Completed'}</CheckboxLabel>
                 <CheckboxIndicator>
                   <CheckboxIcon as={CheckIcon} />
                 </CheckboxIndicator>
-                <CheckboxLabel>{task.is_complete ? 'Completed' : 'Not Completed'}</CheckboxLabel>
               </Checkbox>
             )}
           </VStack>
           {!task.repeat_period && (
-            <Text size="md" className="text-center">
+            <Text
+              size="md"
+              className="text-center text-typography-black dark:text-typography-white">
               It is not a repeating task
             </Text>
           )}
           {task.repeat_period && (
             <VStack className="bg-gray.50 rounded-lg p-4">
               <VStack className="items-center justify-center">
-                <Icon as={CalendarSync} size="xl" className="m-3 text-typography-500" />
-                <Text size="md" className="text-bold">
+                <Icon as={CalendarSync} size="xl" color="#CC9900" className="t m-3 " />
+                <Text size="md" bold className="text-typography-white  dark:text-typography-black">
                   Every {task.repeat_frequency} {getRepeatPeriodLabel(task.repeat_period)}{' '}
                 </Text>
               </VStack>
@@ -192,8 +209,8 @@ export default function TaskDetailPage() {
 
         {task.updated_at && (
           <VStack className="items-end px-4">
-            <Text size="sm" bold>
-              Last updated
+            <Text size="xs" bold>
+              update
             </Text>
             <Text size="md">{new Date(task.updated_at!).toLocaleDateString()}</Text>
             <Divider />
@@ -203,8 +220,12 @@ export default function TaskDetailPage() {
         {checklistItems && checklistItems.length > 0 ? (
           <VStack className="m-3 flex-col p-4" space="xl">
             <HStack>
-              <Icon size="md" as={Waypoints} className="me-2 text-typography-100" />
-              <Text size="lg" className="text-muted.strong pb-2">
+              <Icon
+                size="md"
+                as={Waypoints}
+                className="me-2 text-typography-black dark:text-typography-white"
+              />
+              <Text size="lg" className="pb-2 text-typography-black dark:text-typography-white">
                 Routine Steps
               </Text>
             </HStack>

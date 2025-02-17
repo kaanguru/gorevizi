@@ -23,9 +23,9 @@ export default function MarkdownInput({ notes, setNotes }: Readonly<MarkdownInpu
         <Button size="xs" variant="outline" onPress={() => setShowPreview((prev) => !prev)}>
           <ButtonText>
             {showPreview ? (
-              <Icon className="text-typography-500" as={Pencil} />
+              <Icon className="text-typography-gray" as={Pencil} />
             ) : (
-              <Icon className="text-typography-500" as={ScanEye} />
+              <Icon className="text-typography-gray" as={ScanEye} />
             )}
           </ButtonText>
         </Button>
@@ -35,13 +35,12 @@ export default function MarkdownInput({ notes, setNotes }: Readonly<MarkdownInpu
           <Markdown>{notes}</Markdown>
         </View>
       ) : (
-        <Textarea size="md" className="bg-white">
+        <Textarea size="md">
           <TextareaInput
             placeholder="Notes with markdown support"
             value={notes}
             onChangeText={setNotes}
-            className="min-h-[80px] py-2 text-typography-900"
-            placeholderTextColor="#9CA3AF"
+            className="min-h-[80px] py-2 "
           />
         </Textarea>
       )}
@@ -55,13 +54,17 @@ const styles = StyleSheet.create({
     padding: 10,
     borderColor: 'gray',
     borderWidth: 1,
-    minHeight: 100, // Adjust as needed
+    minHeight: 100,
+    color: 'black',
+    backgroundColor: 'white',
   },
   previewContainer: {
     // Add styles for the preview container
     padding: 10,
     borderColor: 'gray',
     borderWidth: 1,
-    minHeight: 100, // Adjust as needed
+    minHeight: 100,
+    color: 'black',
+    backgroundColor: 'white',
   },
 });
