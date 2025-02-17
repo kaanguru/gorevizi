@@ -36,7 +36,7 @@ export default function SettingsScreen() {
   }
 
   return (
-    <View className="flex-1 bg-background-50 p-5">
+    <View className="flex-1 bg-background-light  p-5 dark:bg-background-dark">
       <View className="mb-5 flex-1 flex-col items-center justify-evenly p-12 ">
         <Button
           size="md"
@@ -60,6 +60,7 @@ export default function SettingsScreen() {
             Your e-mail:
           </Text>
           <Text size="md"> {userEmail}</Text>
+          {/* //TODO: add edit email button */}
         </HStack>
       </View>
 

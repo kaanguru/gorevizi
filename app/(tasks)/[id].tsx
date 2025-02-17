@@ -124,7 +124,7 @@ export default function TaskDetailPage() {
                   action="negative"
                   onPress={() => handleDeleteTask(taskID)}
                   className="px-[30px]">
-                  <ButtonText>Delete</ButtonText>
+                  <ButtonText className="text-error-100">Delete</ButtonText>
                 </Button>
                 <Button
                   variant="outline"

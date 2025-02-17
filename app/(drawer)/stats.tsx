@@ -37,7 +37,7 @@ export default function Stats() {
   );
 
   return (
-    <View className="flex-1 justify-evenly">
+    <View className="flex-1 justify-evenly bg-background-0 dark:bg-background-900">
       <Text size="sm" className="text-center text-lg font-bold">
         Total Completed Tasks: {completedTasksCount}
       </Text>

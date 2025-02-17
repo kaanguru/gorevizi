@@ -130,11 +130,11 @@ const GorevIziTheme = {
   },
   token: {
     colorPrimary: '#ff006e',
-    colorInfo: '#ff006e',
-    colorSuccess: '#04891a',
-    colorLink: '#ff006e',
-    colorWarning: '#fd905e',
-    colorWhite: '#fffaec',
+    colorInfo: '#1982C4',
+    colorSuccess: '#8AC926',
+    colorLink: '#8AC926',
+    colorWarning: '#FF006E',
+    colorWhite: '#FFFAEB',
   },
 };
 ```

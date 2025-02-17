@@ -106,7 +106,7 @@ export default function TaskList() {
               </Pressable>
               <Text
                 size="xs"
-                className="font-mono absolute right-5 top-1 text-center text-typography-white">
+                className="absolute right-5 top-1 text-center font-mono text-typography-white">
                 {isFiltered ? "Today's" : 'All'}
               </Text>
             </>
@@ -122,8 +122,6 @@ export default function TaskList() {
           <FlatList
             contentContainerStyle={{
               gap: 16,
-              paddingRight: 16,
-              paddingBottom: 32,
               marginTop: 24,
             }}
             data={filteredTasks}

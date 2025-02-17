@@ -14,6 +14,11 @@ const DrawerLayout = () => {
     <Drawer
       screenOptions={{
         headerShown: true,
+        drawerStyle: {
+          backgroundColor: '#FFEFC2',
+          opacity: 0.9,
+          width: 240,
+        },
         headerStyle: {
           backgroundColor: '#8AC926',
         },
@@ -25,6 +30,7 @@ const DrawerLayout = () => {
           headerTitleStyle: {
             color: '#FFEFC2',
             fontFamily: 'DelaGothicOne_400Regular',
+            fontSize: 20,
           },
           drawerLabel: 'Due Tasks',
           drawerIcon: ({ size, color }) => (
