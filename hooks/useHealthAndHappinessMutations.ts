@@ -1,8 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '~/utils/supabase';
-import { Tables } from '~/database.types';
-import { HeartPulse } from 'lucide-react-native';
-import useHealthAndHappinessQuery from './useHealthAndHappinessQueries';
 
 interface HealthAndHappiness {
   updated_at: string;
@@ -103,12 +100,15 @@ async function upsertHealthAndHappiness(
 
   const { data, error } = await supabase
     .from('health_and_happiness')
-    .upsert({
-      updated_at: new Date().toISOString(),
-      happiness: happiness,
-      health: health,
-      user_id: user_id,
-    })
+    .upsert(
+      {
+        updated_at: new Date().toISOString(),
+        happiness: happiness,
+        health: health,
+        user_id: user_id,
+      },
+      { onConflict: 'user_id' }
+    )
     .select()
     .single();
 

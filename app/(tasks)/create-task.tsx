@@ -18,7 +18,10 @@ import WeekdaySelector from '~/components/WeekDaySelector';
 import { RepeatFrequencySlider } from '~/components/RepeatFrequencySlider';
 import { FormInput } from '~/components/FormInput';
 import RepeatPeriodSelector from '~/components/RepeatPeriodSelector';
-
+import { useUpdateHealthAndHappiness } from '~/hooks/useHealthAndHappinessMutations';
+import useHealthAndHappinessQuery from '~/hooks/useHealthAndHappinessQueries';
+import { useUser } from '~/hooks/useUser';
+import { faker } from '@faker-js/faker/.';
 export default function CreateTask() {
   const router = useRouter();
   const [formData, setFormData] = useState<TaskFormData>({
@@ -33,7 +36,10 @@ export default function CreateTask() {
   });
   const [showDatePicker, setShowDatePicker] = useState(false);
   const { mutate: createTask, isPending: isCreatingTask } = useCreateTask();
-
+  const userQuery = useUser();
+  const { mutate: updateHealthAndHappiness, isPending: isCreatingHealthAndHappiness } =
+    useUpdateHealthAndHappiness();
+  const { data: healthAndHappiness } = useHealthAndHappinessQuery(userQuery.data?.id);
   const handleCreate = async () => {
     if (!formData.title.trim()) {
       Alert.alert('Error', 'Title is required');
@@ -44,7 +50,14 @@ export default function CreateTask() {
       return;
     }
     createTask(formData, {
-      onSuccess: () => router.push('/(drawer)/'),
+      onSuccess: () => {
+        updateHealthAndHappiness({
+          user_id: userQuery.data?.id,
+          health: (healthAndHappiness?.health ?? 0) + faker.number.int({ min: 2, max: 4 }),
+          happiness: (healthAndHappiness?.happiness ?? 0) + faker.number.int({ min: 8, max: 24 }),
+        });
+        router.push('/(drawer)/');
+      },
       onError: (error) => {
         console.error('Error creating task:', error);
         Alert.alert('Error', error.message || 'An unexpected error occurred');
@@ -83,7 +96,7 @@ export default function CreateTask() {
       }),
     }));
   }, []);
-
+  // TODO: dark mode COLOR CHANGE
   return (
     <VStack space="xl" className="flex-1 bg-white">
       <Header headerTitle="Create Task" />

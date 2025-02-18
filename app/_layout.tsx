@@ -53,6 +53,7 @@ export default function RootLayout() {
       try {
         const isFirstToday = await isFirstLaunchToday();
         if (isFirstToday) {
+          // TODO: add function to calculate unfinished tasks and send notification
           await resetRecurringTasks();
         }
       } catch (error) {

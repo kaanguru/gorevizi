@@ -92,7 +92,7 @@ export default function TaskDetailPage() {
     deleteTask(taskID);
     router.push('/(drawer)/');
   };
-
+  // TODO: DARK MODE FOR TASK DETAIL PAGE
   return (
     <ScrollView className="flex-1 bg-background-light dark:bg-background-dark">
       <VStack space="sm" className="flex-1 ">
@@ -168,7 +168,7 @@ export default function TaskDetailPage() {
                 size="lg"
                 isChecked={task.is_complete}
                 onChange={handleToggleComplete}
-                className="mx-auto bg-background-500 p-2"
+                className="mx-auto bg-background-500 p-2 dark:bg-background-dark"
                 value="is_complete">
                 <CheckboxLabel>{task.is_complete ? 'Completed' : 'Not Completed'}</CheckboxLabel>
                 <CheckboxIndicator>

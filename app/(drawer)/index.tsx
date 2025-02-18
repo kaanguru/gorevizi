@@ -35,12 +35,14 @@ export default function TaskList() {
   const router = useRouter();
   const { data: tasks = [], isLoading, isRefetching, refetch } = useTasksQueries('not-completed');
   const { filteredTasks } = useFilteredTasks(tasks, isFiltered);
-  const updateTaskPositionsMutation = useUpdateTaskPositions();
+  const { mutate: updateTaskPositionsMutation, isPending: isUpdatingTaskPositions } =
+    useUpdateTaskPositions();
   const { playSound } = useTaskCompleteSound();
   const toggleComplete = useToggleComplete();
-  const userQuery = useUser();
-  const updateHealthAndHappiness = useUpdateHealthAndHappiness();
-  const { data: healthAndHappiness } = useHealthAndHappinessQuery(userQuery.data?.id);
+  const { data: user, isLoading: isLoadingUser, isError: isErrorUser } = useUser();
+  const { mutate: updateHealthAndHappiness, isPending: isCreatingHealthAndHappiness } =
+    useUpdateHealthAndHappiness();
+  const { data: healthAndHappiness } = useHealthAndHappinessQuery(user?.id);
   // Create a state variable to hold the reordered tasks
   const [reorderedTasks, setReorderedTasks] = useState<Task[]>([]);
 
@@ -57,7 +59,7 @@ export default function TaskList() {
       const newTasks = reOrder(from, to, [...reorderedTasks]); // Create a new array
       setReorderedTasks(newTasks); // Update the state with the new array
 
-      updateTaskPositionsMutation.mutate(newTasks);
+      updateTaskPositionsMutation(newTasks);
     },
     [reorderedTasks, updateTaskPositionsMutation]
   );
@@ -73,11 +75,11 @@ export default function TaskList() {
         {
           onSuccess: () => {
             setShowConfetti(true);
-            updateHealthAndHappiness.mutate({
-              user_id: userQuery.data?.id,
-              health: (healthAndHappiness?.health ?? 0) + 10,
+            updateHealthAndHappiness({
+              user_id: user?.id,
+              health: (healthAndHappiness?.health ?? 0) + faker.number.int({ min: 8, max: 24 }),
               happiness:
-                (healthAndHappiness?.happiness ?? 0) + faker.number.int({ min: 2, max: 10 }),
+                (healthAndHappiness?.happiness ?? 0) + faker.number.int({ min: 2, max: 8 }),
             });
             if (isSoundEnabled) {
               playSound();

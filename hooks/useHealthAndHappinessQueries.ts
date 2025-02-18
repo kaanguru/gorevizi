@@ -29,7 +29,7 @@ async function fetchLastHealthAndHappiness(
     .eq('user_id', user_id)
     .order('updated_at', { ascending: false }) // Order by creation time descending
     .limit(1) // Only get the most recent record
-    .single();
+    .maybeSingle(); // Changed from .single()
 
   if (error) {
     console.error('Error fetching health and happiness:', error);
