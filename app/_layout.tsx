@@ -53,7 +53,8 @@ export default function RootLayout() {
       try {
         const isFirstToday = await isFirstLaunchToday();
         if (isFirstToday) {
-          // TODO: add function to calculate unfinished tasks and send notification
+          // TODO: add function to calculate unfinished tasks and send "Mark the Daily Tasks you did yesterday as done" notification
+
           await resetRecurringTasks();
         }
       } catch (error) {

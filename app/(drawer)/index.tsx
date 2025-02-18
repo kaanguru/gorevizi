@@ -26,11 +26,13 @@ import { useUpdateHealthAndHappiness } from '~/hooks/useHealthAndHappinessMutati
 import useHealthAndHappinessQuery from '~/hooks/useHealthAndHappinessQueries';
 import { useUser } from '~/hooks/useUser';
 import { faker } from '@faker-js/faker/.';
+import { useTheme } from '~/components/ui/ThemeProvider/ThemeProvider';
 
 export default function TaskList() {
   const [isFiltered, setIsFiltered] = useState<boolean>(true);
   const [showConfetti, setShowConfetti] = useState<boolean>(false);
   const { isSoundEnabled } = useSoundContext();
+  const { theme } = useTheme();
 
   const router = useRouter();
   const { data: tasks = [], isLoading, isRefetching, refetch } = useTasksQueries('not-completed');
@@ -129,15 +131,21 @@ export default function TaskList() {
         options={{
           title: 'Due Tasks',
           headerStyle: {
-            backgroundColor: '#76AB21',
+            backgroundColor: theme === 'dark' ? '#051824' : '#FFFAEB',
           },
-
+          headerTintColor: theme === 'dark' ? '#FFFAEB' : '#051824',
+          headerTitleStyle: {
+            color: theme === 'dark' ? '#FFFAEB' : '#051824',
+            fontFamily: 'DelaGothicOne_400Regular',
+            fontSize: 14,
+            fontWeight: '400',
+          },
           headerRight: () => (
             <>
               <Pressable onPress={handleFilterTodayPress} className="p-5">
                 <Icon
                   as={isFiltered ? CalendarDaysIcon : EyeIcon}
-                  className="m-1 h-6 w-6 text-typography-white"
+                  className="m-1 h-6 w-6 text-typography-black dark:text-typography-white"
                 />
               </Pressable>
             </>
