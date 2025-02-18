@@ -60,7 +60,7 @@ export default function SettingsScreen() {
   };
   return (
     <View className="flex-1 bg-background-light  p-5 dark:bg-background-dark">
-      <LogoPortrait height={290} width={110} />
+      <LogoPortrait height={230} width={85} />
       <View className="mb-5 flex-1 flex-col items-center justify-items-start gap-9 p-12 ">
         <Button
           variant="outline"
@@ -70,6 +70,16 @@ export default function SettingsScreen() {
           onPress={() => router.push('/(tasks)/completed-tasks')}>
           <ButtonText className="text-typography-black dark:text-typography-white">
             Show Completed Tasks
+          </ButtonText>
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          action="positive"
+          className="mt-1"
+          onPress={() => router.push('/(tasks)/tasks-of-yesterday')}>
+          <ButtonText className="text-typography-black dark:text-typography-white">
+            Show Yesterday's Tasks
           </ButtonText>
         </Button>
         <HStack className="flex-row items-center justify-center gap-2">
