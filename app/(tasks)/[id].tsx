@@ -92,12 +92,11 @@ export default function TaskDetailPage() {
     deleteTask(taskID);
     router.push('/(drawer)/');
   };
-  // TODO: DARK MODE FOR TASK DETAIL PAGE
   return (
-    <ScrollView className="flex-1 bg-background-light dark:bg-background-dark">
+    <ScrollView className=" flex-1 bg-background-light dark:bg-background-dark">
       <VStack space="sm" className="flex-1 ">
         <Header headerTitle="" />
-        <HStack className="justify-end ">
+        <HStack className="-mt-12 justify-end">
           <Pressable onPress={() => router.push(`/(tasks)/edit/${taskID}`)}>
             <Icon
               size="xl"

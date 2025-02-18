@@ -1,14 +1,14 @@
 import '@/global.css';
 import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
 import React, { useEffect, useState } from 'react';
-import { Href, useRouter, useSegments } from 'expo-router';
+import { Href, router, useRouter, useSegments } from 'expo-router';
 import { isFirstVisit } from '~/utils/isFirstVisit';
 import { isFirstLaunchToday } from '~/utils/isFirstLaunchToday';
 import resetRecurringTasks from '~/utils/tasks/resetRecurringTasks';
 import { Stack } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { supabase } from '~/utils/supabase';
-import { View } from 'react-native';
+import { Alert, View } from 'react-native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Spinner } from '~/components/ui/spinner';
 import { Inter_900Black, useFonts } from '@expo-google-fonts/inter';
@@ -18,7 +18,8 @@ import { Ubuntu_400Regular, Ubuntu_500Medium, Ubuntu_700Bold } from '@expo-googl
 import * as SplashScreen from 'expo-splash-screen';
 import { SoundProvider } from '~/store/SoundContext';
 import { ThemeProvider, useTheme } from '~/components/ui/ThemeProvider/ThemeProvider';
-
+import wasTaskDueYesterday from '~/utils/tasks/wasTaskDueYesterday';
+import useTasksQuery from '~/hooks/useTasksQueries';
 SplashScreen.preventAutoHideAsync();
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -40,7 +41,6 @@ export default function RootLayout() {
   });
 
   const [isSupabaseInitialized, setSupabaseInitialized] = useState(false);
-
   const segments = useSegments();
   const router = useRouter();
   useEffect(() => {
@@ -48,22 +48,7 @@ export default function RootLayout() {
       SplashScreen.hideAsync();
     }
   }, [loaded, error]);
-  useEffect(() => {
-    async function checkAndResetTasks() {
-      try {
-        const isFirstToday = await isFirstLaunchToday();
-        if (isFirstToday) {
-          // TODO: add function to calculate unfinished tasks and send "Mark the Daily Tasks you did yesterday as done" notification
 
-          await resetRecurringTasks();
-        }
-      } catch (error) {
-        console.error('Error initializing tasks:', error);
-      }
-    }
-
-    checkAndResetTasks();
-  }, []);
   useEffect(() => {
     const initializeSupabase = async () => {
       try {
@@ -114,7 +99,26 @@ export default function RootLayout() {
 
 function GluestackModeWrapper() {
   const { theme } = useTheme();
+  const { data: notCompletedTasks } = useTasksQuery();
+  useEffect(() => {
+    async function checkAndResetTasks() {
+      try {
+        const isFirstToday = await isFirstLaunchToday();
+        const wasTaskofYesterday = notCompletedTasks?.filter(wasTaskDueYesterday) || [];
+        if (isFirstToday) {
+          // TODO: check all notCompletedTasks with wasTaskDueYesterday if there is one
+          wasTaskofYesterday?.length > 0
+            ? router.push('/(tasks)/tasks-of-yesterday' as Href)
+            : Alert.alert('well done no job from yesterday');
+          await resetRecurringTasks();
+        }
+      } catch (error) {
+        console.error('Error initializing tasks:', error);
+      }
+    }
 
+    checkAndResetTasks();
+  }, []);
   return (
     <GluestackUIProvider mode={theme}>
       <GestureHandlerRootView style={{ flex: 1 }}>

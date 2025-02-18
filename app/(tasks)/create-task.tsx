@@ -96,9 +96,8 @@ export default function CreateTask() {
       }),
     }));
   }, []);
-  // TODO: dark mode COLOR CHANGE
   return (
-    <VStack space="xl" className="flex-1 bg-white">
+    <VStack space="xl" className="flex-1 bg-background-light dark:bg-background-dark">
       <Header headerTitle="Create Task" />
       <Box className="flex-1">
         <ScrollView className="flex-1 px-4">
