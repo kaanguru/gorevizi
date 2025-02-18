@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '~/utils/supabase';
 import getTaskCompletionHistory from '~/utils/tasks/getTaskCompletionHistory';
 import resetTaskCompletionHistory from '~/utils/tasks/resetTaskCompletionHistory';
+import { useUser } from './useUser';
 
 export default function useTaskCompletionHistory(taskID: number) {
   const queryClient = useQueryClient();
@@ -51,13 +52,41 @@ export function useResetCompletionHistory() {
   });
 }
 export function useTaskCompletionCount() {
+  const { data: user } = useUser();
+
   return useQuery({
-    queryKey: ['completedTasksCount'],
+    queryKey: ['completedTasksHistory'],
     queryFn: async () => {
-      const { count } = await supabase
+      if (!user?.id) {
+        throw new Error('User ID is not available');
+      }
+
+      // Fetch all completed tasks for the user
+      const { data: completedTasks, error: tasksError } = await supabase
+        .from('tasks')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('is_complete', true);
+
+      if (tasksError) {
+        throw new Error(tasksError.message);
+      }
+
+      // Extract task IDs from the completed tasks
+      const taskIds = completedTasks.map((task) => task.id);
+
+      // Fetch the completion history for these tasks
+      const { data: completionHistory, error: historyError } = await supabase
         .from('task_completion_history')
-        .select('id', { count: 'exact', head: true });
-      return count;
+        .select('*')
+        .in('task_id', taskIds);
+
+      if (historyError) {
+        throw new Error(historyError.message);
+      }
+
+      return completionHistory;
     },
+    enabled: !!user?.id, // Ensure the query is only enabled when user ID is available
   });
 }

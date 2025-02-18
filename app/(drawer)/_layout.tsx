@@ -14,15 +14,15 @@ const DrawerLayout = () => {
     <Drawer
       screenOptions={{
         headerShown: true,
+        headerStyle: {
+          backgroundColor: '#051824',
+        },
+        headerTintColor: '#FFEFC2',
         drawerStyle: {
           backgroundColor: '#FFEFC2',
           opacity: 0.9,
           width: 240,
         },
-        headerStyle: {
-          backgroundColor: '#76AB21',
-        },
-        headerTintColor: '#FFEFC2',
         drawerActiveTintColor: '#76AB21',
         drawerInactiveTintColor: '#2F450D',
         drawerLabelStyle: {
@@ -86,12 +86,7 @@ const DrawerLayout = () => {
         options={{
           headerTitle: 'Sign Out',
           drawerLabel: 'Sign Out',
-          headerTitleStyle: {
-            color: '#FFEFC2',
-            fontFamily: 'DelaGothicOne_400Regular',
-            fontSize: 14,
-            fontWeight: '400',
-          },
+
           drawerIcon: ({ size, color }) => (
             <Ionicons name="log-out-outline" size={size} color={color} />
           ),

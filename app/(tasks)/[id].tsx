@@ -92,12 +92,11 @@ export default function TaskDetailPage() {
     deleteTask(taskID);
     router.push('/(drawer)/');
   };
-
   return (
-    <ScrollView className="flex-1 bg-background-light dark:bg-background-dark">
+    <ScrollView className=" flex-1 bg-background-light dark:bg-background-dark">
       <VStack space="sm" className="flex-1 ">
         <Header headerTitle="" />
-        <HStack className="justify-end ">
+        <HStack className="-mt-12 justify-end">
           <Pressable onPress={() => router.push(`/(tasks)/edit/${taskID}`)}>
             <Icon
               size="xl"
@@ -168,11 +167,11 @@ export default function TaskDetailPage() {
                 size="lg"
                 isChecked={task.is_complete}
                 onChange={handleToggleComplete}
-                className="mx-auto bg-background-500 p-2"
+                className="mx-auto rounded-md bg-background-light p-2 dark:bg-background-dark"
                 value="is_complete">
                 <CheckboxLabel>{task.is_complete ? 'Completed' : 'Not Completed'}</CheckboxLabel>
                 <CheckboxIndicator>
-                  <CheckboxIcon as={CheckIcon} />
+                  <CheckboxIcon as={CheckIcon} className="bg-success-100" />
                 </CheckboxIndicator>
               </Checkbox>
             )}
@@ -180,7 +179,7 @@ export default function TaskDetailPage() {
           {!task.repeat_period && (
             <Text
               size="md"
-              className="text-center text-typography-black dark:text-typography-white">
+              className="text-center text-typography-white dark:text-typography-black">
               It is not a repeating task
             </Text>
           )}
@@ -250,7 +249,7 @@ export default function TaskDetailPage() {
             <Divider />
           </VStack>
         ) : (
-          <Text className="text-muted.strong p-4 text-center">
+          <Text className="text-muted p-4 text-center dark:text-typography-white">
             No Routines found. Edit Task to add some
           </Text>
         )}

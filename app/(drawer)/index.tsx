@@ -22,19 +22,29 @@ import { Text } from '~/components/ui/text';
 import Confetti from '~/components/lotties/Confetti';
 import TaskListEmptyComponent from '~/components/TaskListEmptyComponent';
 import { useSoundContext } from '~/store/SoundContext';
+import { useUpdateHealthAndHappiness } from '~/hooks/useHealthAndHappinessMutations';
+import useHealthAndHappinessQuery from '~/hooks/useHealthAndHappinessQueries';
+import { useUser } from '~/hooks/useUser';
+import { faker } from '@faker-js/faker/.';
+import { useTheme } from '~/components/ui/ThemeProvider/ThemeProvider';
 
 export default function TaskList() {
   const [isFiltered, setIsFiltered] = useState<boolean>(true);
   const [showConfetti, setShowConfetti] = useState<boolean>(false);
   const { isSoundEnabled } = useSoundContext();
+  const { theme } = useTheme();
 
   const router = useRouter();
   const { data: tasks = [], isLoading, isRefetching, refetch } = useTasksQueries('not-completed');
   const { filteredTasks } = useFilteredTasks(tasks, isFiltered);
-  const updateTaskPositionsMutation = useUpdateTaskPositions();
+  const { mutate: updateTaskPositionsMutation, isPending: isUpdatingTaskPositions } =
+    useUpdateTaskPositions();
   const { playSound } = useTaskCompleteSound();
   const toggleComplete = useToggleComplete();
-
+  const { data: user, isLoading: isLoadingUser, isError: isErrorUser } = useUser();
+  const { mutate: updateHealthAndHappiness, isPending: isCreatingHealthAndHappiness } =
+    useUpdateHealthAndHappiness();
+  const { data: healthAndHappiness } = useHealthAndHappinessQuery(user?.id);
   // Create a state variable to hold the reordered tasks
   const [reorderedTasks, setReorderedTasks] = useState<Task[]>([]);
 
@@ -51,7 +61,7 @@ export default function TaskList() {
       const newTasks = reOrder(from, to, [...reorderedTasks]); // Create a new array
       setReorderedTasks(newTasks); // Update the state with the new array
 
-      updateTaskPositionsMutation.mutate(newTasks);
+      updateTaskPositionsMutation(newTasks);
     },
     [reorderedTasks, updateTaskPositionsMutation]
   );
@@ -67,6 +77,12 @@ export default function TaskList() {
         {
           onSuccess: () => {
             setShowConfetti(true);
+            updateHealthAndHappiness({
+              user_id: user?.id,
+              health: (healthAndHappiness?.health ?? 0) + faker.number.int({ min: 8, max: 24 }),
+              happiness:
+                (healthAndHappiness?.happiness ?? 0) + faker.number.int({ min: 2, max: 8 }),
+            });
             if (isSoundEnabled) {
               playSound();
             }
@@ -115,15 +131,21 @@ export default function TaskList() {
         options={{
           title: 'Due Tasks',
           headerStyle: {
-            backgroundColor: '#76AB21',
+            backgroundColor: theme === 'dark' ? '#051824' : '#FFFAEB',
           },
-
+          headerTintColor: theme === 'dark' ? '#FFFAEB' : '#051824',
+          headerTitleStyle: {
+            color: theme === 'dark' ? '#FFFAEB' : '#051824',
+            fontFamily: 'DelaGothicOne_400Regular',
+            fontSize: 14,
+            fontWeight: '400',
+          },
           headerRight: () => (
             <>
               <Pressable onPress={handleFilterTodayPress} className="p-5">
                 <Icon
                   as={isFiltered ? CalendarDaysIcon : EyeIcon}
-                  className="m-1 h-6 w-6 text-typography-white"
+                  className="m-1 h-6 w-6 text-typography-black dark:text-typography-white"
                 />
               </Pressable>
             </>

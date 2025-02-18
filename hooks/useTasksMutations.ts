@@ -2,7 +2,6 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '~/utils/supabase';
 import { Success, TaskFormData } from '~/types';
 import { Tables } from '~/database.types';
-
 function useCreateTask() {
   const queryClient = useQueryClient();
   return useMutation({
@@ -123,8 +122,7 @@ function useToggleComplete() {
       );
       return { previousTasks };
     },
-    onSuccess: () => {
-      // Invalidate the query cache for the tasks list
+    onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
     },
     onError: (error, variables, context) => {
