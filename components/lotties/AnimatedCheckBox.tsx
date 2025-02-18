@@ -1,19 +1,24 @@
 import LottieView from 'lottie-react-native';
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { StyleProp, ViewStyle } from 'react-native';
 
-interface HealthyProps {
+interface CheckBoxProps {
   height?: number;
   width?: number;
   style?: StyleProp<ViewStyle>;
 }
 
-export default function Healthy({ height = 530, width = 199, style }: Readonly<HealthyProps>) {
+export default function AnimatedCheckBox({
+  height = 30,
+  width = 30,
+  style,
+}: Readonly<CheckBoxProps>) {
   return (
     <LottieView
       autoPlay
-      loop={true}
-      speed={0.5}
+      loop={false}
+      speed={1}
+      key="checkbox"
       style={[
         {
           width: width,
@@ -23,7 +28,7 @@ export default function Healthy({ height = 530, width = 199, style }: Readonly<H
         },
         style,
       ]}
-      source={require('~/assets/lottie/healthy.json')}
+      source={require('~/assets/lottie/checkbox.json')}
       resizeMode="cover"
     />
   );

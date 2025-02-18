@@ -20,6 +20,11 @@ import { SoundProvider } from '~/store/SoundContext';
 import { ThemeProvider, useTheme } from '~/components/ui/ThemeProvider/ThemeProvider';
 import wasTaskDueYesterday from '~/utils/tasks/wasTaskDueYesterday';
 import useTasksQuery from '~/hooks/useTasksQueries';
+import useHealthAndHappinessQuery from '~/hooks/useHealthAndHappinessQueries';
+import { useUser } from '~/hooks/useUser';
+import { useUpdateHealthAndHappiness } from '~/hooks/useHealthAndHappinessMutations';
+import genRandomInt from '~/utils/genRandomInt';
+
 SplashScreen.preventAutoHideAsync();
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -39,10 +44,10 @@ export default function RootLayout() {
     Ubuntu_500Medium,
     Ubuntu_700Bold,
   });
-
   const [isSupabaseInitialized, setSupabaseInitialized] = useState(false);
   const segments = useSegments();
   const router = useRouter();
+
   useEffect(() => {
     if (loaded || error) {
       SplashScreen.hideAsync();
@@ -100,15 +105,26 @@ export default function RootLayout() {
 function GluestackModeWrapper() {
   const { theme } = useTheme();
   const { data: notCompletedTasks } = useTasksQuery();
+  const { data: user } = useUser();
+  const { data: healthAndHappiness } = useHealthAndHappinessQuery(user?.id);
+  const { mutate: updateHealthAndHappiness } = useUpdateHealthAndHappiness();
   useEffect(() => {
     async function checkAndResetTasks() {
       try {
         const isFirstToday = await isFirstLaunchToday();
         const wasTaskofYesterday = notCompletedTasks?.filter(wasTaskDueYesterday) || [];
+        const handlePunishments = () => {
+          const punishCount = wasTaskofYesterday?.length;
+          updateHealthAndHappiness({
+            user_id: user?.id,
+            health: (healthAndHappiness?.health ?? 0) - genRandomInt(16, 24) * punishCount,
+            happiness: (healthAndHappiness?.happiness ?? 0) - genRandomInt(16, 24) * punishCount,
+          });
+          router.push('/(tasks)/tasks-of-yesterday' as Href);
+        };
         if (isFirstToday) {
-          // TODO: check all notCompletedTasks with wasTaskDueYesterday if there is one
           wasTaskofYesterday?.length > 0
-            ? router.push('/(tasks)/tasks-of-yesterday' as Href)
+            ? handlePunishments()
             : Alert.alert('well done no job from yesterday');
           await resetRecurringTasks();
         }
@@ -116,9 +132,9 @@ function GluestackModeWrapper() {
         console.error('Error initializing tasks:', error);
       }
     }
-
     checkAndResetTasks();
   }, []);
+
   return (
     <GluestackUIProvider mode={theme}>
       <GestureHandlerRootView style={{ flex: 1 }}>

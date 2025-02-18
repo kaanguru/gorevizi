@@ -20,6 +20,7 @@ import Animated, {
 import { ActivityIndicator, View } from 'react-native';
 import Markdown from 'react-native-markdown-display';
 import shortenText from '~/utils/shortenText';
+import AnimatedCheckBox from './lotties/AnimatedCheckBox';
 
 // Define a comparison function for memo
 const areEqual = (prevProps: Readonly<TaskItemProps>, nextProps: Readonly<TaskItemProps>) => {
@@ -89,7 +90,7 @@ export const TaskItem = memo(
             <CheckboxIndicator
               size="lg"
               className="h-8 w-8  bg-background-400 text-white dark:bg-background-light">
-              <CheckboxIcon as={CheckIcon} />
+              <AnimatedCheckBox height={22} width={22} />
             </CheckboxIndicator>
           </Checkbox>
 

@@ -2,6 +2,7 @@ import { View, Text, TextInput, Pressable, Alert, ActivityIndicator } from 'reac
 import { Href, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { useAuth } from '~/utils/auth/auth';
+import LogoPortrait from '~/components/lotties/LogoPortrait';
 
 export default function Register() {
   const router = useRouter();
@@ -34,16 +35,18 @@ export default function Register() {
   };
 
   return (
-    <View className="flex-1 bg-background-100 px-5 pt-12">
-      <Text className="text-navy-800 mb-8 text-2xl font-bold">Create Account</Text>
-
+    <View className="flex-1 bg-background-light px-5 pt-12 dark:bg-background-dark">
+      <LogoPortrait height={300} width={110} />
+      <Text className="mb-8 text-2xl font-bold text-typography-black dark:text-typography-white">
+        Create Account
+      </Text>
       {loading && <ActivityIndicator />}
 
       <View className="space-y-4">
         <View>
-          <Text className="mb-2 text-typography-800">Email</Text>
+          <Text className={styles.text}>Email</Text>
           <TextInput
-            className="w-full rounded-lg border border-primary-400 px-4 py-3"
+            className="w-full rounded-lg border border-primary-400 bg-background-light px-4 py-3"
             placeholder="Enter your email"
             value={email}
             onChangeText={setEmail}
@@ -53,9 +56,9 @@ export default function Register() {
         </View>
 
         <View>
-          <Text className="text-navy-800 mb-2">Password</Text>
+          <Text className={styles.text}>Password</Text>
           <TextInput
-            className="w-full rounded-lg border  border-primary-400 px-4 py-3"
+            className="w-full rounded-lg border border-primary-400  bg-background-light px-4 py-3"
             placeholder="Enter your password"
             value={password}
             onChangeText={setPassword}
@@ -63,9 +66,9 @@ export default function Register() {
           />
         </View>
         <View>
-          <Text className="text-navy-800 mb-2">Confirm Password</Text>
+          <Text className={styles.text}>Confirm Password</Text>
           <TextInput
-            className="w-full rounded-lg border  border-primary-400 px-4 py-3"
+            className="w-full rounded-lg border border-primary-400  bg-background-light px-4 py-3"
             placeholder="Confirm your password"
             value={confirmPassword}
             onChangeText={setConfirmPassword}
@@ -86,7 +89,10 @@ export default function Register() {
 }
 
 const styles = {
-  button: 'border-primary-500 bg-background-400 mt-4 w-full rounded-lg border py-4',
-  buttonText: 'text-center font-semibold text-black',
-  textButton: 'mt-8 bg-background-200 p-3',
+  button:
+    'border-primary-500 bg-background-dark dark:bg-background-light mt-6 w-full rounded-lg border py-4',
+  buttonText:
+    'text-center font-semibold text-black bg-background-dark dark:bg-background-light rounded',
+  textButton: 'mt-8 bg-background-dark dark:bg-background-light rounded p-3',
+  text: 'mb-2 text-typography-black dark:text-typography-white',
 };

@@ -21,7 +21,8 @@ import RepeatPeriodSelector from '~/components/RepeatPeriodSelector';
 import { useUpdateHealthAndHappiness } from '~/hooks/useHealthAndHappinessMutations';
 import useHealthAndHappinessQuery from '~/hooks/useHealthAndHappinessQueries';
 import { useUser } from '~/hooks/useUser';
-import { faker } from '@faker-js/faker/.';
+import genRandomInt from '~/utils/genRandomInt';
+
 export default function CreateTask() {
   const router = useRouter();
   const [formData, setFormData] = useState<TaskFormData>({
@@ -36,10 +37,10 @@ export default function CreateTask() {
   });
   const [showDatePicker, setShowDatePicker] = useState(false);
   const { mutate: createTask, isPending: isCreatingTask } = useCreateTask();
-  const userQuery = useUser();
+  const { data: user } = useUser();
   const { mutate: updateHealthAndHappiness, isPending: isCreatingHealthAndHappiness } =
     useUpdateHealthAndHappiness();
-  const { data: healthAndHappiness } = useHealthAndHappinessQuery(userQuery.data?.id);
+  const { data: healthAndHappiness } = useHealthAndHappinessQuery(user?.id);
   const handleCreate = async () => {
     if (!formData.title.trim()) {
       Alert.alert('Error', 'Title is required');
@@ -52,9 +53,9 @@ export default function CreateTask() {
     createTask(formData, {
       onSuccess: () => {
         updateHealthAndHappiness({
-          user_id: userQuery.data?.id,
-          health: (healthAndHappiness?.health ?? 0) + faker.number.int({ min: 2, max: 4 }),
-          happiness: (healthAndHappiness?.happiness ?? 0) + faker.number.int({ min: 8, max: 24 }),
+          user_id: user?.id,
+          health: (healthAndHappiness?.health ?? 0) + genRandomInt(2, 4),
+          happiness: (healthAndHappiness?.happiness ?? 0) + genRandomInt(8, 24),
         });
         router.push('/(drawer)/');
       },

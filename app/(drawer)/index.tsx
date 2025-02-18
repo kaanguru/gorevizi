@@ -25,7 +25,7 @@ import { useSoundContext } from '~/store/SoundContext';
 import { useUpdateHealthAndHappiness } from '~/hooks/useHealthAndHappinessMutations';
 import useHealthAndHappinessQuery from '~/hooks/useHealthAndHappinessQueries';
 import { useUser } from '~/hooks/useUser';
-import { faker } from '@faker-js/faker/.';
+import genRandomInt from '~/utils/genRandomInt';
 import { useTheme } from '~/components/ui/ThemeProvider/ThemeProvider';
 
 export default function TaskList() {
@@ -79,9 +79,8 @@ export default function TaskList() {
             setShowConfetti(true);
             updateHealthAndHappiness({
               user_id: user?.id,
-              health: (healthAndHappiness?.health ?? 0) + faker.number.int({ min: 8, max: 24 }),
-              happiness:
-                (healthAndHappiness?.happiness ?? 0) + faker.number.int({ min: 2, max: 8 }),
+              health: (healthAndHappiness?.health ?? 0) + genRandomInt(8, 24),
+              happiness: (healthAndHappiness?.happiness ?? 0) + genRandomInt(2, 8),
             });
             if (isSoundEnabled) {
               playSound();
@@ -207,9 +206,6 @@ export default function TaskList() {
             }
           }}>
           <FabIcon size="xl" stroke={'#ff006e'} as={AddIcon} />
-          <FabLabel style={{ color: '#ff006e' }} className="p-2 font-delaGothicOne ">
-            Add
-          </FabLabel>
         </Fab>
       </View>
     </>
