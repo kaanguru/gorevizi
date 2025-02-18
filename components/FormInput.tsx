@@ -1,5 +1,5 @@
 import React from 'react-native';
-import { Input, InputField } from '@/components/ui/input';
+import { Input, InputField } from '~/components/ui/input';
 import { FormInputProps } from '@/types';
 import { VStack } from './ui/vstack';
 import MarkdownInput from './MarkdownInput';

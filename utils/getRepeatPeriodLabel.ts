@@ -1,7 +1,7 @@
 import { RepeatPeriod } from '~/types';
 
 export default function getRepeatPeriodLabel(
-  period: RepeatPeriod | null
+  period: RepeatPeriod | null,
 ): string | null | undefined {
   switch (period) {
     case 'Daily':

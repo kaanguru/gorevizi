@@ -17,7 +17,7 @@ export default function useHealthAndHappinessQuery(user_id: string | undefined) 
   });
 }
 async function fetchLastHealthAndHappiness(
-  user_id: string | undefined
+  user_id: string | undefined,
 ): Promise<Tables<'health_and_happiness'> | null> {
   if (!user_id) {
     return null;

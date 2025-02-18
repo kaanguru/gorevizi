@@ -6,7 +6,7 @@ function useFilteredTasks(tasks: Tables<'tasks'>[], isFiltered: boolean) {
   return {
     filteredTasks: useMemo(
       () => (isFiltered ? tasks.filter(isTaskDueToday) : tasks),
-      [isFiltered, tasks]
+      [isFiltered, tasks],
     ),
   };
 }

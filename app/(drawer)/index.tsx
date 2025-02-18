@@ -1,13 +1,12 @@
-// index.tsx
 import React, { useCallback, useState, memo, useEffect } from 'react';
 import { FlatList, Pressable, RefreshControl, View } from 'react-native';
 import { Stack, useFocusEffect, useRouter } from 'expo-router';
 import { Task } from '~/types';
 import * as R from 'ramda';
 
-import { Fab, FabLabel, FabIcon } from '@/components/ui/fab';
+import { Fab, FabIcon } from '~/components/ui/fab';
 import { Box } from '~/components/ui/box';
-import { AddIcon, CalendarDaysIcon, Icon, DownloadIcon, EyeIcon } from '@/components/ui/icon';
+import { AddIcon, CalendarDaysIcon, Icon, DownloadIcon, EyeIcon } from '~/components/ui/icon';
 import { Spinner } from '~/components/ui/spinner';
 import { TaskItem } from '~/components/DraggableTaskItem';
 import reOrder from '~/utils/tasks/reOrder';

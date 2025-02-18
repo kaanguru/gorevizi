@@ -3,13 +3,13 @@ import { Alert, ScrollView } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useRouter } from 'expo-router';
 
-import { Box } from '@/components/ui/box';
-import { Button, ButtonText } from '@/components/ui/button';
-import { Text } from '@/components/ui/text';
+import { Box } from '~/components/ui/box';
+import { Button, ButtonText } from '~/components/ui/button';
+import { Text } from '~/components/ui/text';
 
-import { Checkbox, CheckboxIndicator, CheckboxIcon, CheckboxLabel } from '@/components/ui/checkbox';
-import { HStack } from '@/components/ui/hstack';
-import { VStack } from '@/components/ui/vstack';
+import { Checkbox, CheckboxIndicator, CheckboxIcon, CheckboxLabel } from '~/components/ui/checkbox';
+import { HStack } from '~/components/ui/hstack';
+import { VStack } from '~/components/ui/vstack';
 import { RepeatPeriod, TaskFormData } from '~/types';
 import { useCreateTask } from '~/hooks/useTasksMutations';
 import ChecklistSection from '~/components/ChecklistSection';

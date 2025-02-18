@@ -61,7 +61,7 @@ export default function useChecklistItemMutations(taskID: number | string) {
             content: item.content.trim(),
             position: index,
             is_complete: item.isComplete || false,
-          }))
+          })),
         );
 
         if (insertError) throw new Error('Failed to update checklist items');

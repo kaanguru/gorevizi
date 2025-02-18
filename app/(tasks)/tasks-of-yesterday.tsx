@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { View, FlatList, SafeAreaView, Alert, ListRenderItem } from 'react-native';
 import useTasksQuery from '~/hooks/useTasksQueries';
 import wasTaskDueYesterday from '~/utils/tasks/wasTaskDueYesterday';
-import { Text } from '@/components/ui/text';
+import { Text } from '~/components/ui/text';
 import { Task } from '~/types';
 import { Pressable } from '~/components/ui/pressable';
 import { Card } from '~/components/ui/card';

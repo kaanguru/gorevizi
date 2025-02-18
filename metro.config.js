@@ -18,5 +18,5 @@ module.exports = withNativeWind(
 
     return config;
   },
-  { input: './global.css' }
+  { input: './global.css' },
 );

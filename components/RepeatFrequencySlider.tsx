@@ -1,6 +1,6 @@
 import { RepeatPeriod } from '~/types';
 import { calculateRepeatText } from '~/utils/tasks/calculateRepeatText';
-import { Text } from '@/components/ui/text';
+import { Text } from '~/components/ui/text';
 import { Box } from './ui/box';
 import { Center } from './ui/center';
 import { HStack } from './ui/hstack';

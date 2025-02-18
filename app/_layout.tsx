@@ -1,5 +1,5 @@
 import '@/global.css';
-import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
+import { GluestackUIProvider } from '~/components/ui/gluestack-ui-provider';
 import React, { useEffect, useState } from 'react';
 import { Href, router, useRouter, useSegments } from 'expo-router';
 import { isFirstVisit } from '~/utils/isFirstVisit';

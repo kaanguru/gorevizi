@@ -58,7 +58,7 @@ function useUpdateHealthAndHappiness() {
 
   return useMutation({
     mutationFn: async (
-      params: Readonly<{ user_id: string | undefined; health: number; happiness: number }>
+      params: Readonly<{ user_id: string | undefined; health: number; happiness: number }>,
     ) => {
       if (!params.user_id) {
         throw new Error('User ID is required to update health and happiness.');
@@ -92,7 +92,7 @@ function useUpdateHealthAndHappiness() {
 async function upsertHealthAndHappiness(
   user_id: string | undefined,
   health: number,
-  happiness: number
+  happiness: number,
 ) {
   if (!user_id) {
     throw new Error('User ID is required to update health and happiness.');
@@ -107,7 +107,7 @@ async function upsertHealthAndHappiness(
         health: health,
         user_id: user_id,
       },
-      { onConflict: 'user_id' }
+      { onConflict: 'user_id' },
     )
     .select()
     .single();

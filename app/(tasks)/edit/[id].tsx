@@ -12,14 +12,14 @@ import { useUpdateTask, useDeleteTask, useToggleComplete } from '~/hooks/useTask
 
 import { RepeatFrequencySlider } from '~/components/RepeatFrequencySlider';
 import ChecklistSection from '~/components/ChecklistSection';
-import { Box } from '@/components/ui/box';
-import { Button, ButtonIcon, ButtonText } from '@/components/ui/button';
-import { Text } from '@/components/ui/text';
+import { Box } from '~/components/ui/box';
+import { Button, ButtonIcon, ButtonText } from '~/components/ui/button';
+import { Text } from '~/components/ui/text';
 import { TrashIcon } from '~/components/ui/icon';
-import { Checkbox, CheckboxIndicator, CheckboxIcon, CheckboxLabel } from '@/components/ui/checkbox';
-import { HStack } from '@/components/ui/hstack';
+import { Checkbox, CheckboxIndicator, CheckboxIcon, CheckboxLabel } from '~/components/ui/checkbox';
+import { HStack } from '~/components/ui/hstack';
 import { Spinner } from '~/components/ui/spinner';
-import { VStack } from '@/components/ui/vstack';
+import { VStack } from '~/components/ui/vstack';
 import { FormInput } from '~/components/FormInput';
 import RepeatPeriodSelector from '~/components/RepeatPeriodSelector';
 import WeekdaySelector from '~/components/WeekDaySelector';
@@ -146,7 +146,7 @@ export default function EditTask() {
     setFormData((prev) => ({
       ...prev,
       checklistItems: prev.checklistItems.map((item, i) =>
-        i === index ? { ...item, content } : item
+        i === index ? { ...item, content } : item,
       ),
     }));
   };

@@ -7,7 +7,7 @@ import { useToggleComplete } from '~/hooks/useTasksMutations';
 import { Undo } from 'lucide-react-native';
 import { Button, ButtonIcon } from '~/components/ui/button';
 import { Text } from '~/components/ui/text';
-import { Card } from '@/components/ui/card';
+import { Card } from '~/components/ui/card';
 import { Pressable } from '~/components/ui/pressable';
 import Header from '~/components/Header';
 
@@ -22,7 +22,7 @@ export default function CompletedTasks() {
 
   const handleMarkIncomplete = useCallback(
     (taskID: number) => toggleComplete({ taskID, isComplete: false }),
-    []
+    [],
   );
 
   function renderItem({ item }: Readonly<{ item: Tables<'tasks'> }>) {

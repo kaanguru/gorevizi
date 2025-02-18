@@ -42,7 +42,7 @@ function wasTaskDueYesterday(task: Readonly<Tables<'tasks'>>): boolean {
 
 function wasDailyTaskDueYesterday(
   daysSinceCreation: number,
-  repeatFrequency: number | null
+  repeatFrequency: number | null,
 ): boolean {
   const frequency = repeatFrequency ?? 1;
   return daysSinceCreation >= 0 && daysSinceCreation % frequency === 0;

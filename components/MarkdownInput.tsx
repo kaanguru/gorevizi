@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import Markdown from 'react-native-markdown-display';
-import { Text } from '@/components/ui/text';
-import { HStack } from '@/components/ui/hstack';
-import { Button, ButtonText } from '@/components/ui/button';
+import { Text } from '~/components/ui/text';
+import { HStack } from '~/components/ui/hstack';
+import { Button, ButtonText } from '~/components/ui/button';
 import { Textarea, TextareaInput } from './ui/textarea';
 import { Icon } from './ui/icon';
 import { Pencil, ScanEye } from 'lucide-react-native';

@@ -14,7 +14,7 @@ const numberOfTasks = parseInt(process.argv[2]);
 // Check if the argument is a valid number
 if (isNaN(numberOfTasks) || numberOfTasks <= 0) {
   console.error(
-    'Please provide a valid number of tasks to seed as a command line argument (e.g., "pnpm seed 12").'
+    'Please provide a valid number of tasks to seed as a command line argument (e.g., "pnpm seed 12").',
   );
 } else {
   seedTasks(numberOfTasks);
@@ -79,7 +79,7 @@ export async function seedTasks(pieces: number): Promise<void> {
   } else {
     console.log(
       'Database seeded successfully with tasks and checklist items:',
-      insertedChecklistItems
+      insertedChecklistItems,
     );
   }
 }
@@ -88,7 +88,7 @@ async function authenticateTestUser() {
   // Check if test user credentials are provided
   if (!testUserEmail || !testUserPassword) {
     console.error(
-      'Test user email or password not found in environment variables. Please set EXPO_PUBLIC_TEST_USER_EMAIL and EXPO_PUBLIC_TEST_USER_PASSWORD in your .env file.'
+      'Test user email or password not found in environment variables. Please set EXPO_PUBLIC_TEST_USER_EMAIL and EXPO_PUBLIC_TEST_USER_PASSWORD in your .env file.',
     );
     return null;
   }

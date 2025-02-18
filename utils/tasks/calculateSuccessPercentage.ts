@@ -8,7 +8,7 @@ import {
 
 function calculateSuccessPercentage(
   task: Readonly<Tables<'tasks'>>,
-  completionHistory: Tables<'task_completion_history'>[]
+  completionHistory: Tables<'task_completion_history'>[],
 ) {
   const createdAtDate = new Date(task.created_at);
   const daysSinceCreation = differenceInDays(Date.now(), createdAtDate);

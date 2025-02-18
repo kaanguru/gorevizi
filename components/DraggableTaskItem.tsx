@@ -2,7 +2,7 @@
 //DraggableTaskItem.tsx
 import React, { memo } from 'react';
 import { Pressable } from './ui/pressable';
-import { Text } from '@/components/ui/text';
+import { Text } from '~/components/ui/text';
 import { TaskItemProps } from '~/types';
 import useChecklistItems from '~/hooks/useCheckListQueries';
 import { Checkbox, CheckboxIcon, CheckboxIndicator } from './ui/checkbox';
@@ -151,5 +151,5 @@ export const TaskItem = memo(
       </Animated.View>
     );
   },
-  areEqual // Pass the comparison function to memo
+  areEqual, // Pass the comparison function to memo
 );

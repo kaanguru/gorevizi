@@ -1,8 +1,8 @@
 import React from 'react';
-import { Button, ButtonIcon } from '@/components/ui/button';
-import { HStack } from '@/components/ui/hstack';
-import { Box } from '@/components/ui/box';
-import { Text } from '@/components/ui/text';
+import { Button, ButtonIcon } from '~/components/ui/button';
+import { HStack } from '~/components/ui/hstack';
+import { Box } from '~/components/ui/box';
+import { Text } from '~/components/ui/text';
 import { ArrowLeftIcon } from '~/components/ui/icon';
 import { router } from 'expo-router';
 

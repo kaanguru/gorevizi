@@ -10,7 +10,7 @@ import {
   AlertDialogHeader,
   AlertDialogFooter,
   AlertDialogBody,
-} from '@/components/ui/alert-dialog';
+} from '~/components/ui/alert-dialog';
 import {
   Modal,
   ModalBackdrop,
@@ -19,12 +19,12 @@ import {
   ModalCloseButton,
   ModalBody,
   ModalFooter,
-} from '@/components/ui/modal';
+} from '~/components/ui/modal';
 import { Input, InputField } from '~/components/ui/input';
-import { Text } from '@/components/ui/text';
-import { Heading } from '@/components/ui/heading';
-import { AlertCircleIcon, ArrowLeftIcon, EditIcon, Icon, TrashIcon } from '@/components/ui/icon';
-import { Button, ButtonIcon, ButtonText } from '@/components/ui/button';
+import { Text } from '~/components/ui/text';
+import { Heading } from '~/components/ui/heading';
+import { AlertCircleIcon, ArrowLeftIcon, EditIcon, Icon, TrashIcon } from '~/components/ui/icon';
+import { Button, ButtonIcon, ButtonText } from '~/components/ui/button';
 import { Switch } from '~/components/ui/switch';
 import { Moon, Sun, Volume2, VolumeX } from 'lucide-react-native';
 import { HStack } from '~/components/ui/hstack';

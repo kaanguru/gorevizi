@@ -29,7 +29,7 @@ function useCreateTask() {
             content: item.content.trim(),
             position: index,
             is_complete: false,
-          }))
+          })),
         );
 
         if (checklistError) {
@@ -117,8 +117,8 @@ function useToggleComplete() {
         (old || []).map((task) =>
           task.id === params.taskID
             ? { ...task, is_complete: params.isComplete, updated_at: new Date().toISOString() }
-            : old
-        )
+            : old,
+        ),
       );
       return { previousTasks };
     },

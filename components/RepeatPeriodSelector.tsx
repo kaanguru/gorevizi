@@ -7,7 +7,7 @@ import {
   SelectBackdrop,
   SelectContent,
   SelectItem,
-} from '@/components/ui/select';
+} from '~/components/ui/select';
 import { ChevronDownIcon } from './ui/icon';
 import { RepeatPeriod } from '~/types';
 

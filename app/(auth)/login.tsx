@@ -34,7 +34,7 @@ export default function Login() {
             }
           },
         },
-      ]
+      ],
     );
   };
   const handleLogin = async () => {
@@ -99,14 +99,6 @@ export default function Login() {
             Don't have an account? Register
           </Text>
         </Pressable>
-
-        {/* 
-          <View className={styles.smallButtonHolder}>
-            <Pressable className={styles.smallButton} onPress={handleResetFirstVisit}>
-              <Text className="text-center text-typography-100">Reset Onboarding Flow</Text>
-            </Pressable>
-          </View>
-         */}
       </View>
     </View>
   );

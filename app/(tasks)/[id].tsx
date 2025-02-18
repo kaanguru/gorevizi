@@ -15,13 +15,13 @@ import { VStack } from '~/components/ui/vstack';
 import { Heading } from '~/components/ui/heading';
 import { Spinner } from '~/components/ui/spinner';
 import { Divider } from '~/components/ui/divider';
-import { Checkbox, CheckboxIndicator, CheckboxLabel, CheckboxIcon } from '@/components/ui/checkbox';
-import { CheckIcon, Icon, TrashIcon } from '@/components/ui/icon';
+import { Checkbox, CheckboxIndicator, CheckboxLabel, CheckboxIcon } from '~/components/ui/checkbox';
+import { CheckIcon, Icon, TrashIcon } from '~/components/ui/icon';
 import { CalendarSync, Pencil, Trash2, Waypoints } from 'lucide-react-native';
 import { HStack } from '~/components/ui/hstack';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '~/components/ui/badge';
 import { Pressable } from '~/components/ui/pressable';
-import { Card } from '@/components/ui/card';
+import { Card } from '~/components/ui/card';
 import {
   AlertDialog,
   AlertDialogContent,
@@ -29,7 +29,7 @@ import {
   AlertDialogBody,
   AlertDialogBackdrop,
   AlertDialogHeader,
-} from '@/components/ui/alert-dialog';
+} from '~/components/ui/alert-dialog';
 
 import Header from '~/components/Header';
 import { Button, ButtonText } from '~/components/ui/button';
@@ -56,7 +56,7 @@ export default function TaskDetailPage() {
   useFocusEffect(
     React.useCallback(() => {
       refetch();
-    }, [refetch])
+    }, [refetch]),
   );
 
   const handleToggleComplete = () => {

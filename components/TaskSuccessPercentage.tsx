@@ -1,6 +1,6 @@
 import React, { View } from 'react-native';
 import { useQuery } from '@tanstack/react-query';
-import { Progress, ProgressFilledTrack } from '@/components/ui/progress';
+import { Progress, ProgressFilledTrack } from '~/components/ui/progress';
 
 import { Tables } from '@/database.types';
 import getTaskCompletionHistory from '~/utils/tasks/getTaskCompletionHistory';

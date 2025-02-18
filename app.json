@@ -5,11 +5,7 @@
     "version": "0.2.0",
     "newArchEnabled": true,
     "scheme": "gorevizi",
-    "plugins": [
-      "expo-router",
-      "expo-audio",
-      "expo-font"
-    ],
+    "plugins": ["expo-router", "expo-audio", "expo-font"],
     "experiments": {
       "typedRoutes": true,
       "tsconfigPaths": true
@@ -22,16 +18,12 @@
       "resizeMode": "contain",
       "backgroundColor": "#fffaec"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },
     "android": {
-      "permissions": [
-        "android.permission.ACCESS_NETWORK_STATE"
-      ],
+      "permissions": ["android.permission.ACCESS_NETWORK_STATE"],
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#fffaec"

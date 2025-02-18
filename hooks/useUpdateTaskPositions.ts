@@ -7,7 +7,7 @@ export default function useUpdateTaskPositions() {
   return useMutation({
     mutationFn: async (reorderedTasks: Readonly<Tables<'tasks'>[]>) => {
       const updates = reorderedTasks.map((task, index) =>
-        supabase.from('tasks').update({ position: index }).eq('id', task.id)
+        supabase.from('tasks').update({ position: index }).eq('id', task.id),
       );
       const results = await Promise.all(updates);
       const errors = results.flatMap((result) => (result.error ? [result.error] : []));
