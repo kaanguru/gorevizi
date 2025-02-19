@@ -5,7 +5,16 @@
     "version": "0.2.0",
     "newArchEnabled": true,
     "scheme": "gorevizi",
-    "plugins": ["expo-router", "expo-audio", "expo-font"],
+    "plugins": [
+      "expo-router",
+      [
+        "expo-av",
+        {
+          "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone."
+        }
+      ],
+      "expo-font"
+    ],
     "experiments": {
       "typedRoutes": true,
       "tsconfigPaths": true

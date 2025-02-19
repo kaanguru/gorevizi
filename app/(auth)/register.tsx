@@ -81,7 +81,9 @@ export default function Register() {
         </Pressable>
 
         <Pressable className={styles.textButton} onPress={() => router.push('/(auth)/login')}>
-          <Text className="text-navy-800 text-center">Already have an account? Login</Text>
+          <Text className="dark: text-center text-typography-white">
+            Already have an account? Login
+          </Text>
         </Pressable>
       </View>
     </View>

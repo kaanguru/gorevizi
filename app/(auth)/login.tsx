@@ -91,7 +91,7 @@ export default function Login() {
           disabled={loading}
           className="mt-4 w-full rounded-lg border border-primary-600 bg-background-dark py-4"
           onPress={handleLogin}>
-          <Text className="text-center font-semibold text-typography-900">Login</Text>
+          <Text className="text-center font-semibold text-white">Login</Text>
         </Pressable>
 
         <Pressable className={styles.textButton} onPress={() => router.push('/(auth)/register')}>
