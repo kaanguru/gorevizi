@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { AppState } from 'react-native';
 import { supabase } from '../supabase';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 AppState.addEventListener('change', (state) => {
   if (state === 'active') {
@@ -61,7 +62,7 @@ export const useAuth = () => {
     setLoading(true);
     try {
       const { error } = await supabase.auth.signOut();
-
+      await AsyncStorage.removeItem('supabase.auth.token');
       if (error) {
         console.error('Error when signing out:', error);
       }

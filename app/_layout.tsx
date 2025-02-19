@@ -1,3 +1,4 @@
+// app\_layout.tsx
 import '@/global.css';
 import { GluestackUIProvider } from '~/components/ui/gluestack-ui-provider';
 import React, { useEffect, useState } from 'react';

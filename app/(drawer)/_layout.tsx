@@ -1,15 +1,29 @@
+// app\(drawer)\_layout.tsx
 import { Ionicons } from '@expo/vector-icons';
 import { Drawer } from 'expo-router/drawer';
 import { router } from 'expo-router';
 import { useAuth } from '~/utils/auth/auth';
+import { useUser } from '~/hooks/useUser';
+import { useEffect } from 'react';
+import { ActivityIndicator } from 'react-native';
+
 const DrawerLayout = () => {
+  const { data: user, isLoading, isError } = useUser();
+
   const { signOut } = useAuth();
 
+  useEffect(() => {
+    if (!isLoading && (isError || !user)) {
+      router.replace('/(auth)/login');
+    }
+  }, [isLoading, isError, user, router]);
   const handleSignOut = async () => {
     await signOut();
     router.replace('/(auth)/login');
   };
-
+  if (isLoading) {
+    return <ActivityIndicator />;
+  }
   return (
     <Drawer
       screenOptions={{

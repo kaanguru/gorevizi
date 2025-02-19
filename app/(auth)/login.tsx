@@ -1,7 +1,6 @@
 import { View, Text, TextInput, Pressable, Alert, ActivityIndicator } from 'react-native';
 import { Href, useRouter } from 'expo-router';
 import { useState } from 'react';
-import { resetFirstVisit } from '~/utils/isFirstVisit';
 import { useAuth } from '~/utils/auth/auth';
 import LogoPortrait from '~/components/lotties/LogoPortrait';
 
@@ -12,31 +11,6 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const { signInWithEmail } = useAuth();
 
-  const handleResetFirstVisit = async () => {
-    Alert.alert(
-      'Reset Onboarding',
-      'Are you sure you want to reset the onboarding flow? The app will restart.',
-      [
-        {
-          text: 'Cancel',
-          style: 'cancel',
-        },
-        {
-          text: 'Reset',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              await resetFirstVisit();
-              await new Promise((resolve) => setTimeout(resolve, 200));
-              router.replace('/(onboarding)/splash' as Href);
-            } catch (error) {
-              console.error('Error resetting first visit:', error);
-            }
-          },
-        },
-      ],
-    );
-  };
   const handleLogin = async () => {
     if (loading) return;
     setLoading(true);
