@@ -1,6 +1,7 @@
-import { Task } from '~/types';
 import calculateSuccessPercentage from '../calculateSuccessPercentage';
+
 import { Tables } from '~/database.types';
+import { Task } from '~/types';
 
 describe('calculateSuccessPercentage', () => {
   afterEach(() => {

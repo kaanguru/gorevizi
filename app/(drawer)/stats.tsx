@@ -1,18 +1,20 @@
 import React from 'react';
 import { View, FlatList } from 'react-native';
+
 import { Tables } from '@/database.types';
-import useTasksQuery from '~/hooks/useTasksQueries';
-import useHealthAndHappinessQuery from '~/hooks/useHealthAndHappinessQueries';
-import TaskSuccessPercentage from '~/components/TaskSuccessPercentage';
-import { Box } from '~/components/ui/box';
-import { Text } from '~/components/ui/text';
-import { Spinner } from '~/components/ui/spinner';
-import { Card } from '~/components/ui/card';
-import { HStack } from '~/components/ui/hstack';
-import { Heading } from '~/components/ui/heading';
-import { Divider } from '~/components/ui/divider';
+
 import Happy from '~/components/lotties/Happy';
 import Healthy from '~/components/lotties/Healthy';
+import TaskSuccessPercentage from '~/components/TaskSuccessPercentage';
+import { Box } from '~/components/ui/box';
+import { Card } from '~/components/ui/card';
+import { Divider } from '~/components/ui/divider';
+import { Heading } from '~/components/ui/heading';
+import { HStack } from '~/components/ui/hstack';
+import { Spinner } from '~/components/ui/spinner';
+import { Text } from '~/components/ui/text';
+import useHealthAndHappinessQuery from '~/hooks/useHealthAndHappinessQueries';
+import useTasksQuery from '~/hooks/useTasksQueries';
 import { useUser } from '~/hooks/useUser';
 export default function Stats() {
   const { data = [], isLoading, error } = useTasksQuery('completed');

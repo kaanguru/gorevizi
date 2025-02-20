@@ -1,5 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { createClient } from '@supabase/supabase-js';
+
 import { RepeatPeriod, DayOfWeek } from '~/types';
 
 const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL || '';

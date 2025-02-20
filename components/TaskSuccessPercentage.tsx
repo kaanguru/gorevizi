@@ -1,15 +1,17 @@
-import React, { View } from 'react-native';
 import { useQuery } from '@tanstack/react-query';
-import { Progress, ProgressFilledTrack } from '~/components/ui/progress';
+import { router } from 'expo-router';
+import React, { View } from 'react-native';
 
 import { Tables } from '@/database.types';
-import getTaskCompletionHistory from '~/utils/tasks/getTaskCompletionHistory';
-import calculateSuccessPercentage from '~/utils/tasks/calculateSuccessPercentage';
+
+import { Card } from './ui/card';
 import { Center } from './ui/center';
 import { Pressable } from './ui/pressable';
 import { Text } from './ui/text';
-import { router } from 'expo-router';
-import { Card } from './ui/card';
+
+import { Progress, ProgressFilledTrack } from '~/components/ui/progress';
+import calculateSuccessPercentage from '~/utils/tasks/calculateSuccessPercentage';
+import getTaskCompletionHistory from '~/utils/tasks/getTaskCompletionHistory';
 
 function TaskSuccessPercentage({ task }: Readonly<{ task: Tables<'tasks'> }>) {
   const { data: completionHistory } = useQuery({

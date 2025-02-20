@@ -3,11 +3,13 @@ import { useEffect, useRef, memo } from 'react';
 import { TextInput } from 'react-native';
 import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
 import Animated, { useSharedValue, useAnimatedStyle, runOnJS } from 'react-native-reanimated';
-import { Button } from '~/components/ui/button';
-import { HStack } from '~/components/ui/hstack';
-import { Box } from '~/components/ui/box';
+
 import { GripVerticalIcon, Icon, TrashIcon } from './ui/icon';
 import { Input, InputField } from './ui/input';
+
+import { Box } from '~/components/ui/box';
+import { Button } from '~/components/ui/button';
+import { HStack } from '~/components/ui/hstack';
 import { TaskFormData } from '~/types';
 
 const DraggableItem = memo(

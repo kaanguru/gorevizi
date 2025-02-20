@@ -1,8 +1,9 @@
-import { View, Text, TextInput, Pressable, Alert, ActivityIndicator } from 'react-native';
 import { Href, useRouter } from 'expo-router';
 import { useState } from 'react';
-import { useAuth } from '~/utils/auth/auth';
+import { View, Text, TextInput, Pressable, Alert, ActivityIndicator } from 'react-native';
+
 import LogoPortrait from '~/components/lotties/LogoPortrait';
+import { useAuth } from '~/utils/auth/auth';
 
 export default function Login() {
   const router = useRouter();

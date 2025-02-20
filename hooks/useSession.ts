@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+
 import { supabase } from '~/utils/supabase';
 
 export const useSession = () => {

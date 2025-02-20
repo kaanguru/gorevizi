@@ -1,7 +1,8 @@
-import Drawer from 'expo-router/drawer';
 import { Ionicons } from '@expo/vector-icons';
-import { useAuth } from '~/utils/auth/auth';
 import { router } from 'expo-router';
+import Drawer from 'expo-router/drawer';
+
+import { useAuth } from '~/utils/auth/auth';
 
 export default function DrawerMenuAndScreens() {
   const { signOut } = useAuth();

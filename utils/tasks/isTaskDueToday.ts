@@ -1,6 +1,3 @@
-import { Tables } from '~/database.types';
-import { DayOfWeek } from '~/types';
-import getCurrentDayOfWeek from '~/utils/dates/getCurrentDayOfWeek';
 import {
   addMonths,
   addYears,
@@ -10,6 +7,10 @@ import {
   differenceInMonths,
   differenceInYears,
 } from 'date-fns';
+
+import { Tables } from '~/database.types';
+import { DayOfWeek } from '~/types';
+import getCurrentDayOfWeek from '~/utils/dates/getCurrentDayOfWeek';
 
 const today = new Date();
 

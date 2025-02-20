@@ -1,15 +1,10 @@
 /* eslint-disable functional/immutable-data */
 //DraggableTaskItem.tsx
-import React, { memo } from 'react';
-import { Pressable } from './ui/pressable';
-import { Text } from '~/components/ui/text';
-import { TaskItemProps } from '~/types';
-import useChecklistItems from '~/hooks/useCheckListQueries';
-import { Checkbox, CheckboxIcon, CheckboxIndicator } from './ui/checkbox';
-import { CheckIcon, Icon } from './ui/icon';
-import { Box } from './ui/box';
 import { Waypoints, GripVertical } from 'lucide-react-native';
+import React, { memo } from 'react';
+import { ActivityIndicator, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import Markdown from 'react-native-markdown-display';
 import Animated, {
   runOnJS,
   useAnimatedStyle,
@@ -17,10 +12,17 @@ import Animated, {
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
-import { ActivityIndicator, View } from 'react-native';
-import Markdown from 'react-native-markdown-display';
-import shortenText from '~/utils/shortenText';
+
 import AnimatedCheckBox from './lotties/AnimatedCheckBox';
+import { Box } from './ui/box';
+import { Checkbox, CheckboxIcon, CheckboxIndicator } from './ui/checkbox';
+import { CheckIcon, Icon } from './ui/icon';
+import { Pressable } from './ui/pressable';
+
+import { Text } from '~/components/ui/text';
+import useChecklistItems from '~/hooks/useCheckListQueries';
+import { TaskItemProps } from '~/types';
+import shortenText from '~/utils/shortenText';
 
 // Define a comparison function for memo
 const areEqual = (prevProps: Readonly<TaskItemProps>, nextProps: Readonly<TaskItemProps>) => {

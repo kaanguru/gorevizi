@@ -1,7 +1,8 @@
 import React from 'react';
+
+import BiriBirseyDesin from '~/components/lotties/BiriBirseyDesin';
 import { Box } from '~/components/ui/box';
 import { Text } from '~/components/ui/text';
-import BiriBirseyDesin from '~/components/lotties/BiriBirseyDesin';
 
 function TaskListEmptyComponent() {
   return (

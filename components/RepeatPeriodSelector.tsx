@@ -1,3 +1,5 @@
+import { ChevronDownIcon } from './ui/icon';
+
 import {
   Select,
   SelectTrigger,
@@ -8,7 +10,6 @@ import {
   SelectContent,
   SelectItem,
 } from '~/components/ui/select';
-import { ChevronDownIcon } from './ui/icon';
 import { RepeatPeriod } from '~/types';
 
 export interface RepeatPeriodSelectorProps {

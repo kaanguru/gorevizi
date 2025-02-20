@@ -1,26 +1,25 @@
-import React, { useCallback, useState } from 'react';
-import { Alert, ScrollView } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useRouter } from 'expo-router';
+import React, { useCallback, useState } from 'react';
+import { Alert, ScrollView } from 'react-native';
 
+import ChecklistSection from '~/components/ChecklistSection';
+import { FormInput } from '~/components/FormInput';
+import Header from '~/components/Header';
+import { RepeatFrequencySlider } from '~/components/RepeatFrequencySlider';
+import RepeatPeriodSelector from '~/components/RepeatPeriodSelector';
 import { Box } from '~/components/ui/box';
 import { Button, ButtonText } from '~/components/ui/button';
-import { Text } from '~/components/ui/text';
-
 import { Checkbox, CheckboxIndicator, CheckboxIcon, CheckboxLabel } from '~/components/ui/checkbox';
 import { HStack } from '~/components/ui/hstack';
+import { Text } from '~/components/ui/text';
 import { VStack } from '~/components/ui/vstack';
-import { RepeatPeriod, TaskFormData } from '~/types';
-import { useCreateTask } from '~/hooks/useTasksMutations';
-import ChecklistSection from '~/components/ChecklistSection';
-import Header from '~/components/Header';
 import WeekdaySelector from '~/components/WeekDaySelector';
-import { RepeatFrequencySlider } from '~/components/RepeatFrequencySlider';
-import { FormInput } from '~/components/FormInput';
-import RepeatPeriodSelector from '~/components/RepeatPeriodSelector';
 import { useUpdateHealthAndHappiness } from '~/hooks/useHealthAndHappinessMutations';
 import useHealthAndHappinessQuery from '~/hooks/useHealthAndHappinessQueries';
+import { useCreateTask } from '~/hooks/useTasksMutations';
 import { useUser } from '~/hooks/useUser';
+import { RepeatPeriod, TaskFormData } from '~/types';
 import genRandomInt from '~/utils/genRandomInt';
 
 export default function CreateTask() {

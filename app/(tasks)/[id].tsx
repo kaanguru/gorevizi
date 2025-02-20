@@ -1,27 +1,10 @@
-import React, { useCallback } from 'react';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
+import { CalendarSync, Pencil, Trash2, Waypoints } from 'lucide-react-native';
+import React, { useCallback } from 'react';
 import { ScrollView } from 'react-native';
 import Markdown from 'react-native-markdown-display';
 
-import getRepeatPeriodLabel from '~/utils/getRepeatPeriodLabel';
-import { useTaskById } from '~/hooks/useTasksQueries';
-import { useDeleteTask, useToggleComplete } from '~/hooks/useTasksMutations';
-import useChecklistItemsQuery from '~/hooks/useCheckListQueries';
-import useChecklistItemMutations from '~/hooks/useCheckListMutations';
-
-import { Box } from '~/components/ui/box';
-import { Text } from '~/components/ui/text';
-import { VStack } from '~/components/ui/vstack';
-import { Heading } from '~/components/ui/heading';
-import { Spinner } from '~/components/ui/spinner';
-import { Divider } from '~/components/ui/divider';
-import { Checkbox, CheckboxIndicator, CheckboxLabel, CheckboxIcon } from '~/components/ui/checkbox';
-import { CheckIcon, Icon, TrashIcon } from '~/components/ui/icon';
-import { CalendarSync, Pencil, Trash2, Waypoints } from 'lucide-react-native';
-import { HStack } from '~/components/ui/hstack';
-import { Badge } from '~/components/ui/badge';
-import { Pressable } from '~/components/ui/pressable';
-import { Card } from '~/components/ui/card';
+import Header from '~/components/Header';
 import {
   AlertDialog,
   AlertDialogContent,
@@ -30,9 +13,24 @@ import {
   AlertDialogBackdrop,
   AlertDialogHeader,
 } from '~/components/ui/alert-dialog';
-
-import Header from '~/components/Header';
+import { Badge } from '~/components/ui/badge';
+import { Box } from '~/components/ui/box';
 import { Button, ButtonText } from '~/components/ui/button';
+import { Card } from '~/components/ui/card';
+import { Checkbox, CheckboxIndicator, CheckboxLabel, CheckboxIcon } from '~/components/ui/checkbox';
+import { Divider } from '~/components/ui/divider';
+import { Heading } from '~/components/ui/heading';
+import { HStack } from '~/components/ui/hstack';
+import { CheckIcon, Icon, TrashIcon } from '~/components/ui/icon';
+import { Pressable } from '~/components/ui/pressable';
+import { Spinner } from '~/components/ui/spinner';
+import { Text } from '~/components/ui/text';
+import { VStack } from '~/components/ui/vstack';
+import useChecklistItemMutations from '~/hooks/useCheckListMutations';
+import useChecklistItemsQuery from '~/hooks/useCheckListQueries';
+import { useDeleteTask, useToggleComplete } from '~/hooks/useTasksMutations';
+import { useTaskById } from '~/hooks/useTasksQueries';
+import getRepeatPeriodLabel from '~/utils/getRepeatPeriodLabel';
 
 export default function TaskDetailPage() {
   const router = useRouter();

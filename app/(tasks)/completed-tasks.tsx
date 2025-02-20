@@ -1,15 +1,16 @@
+import { router } from 'expo-router';
+import { Undo } from 'lucide-react-native';
 import { useCallback } from 'react';
 import React, { View, FlatList } from 'react-native';
-import { router } from 'expo-router';
-import { Tables } from '~/database.types';
-import useTasksQueries from '~/hooks/useTasksQueries';
-import { useToggleComplete } from '~/hooks/useTasksMutations';
-import { Undo } from 'lucide-react-native';
+
+import Header from '~/components/Header';
 import { Button, ButtonIcon } from '~/components/ui/button';
-import { Text } from '~/components/ui/text';
 import { Card } from '~/components/ui/card';
 import { Pressable } from '~/components/ui/pressable';
-import Header from '~/components/Header';
+import { Text } from '~/components/ui/text';
+import { Tables } from '~/database.types';
+import { useToggleComplete } from '~/hooks/useTasksMutations';
+import useTasksQueries from '~/hooks/useTasksQueries';
 
 export default function CompletedTasks() {
   const {

@@ -1,30 +1,28 @@
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { Alert, ScrollView } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { RepeatPeriod, Task, TaskFormData } from '~/types';
 
-import { supabase } from '~/utils/supabase';
-
-import { useTaskById } from '~/hooks/useTasksQueries';
-import useChecklistItems from '~/hooks/useCheckListQueries';
-import { useUpdateTask, useDeleteTask, useToggleComplete } from '~/hooks/useTasksMutations';
-
-import { RepeatFrequencySlider } from '~/components/RepeatFrequencySlider';
 import ChecklistSection from '~/components/ChecklistSection';
+import { FormInput } from '~/components/FormInput';
+import Header from '~/components/Header';
+import { RepeatFrequencySlider } from '~/components/RepeatFrequencySlider';
+import RepeatPeriodSelector from '~/components/RepeatPeriodSelector';
 import { Box } from '~/components/ui/box';
 import { Button, ButtonIcon, ButtonText } from '~/components/ui/button';
-import { Text } from '~/components/ui/text';
-import { TrashIcon } from '~/components/ui/icon';
 import { Checkbox, CheckboxIndicator, CheckboxIcon, CheckboxLabel } from '~/components/ui/checkbox';
 import { HStack } from '~/components/ui/hstack';
+import { TrashIcon } from '~/components/ui/icon';
 import { Spinner } from '~/components/ui/spinner';
+import { Text } from '~/components/ui/text';
 import { VStack } from '~/components/ui/vstack';
-import { FormInput } from '~/components/FormInput';
-import RepeatPeriodSelector from '~/components/RepeatPeriodSelector';
 import WeekdaySelector from '~/components/WeekDaySelector';
-import Header from '~/components/Header';
 import { Tables } from '~/database.types';
+import useChecklistItems from '~/hooks/useCheckListQueries';
+import { useUpdateTask, useDeleteTask, useToggleComplete } from '~/hooks/useTasksMutations';
+import { useTaskById } from '~/hooks/useTasksQueries';
+import { RepeatPeriod, Task, TaskFormData } from '~/types';
+import { supabase } from '~/utils/supabase';
 
 // In component props:
 type EditTaskProps = {

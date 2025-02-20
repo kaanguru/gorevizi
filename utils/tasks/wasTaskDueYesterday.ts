@@ -1,6 +1,3 @@
-import { Tables } from '~/database.types';
-import { DayOfWeek } from '~/types';
-import getCurrentDayOfWeek from '~/utils/dates/getCurrentDayOfWeek';
 import {
   addMonths,
   addYears,
@@ -9,8 +6,12 @@ import {
   differenceInWeeks,
   differenceInMonths,
   differenceInYears,
+  subDays,
 } from 'date-fns';
-import { subDays } from 'date-fns';
+
+import { Tables } from '~/database.types';
+import { DayOfWeek } from '~/types';
+import getCurrentDayOfWeek from '~/utils/dates/getCurrentDayOfWeek';
 
 const yesterday = subDays(new Date(), 1);
 

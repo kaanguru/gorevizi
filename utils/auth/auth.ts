@@ -1,7 +1,8 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useState } from 'react';
 import { AppState } from 'react-native';
+
 import { supabase } from '../supabase';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 AppState.addEventListener('change', (state) => {
   if (state === 'active') {

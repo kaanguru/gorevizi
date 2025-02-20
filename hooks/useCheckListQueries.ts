@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
-import { supabase } from '~/utils/supabase';
+
 import { Database } from '~/database.types';
+import { supabase } from '~/utils/supabase';
 
 type ChecklistItem = Database['public']['Tables']['checklistitems']['Row'];
 

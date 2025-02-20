@@ -1,11 +1,12 @@
-import React from 'react';
-import { Text } from '~/components/ui/text';
-import { Card } from '~/components/ui/card';
-import Header from '~/components/Header';
-import { Button, ButtonIcon, ButtonText } from '~/components/ui/button';
 import { router } from 'expo-router';
 import { SmilePlus } from 'lucide-react-native';
+import React from 'react';
+
+import Header from '~/components/Header';
 import TiredOfWorking from '~/components/lotties/TiredOfWorking';
+import { Button, ButtonIcon, ButtonText } from '~/components/ui/button';
+import { Card } from '~/components/ui/card';
+import { Text } from '~/components/ui/text';
 
 const WarningPage = () => {
   return (

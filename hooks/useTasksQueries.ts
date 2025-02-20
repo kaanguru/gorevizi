@@ -1,7 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
+
 import { Tables } from '~/database.types';
-import { supabase } from '~/utils/supabase';
 import { TaskFilter, Task } from '~/types';
+import { supabase } from '~/utils/supabase';
 
 export default function useTasksQuery(filter: TaskFilter = 'not-completed') {
   return useQuery({

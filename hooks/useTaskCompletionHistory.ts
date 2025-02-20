@@ -1,8 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+
+import { useUser } from './useUser';
+
 import { supabase } from '~/utils/supabase';
 import getTaskCompletionHistory from '~/utils/tasks/getTaskCompletionHistory';
 import resetTaskCompletionHistory from '~/utils/tasks/resetTaskCompletionHistory';
-import { useUser } from './useUser';
 
 export default function useTaskCompletionHistory(taskID: number) {
   const queryClient = useQueryClient();

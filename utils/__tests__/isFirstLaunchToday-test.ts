@@ -1,6 +1,7 @@
-import { isFirstLaunchToday, resetFirstLaunchToday } from '~/utils/isFirstLaunchToday';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { format, isToday, addDays } from 'date-fns';
+
+import { isFirstLaunchToday, resetFirstLaunchToday } from '~/utils/isFirstLaunchToday';
 
 describe('isFirstLaunchToday', () => {
   // Clear mocks before each test

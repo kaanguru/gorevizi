@@ -1,30 +1,31 @@
-// app\_layout.tsx
-import '@/global.css';
-import { GluestackUIProvider } from '~/components/ui/gluestack-ui-provider';
-import React, { useEffect, useState } from 'react';
-import { Href, router, useRouter, useSegments } from 'expo-router';
-import { isFirstVisit } from '~/utils/isFirstVisit';
-import { isFirstLaunchToday } from '~/utils/isFirstLaunchToday';
-import resetRecurringTasks from '~/utils/tasks/resetRecurringTasks';
-import { Stack } from 'expo-router';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { supabase } from '~/utils/supabase';
-import { Alert, View } from 'react-native';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Spinner } from '~/components/ui/spinner';
-import { Inter_900Black, useFonts } from '@expo-google-fonts/inter';
-import { DelaGothicOne_400Regular } from '@expo-google-fonts/dela-gothic-one';
-import { UbuntuMono_400Regular } from '@expo-google-fonts/ubuntu-mono';
+import { DelaGothicOne_400Regular, useFonts } from '@expo-google-fonts/dela-gothic-one';
+import { Inter_900Black } from '@expo-google-fonts/inter';
 import { Ubuntu_400Regular, Ubuntu_500Medium, Ubuntu_700Bold } from '@expo-google-fonts/ubuntu';
+import { UbuntuMono_400Regular } from '@expo-google-fonts/ubuntu-mono';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Stack, Href, router, useRouter, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { SoundProvider } from '~/store/SoundContext';
+import React, { useEffect, useState } from 'react';
+import { Alert, View } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+
+import '@/global.css';
+
+import { GluestackUIProvider } from '~/components/ui/gluestack-ui-provider';
+import { Spinner } from '~/components/ui/spinner';
 import { ThemeProvider, useTheme } from '~/components/ui/ThemeProvider/ThemeProvider';
-import wasTaskDueYesterday from '~/utils/tasks/wasTaskDueYesterday';
-import useTasksQuery from '~/hooks/useTasksQueries';
-import useHealthAndHappinessQuery from '~/hooks/useHealthAndHappinessQueries';
-import { useUser } from '~/hooks/useUser';
 import { useUpdateHealthAndHappiness } from '~/hooks/useHealthAndHappinessMutations';
+import useHealthAndHappinessQuery from '~/hooks/useHealthAndHappinessQueries';
+import useTasksQuery from '~/hooks/useTasksQueries';
+import { useUser } from '~/hooks/useUser';
+import { SoundProvider } from '~/store/SoundContext';
+import { Task } from '~/types';
 import genRandomInt from '~/utils/genRandomInt';
+import { isFirstLaunchToday } from '~/utils/isFirstLaunchToday';
+import { isFirstVisit } from '~/utils/isFirstVisit';
+import { supabase } from '~/utils/supabase';
+import resetRecurringTasks from '~/utils/tasks/resetRecurringTasks';
+import wasTaskDueYesterday from '~/utils/tasks/wasTaskDueYesterday';
 
 SplashScreen.preventAutoHideAsync();
 const queryClient = new QueryClient({
@@ -37,7 +38,7 @@ const queryClient = new QueryClient({
 });
 
 export default function RootLayout() {
-  const [loaded, error] = useFonts({
+  const [fontsLoaded, fontError] = useFonts({
     Inter_900Black,
     DelaGothicOne_400Regular,
     UbuntuMono_400Regular,
@@ -50,10 +51,10 @@ export default function RootLayout() {
   const router = useRouter();
 
   useEffect(() => {
-    if (loaded || error) {
+    if (fontsLoaded || fontError) {
       SplashScreen.hideAsync();
     }
-  }, [loaded, error]);
+  }, [fontsLoaded, fontError]);
 
   useEffect(() => {
     const initializeSupabase = async () => {
@@ -88,7 +89,7 @@ export default function RootLayout() {
     checkAndRedirect();
   }, [segments, isSupabaseInitialized]);
 
-  if (!isSupabaseInitialized) {
+  if (!isSupabaseInitialized || (!fontsLoaded && !fontError)) {
     return (
       <View className="flex-1 justify-center">
         <Spinner size="large" />
@@ -111,29 +112,37 @@ function GluestackModeWrapper() {
   const { data: user } = useUser();
   const { data: healthAndHappiness } = useHealthAndHappinessQuery(user?.id);
   const { mutate: updateHealthAndHappiness } = useUpdateHealthAndHappiness();
+
   useEffect(() => {
     async function checkAndResetTasks() {
       try {
-        const isFirstToday = await isFirstLaunchToday();
-        const wasTaskofYesterday = notCompletedTasks?.filter(wasTaskDueYesterday) || [];
-        const handlePunishments = () => {
-          const punishCount = wasTaskofYesterday?.length;
-          updateHealthAndHappiness({
-            user_id: user?.id,
-            health: (healthAndHappiness?.health ?? 0) - genRandomInt(16, 24) * punishCount,
-            happiness: (healthAndHappiness?.happiness ?? 0) - genRandomInt(16, 24) * punishCount,
-          });
-          router.push('/(tasks)/tasks-of-yesterday' as Href);
-        };
-        if (isFirstToday) {
-          wasTaskofYesterday?.length > 0
-            ? handlePunishments()
-            : Alert.alert('well done no job from yesterday');
-          await resetRecurringTasks();
-        }
+        const isFirstLaunchTodayResult = await isFirstLaunchToday();
+        if (!isFirstLaunchTodayResult) return;
+
+        const incompleteTasksFromYesterday = getIncompleteTasksFromYesterday();
+        handleTaskOutcome(incompleteTasksFromYesterday);
+        await resetRecurringTasks();
       } catch (error) {
         console.error('Error initializing tasks:', error);
       }
+    }
+
+    function getIncompleteTasksFromYesterday() {
+      return notCompletedTasks?.filter(wasTaskDueYesterday) || [];
+    }
+
+    function handleTaskOutcome(tasks: Task[]) {
+      if (tasks.length === 0) {
+        Alert.alert('Well done, no tasks from yesterday!');
+        return;
+      }
+      const punishmentCount = tasks.length;
+      updateHealthAndHappiness({
+        user_id: user?.id,
+        health: (healthAndHappiness?.health ?? 0) - genRandomInt(16, 24) * punishmentCount,
+        happiness: (healthAndHappiness?.happiness ?? 0) - genRandomInt(16, 24) * punishmentCount,
+      });
+      router.push('/(tasks)/tasks-of-yesterday' as Href);
     }
     checkAndResetTasks();
   }, []);
