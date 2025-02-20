@@ -94,7 +94,7 @@ const styles = {
   button:
     'border-primary-500 bg-background-dark dark:bg-background-light mt-6 w-full rounded-lg border py-4',
   buttonText:
-    'text-center font-semibold text-black bg-background-dark dark:bg-background-light rounded',
+    'text-center font-semibold text-white dark:text-black bg-background-dark dark:bg-background-light rounded',
   textButton: 'mt-8 bg-background-dark dark:bg-background-light rounded p-3',
   text: 'mb-2 text-typography-black dark:text-typography-white',
 };

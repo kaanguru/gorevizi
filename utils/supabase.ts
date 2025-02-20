@@ -11,6 +11,6 @@ export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
     autoRefreshToken: true,
     persistSession: true,
     detectSessionInUrl: false,
-    storageKey: 'supabase.auth.token',
+    storageKey: '@gorevizi:supabase.auth.token',
   },
 });

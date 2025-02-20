@@ -76,7 +76,9 @@ export default function RootLayout() {
 
         // If it's first visit and not already in onboarding
         if (isFirst && !segments[0]?.includes('onboarding')) {
-          router.replace('/(onboarding)/splash' as Href);
+          setTimeout(() => {
+            router.replace('/(onboarding)/splash' as Href);
+          }, 50);
         }
       } catch (error) {
         console.error('Failed to check first visit:', error);

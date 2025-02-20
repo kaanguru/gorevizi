@@ -62,7 +62,7 @@ export const useAuth = () => {
     setLoading(true);
     try {
       const { error } = await supabase.auth.signOut();
-      await AsyncStorage.removeItem('supabase.auth.token');
+      await AsyncStorage.removeItem('@gorevizi:supabase.auth.token');
       if (error) {
         console.error('Error when signing out:', error);
       }
