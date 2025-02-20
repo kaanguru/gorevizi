@@ -7,20 +7,22 @@ import DrawerMenuAndScreens from '~/components/DrawerMenuAndScreens';
 import { useSession } from '~/hooks/useSession';
 
 const DrawerLayout = () => {
-  const { data: session, isPending, isError, isSuccess } = useSession();
+  const { data: session, isLoading, isError, isFetched } = useSession();
 
   useEffect(() => {
-    if ((!isPending && isError) || !session) {
+    if (!isLoading && isFetched && (isError || !session)) {
       router.replace('/(auth)/login');
     }
-  }, [isPending, isError, session, router]);
+  }, [session, isLoading, isError, isFetched, router]);
 
-  if (isPending) {
+  if (isLoading) {
     return <ActivityIndicator />;
   }
-  if (isSuccess || session) {
+  if (session) {
     return <DrawerMenuAndScreens />;
   }
+
+  return null;
 };
 
 export default DrawerLayout;

@@ -118,7 +118,6 @@ function GluestackModeWrapper() {
       try {
         const isFirstLaunchTodayResult = await isFirstLaunchToday();
         if (!isFirstLaunchTodayResult) return;
-
         const incompleteTasksFromYesterday = getIncompleteTasksFromYesterday();
         handleTaskOutcome(incompleteTasksFromYesterday);
         await resetRecurringTasks();
@@ -136,11 +135,10 @@ function GluestackModeWrapper() {
         Alert.alert('Well done, no tasks from yesterday!');
         return;
       }
-      const punishmentCount = tasks.length;
       updateHealthAndHappiness({
         user_id: user?.id,
-        health: (healthAndHappiness?.health ?? 0) - genRandomInt(16, 24) * punishmentCount,
-        happiness: (healthAndHappiness?.happiness ?? 0) - genRandomInt(16, 24) * punishmentCount,
+        health: (healthAndHappiness?.health ?? 0) - genRandomInt(16, 24) * tasks.length,
+        happiness: (healthAndHappiness?.happiness ?? 0) - genRandomInt(16, 24) * tasks.length,
       });
       router.push('/(tasks)/tasks-of-yesterday' as Href);
     }
