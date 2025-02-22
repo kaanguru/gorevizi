@@ -31,7 +31,7 @@ import { Text } from '~/components/ui/text';
 import { useTheme } from '~/components/ui/ThemeProvider/ThemeProvider';
 import { useResetCompletionHistory } from '~/hooks/useTaskCompletionHistory';
 import { useUser } from '~/hooks/useUser';
-import { useSoundContext } from '~/store/SoundContext';
+import { useSoundContext } from '~/context/SoundContext';
 
 export default function SettingsScreen() {
   const { theme, toggleTheme } = useTheme();

@@ -26,7 +26,7 @@ export default function Register() {
       if (result?.error) {
         Alert.alert('Register Failed', result.error.message);
       } else {
-        router.push('/(auth)/login' as Href);
+        router.push('/login' as Href);
       }
     } catch (error) {
       console.error('An error occurred during registration:', error);
@@ -81,7 +81,7 @@ export default function Register() {
           <Text className={styles.buttonText}>Register</Text>
         </Pressable>
 
-        <Pressable className={styles.textButton} onPress={() => router.push('/(auth)/login')}>
+        <Pressable className={styles.textButton} onPress={() => router.push('/login')}>
           <Text className="dark: text-center text-typography-white">
             Already have an account? Login
           </Text>

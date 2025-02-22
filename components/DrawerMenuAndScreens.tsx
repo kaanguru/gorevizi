@@ -9,7 +9,7 @@ export default function DrawerMenuAndScreens() {
 
   const handleSignOut = async () => {
     await signOut();
-    router.replace('/(auth)/login');
+    router.replace('/login');
   };
 
   return (

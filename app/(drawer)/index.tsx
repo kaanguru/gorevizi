@@ -20,7 +20,7 @@ import { useToggleComplete } from '~/hooks/useTasksMutations';
 import useTasksQueries from '~/hooks/useTasksQueries';
 import useUpdateTaskPositions from '~/hooks/useUpdateTaskPositions';
 import { useUser } from '~/hooks/useUser';
-import { useSoundContext } from '~/store/SoundContext';
+import { useSoundContext } from '~/context/SoundContext';
 import { Task } from '~/types';
 import genRandomInt from '~/utils/genRandomInt';
 import isTaskDueToday from '~/utils/tasks/isTaskDueToday';

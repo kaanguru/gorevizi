@@ -3,10 +3,10 @@ import { Inter_900Black } from '@expo-google-fonts/inter';
 import { Ubuntu_400Regular, Ubuntu_500Medium, Ubuntu_700Bold } from '@expo-google-fonts/ubuntu';
 import { UbuntuMono_400Regular } from '@expo-google-fonts/ubuntu-mono';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Stack, Href, router, useRouter, useSegments } from 'expo-router';
+import { Stack, Href, useRouter, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import React, { useEffect, useState } from 'react';
-import { Alert, View } from 'react-native';
+import { View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import '@/global.css';
@@ -14,18 +14,10 @@ import '@/global.css';
 import { GluestackUIProvider } from '~/components/ui/gluestack-ui-provider';
 import { Spinner } from '~/components/ui/spinner';
 import { ThemeProvider, useTheme } from '~/components/ui/ThemeProvider/ThemeProvider';
-import { useUpdateHealthAndHappiness } from '~/hooks/useHealthAndHappinessMutations';
-import useHealthAndHappinessQuery from '~/hooks/useHealthAndHappinessQueries';
-import useTasksQuery from '~/hooks/useTasksQueries';
-import { useUser } from '~/hooks/useUser';
-import { SoundProvider } from '~/store/SoundContext';
-import { Task } from '~/types';
-import genRandomInt from '~/utils/genRandomInt';
-import { isFirstLaunchToday } from '~/utils/isFirstLaunchToday';
+import { SessionProvider } from '~/context/AuthenticationContext';
+import { SoundProvider } from '~/context/SoundContext';
 import { isFirstVisit } from '~/utils/isFirstVisit';
 import { supabase } from '~/utils/supabase';
-import resetRecurringTasks from '~/utils/tasks/resetRecurringTasks';
-import wasTaskDueYesterday from '~/utils/tasks/wasTaskDueYesterday';
 
 SplashScreen.preventAutoHideAsync();
 const queryClient = new QueryClient({
@@ -100,7 +92,7 @@ export default function RootLayout() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
-        <GluestackModeWrapper />
+        <GluestackModeWrapper></GluestackModeWrapper>
       </ThemeProvider>
     </QueryClientProvider>
   );
@@ -108,69 +100,29 @@ export default function RootLayout() {
 
 function GluestackModeWrapper() {
   const { theme } = useTheme();
-  const { data: notCompletedTasks } = useTasksQuery();
-  const { data: user } = useUser();
-  const { data: healthAndHappiness } = useHealthAndHappinessQuery(user?.id);
-  const { mutate: updateHealthAndHappiness } = useUpdateHealthAndHappiness();
-
-  useEffect(() => {
-    async function checkAndResetTasks() {
-      try {
-        const isFirstLaunchTodayResult = await isFirstLaunchToday();
-        if (!isFirstLaunchTodayResult) return;
-        const incompleteTasksFromYesterday = getIncompleteTasksFromYesterday();
-        handleTaskOutcome(incompleteTasksFromYesterday);
-        await resetRecurringTasks();
-      } catch (error) {
-        console.error('Error initializing tasks:', error);
-      }
-    }
-
-    function getIncompleteTasksFromYesterday() {
-      return notCompletedTasks?.filter(wasTaskDueYesterday) || [];
-    }
-
-    function handleTaskOutcome(tasks: Task[]) {
-      if (tasks.length === 0) {
-        Alert.alert('Well done, no tasks from yesterday!');
-        return;
-      }
-      updateHealthAndHappiness({
-        user_id: user?.id,
-        health: (healthAndHappiness?.health ?? 0) - genRandomInt(16, 24) * tasks.length,
-        happiness: (healthAndHappiness?.happiness ?? 0) - genRandomInt(16, 24) * tasks.length,
-      });
-      router.push('/(tasks)/tasks-of-yesterday' as Href);
-    }
-    checkAndResetTasks();
-  }, []);
 
   return (
     <GluestackUIProvider mode={theme}>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <SoundProvider>
-          <Stack
-            screenOptions={{
-              headerShown: false,
-              animation: 'slide_from_right',
-            }}>
-            <Stack.Screen
-              name="(auth)"
-              options={{
-                headerShown: false,
-              }}
-            />
-            <Stack.Screen name="(drawer)" />
-            <Stack.Screen
-              name="(onboarding)"
-              options={{
+      <SessionProvider>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <SoundProvider>
+            <Stack
+              screenOptions={{
                 headerShown: false,
                 animation: 'slide_from_right',
-              }}
-            />
-          </Stack>
-        </SoundProvider>
-      </GestureHandlerRootView>
+              }}>
+              <Stack.Screen name="(drawer)" />
+              <Stack.Screen
+                name="(onboarding)"
+                options={{
+                  headerShown: false,
+                  animation: 'slide_from_right',
+                }}
+              />
+            </Stack>
+          </SoundProvider>
+        </GestureHandlerRootView>
+      </SessionProvider>
     </GluestackUIProvider>
   );
 }

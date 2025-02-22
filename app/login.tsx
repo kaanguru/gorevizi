@@ -3,29 +3,20 @@ import { useState } from 'react';
 import { View, Text, TextInput, Pressable, Alert, ActivityIndicator } from 'react-native';
 
 import LogoPortrait from '~/components/lotties/LogoPortrait';
-import { useAuth } from '~/utils/auth/auth';
+import { useSessionContext } from '~/context/AuthenticationContext';
 
 export default function Login() {
   const router = useRouter();
   const [email, setEmail] = useState('asdfafga@ff.gg');
   const [password, setPassword] = useState('123qweasd');
   const [loading, setLoading] = useState(false);
-  const { signInWithEmail } = useAuth();
+  const { signIn } = useSessionContext(); // Use the context hook
 
   const handleLogin = async () => {
-    if (loading) return;
-    setLoading(true);
     try {
-      const result = await signInWithEmail(email, password);
-      if (result?.error) {
-        Alert.alert('Login Failed', result.error.message);
-      } else {
-        router.replace('/' as Href);
-      }
-    } catch (error) {
-      console.error('Error logging in:', error);
-    } finally {
-      setLoading(false);
+      await signIn(email, password);
+    } catch (err: any) {
+      console.error(err.message || 'An error occurred during login.');
     }
   };
 
@@ -69,7 +60,7 @@ export default function Login() {
           <Text className="text-center font-semibold text-white">Login</Text>
         </Pressable>
 
-        <Pressable className={styles.textButton} onPress={() => router.push('/(auth)/register')}>
+        <Pressable className={styles.textButton} onPress={() => router.push('/register')}>
           <Text className="text-center text-typography-white dark:text-typography-black">
             Don't have an account? Register
           </Text>
