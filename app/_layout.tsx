@@ -16,7 +16,7 @@ import { DelaGothicOne_400Regular } from '@expo-google-fonts/dela-gothic-one';
 import { UbuntuMono_400Regular } from '@expo-google-fonts/ubuntu-mono';
 import { Ubuntu_400Regular, Ubuntu_500Medium, Ubuntu_700Bold } from '@expo-google-fonts/ubuntu';
 import * as SplashScreen from 'expo-splash-screen';
-import { SoundProvider } from '~/store/SoundContext';
+import { SoundProvider } from '~/context/SoundContext';
 import { ThemeProvider, useTheme } from '~/components/ui/ThemeProvider/ThemeProvider';
 import wasTaskDueYesterday from '~/utils/tasks/wasTaskDueYesterday';
 import useTasksQuery from '~/hooks/useTasksQueries';
@@ -26,14 +26,7 @@ import { useUpdateHealthAndHappiness } from '~/hooks/useHealthAndHappinessMutati
 import genRandomInt from '~/utils/genRandomInt';
 
 SplashScreen.preventAutoHideAsync();
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: 3,
-      staleTime: 60_000,
-    },
-  },
-});
+const queryClient = new QueryClient();
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({

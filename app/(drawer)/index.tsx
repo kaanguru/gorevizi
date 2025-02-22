@@ -20,7 +20,7 @@ import useTaskCompleteSound from '~/hooks/useTaskCompleteSound';
 import { Text } from '~/components/ui/text';
 import Confetti from '~/components/lotties/Confetti';
 import TaskListEmptyComponent from '~/components/TaskListEmptyComponent';
-import { useSoundContext } from '~/store/SoundContext';
+import { useSoundContext } from '~/context/SoundContext';
 import { useUpdateHealthAndHappiness } from '~/hooks/useHealthAndHappinessMutations';
 import useHealthAndHappinessQuery from '~/hooks/useHealthAndHappinessQueries';
 import { useUser } from '~/hooks/useUser';
@@ -62,7 +62,7 @@ export default function TaskList() {
 
       updateTaskPositionsMutation(newTasks);
     },
-    [reorderedTasks, updateTaskPositionsMutation]
+    [reorderedTasks, updateTaskPositionsMutation],
   );
 
   const handleFilterTodayPress = useCallback(() => {
@@ -88,16 +88,16 @@ export default function TaskList() {
               setShowConfetti(false);
             }, 2000);
           },
-        }
+        },
       );
     },
-    [toggleComplete, playSound, isSoundEnabled]
+    [toggleComplete, playSound, isSoundEnabled],
   );
 
   useFocusEffect(
     useCallback(() => {
       refetch();
-    }, [refetch])
+    }, [refetch]),
   );
 
   const renderTaskItem = useCallback(
@@ -116,7 +116,7 @@ export default function TaskList() {
         isFiltered={isFiltered} // Pass the isFiltered state
       />
     ),
-    [router, handleReorder, handleOnToggleComplete, isFiltered]
+    [router, handleReorder, handleOnToggleComplete, isFiltered],
   );
 
   const keyExtractor = useCallback((item: Readonly<Task>) => item.id.toString(), []);

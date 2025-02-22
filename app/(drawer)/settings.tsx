@@ -29,7 +29,7 @@ import { Switch } from '~/components/ui/switch';
 import { Moon, Sun, Volume2, VolumeX } from 'lucide-react-native';
 import { HStack } from '~/components/ui/hstack';
 import { Box } from '~/components/ui/box';
-import { useSoundContext } from '~/store/SoundContext';
+import { useSoundContext } from '~/context/SoundContext';
 import { useTheme } from '~/components/ui/ThemeProvider/ThemeProvider';
 import LogoPortrait from '~/components/lotties/LogoPortrait';
 
