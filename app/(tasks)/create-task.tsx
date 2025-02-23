@@ -56,7 +56,7 @@ export default function CreateTask() {
           health: (healthAndHappiness?.health ?? 0) + genRandomInt(2, 4),
           happiness: (healthAndHappiness?.happiness ?? 0) + genRandomInt(8, 24),
         });
-        router.push('/(drawer)/');
+        router.push('/(drawer)');
       },
       onError: (error) => {
         console.error('Error creating task:', error);

@@ -115,7 +115,7 @@ export default function EditTask() {
 
   const handleDelete = async () => {
     deleteTaskMutation.mutate(taskID);
-    router.push('/(drawer)/');
+    router.push('/(drawer)');
   };
 
   const handleAddChecklistItem = () => {

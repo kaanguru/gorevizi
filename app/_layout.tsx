@@ -1,11 +1,12 @@
+// app/_layout.tsx
 import { DelaGothicOne_400Regular, useFonts } from '@expo-google-fonts/dela-gothic-one';
 import { Inter_900Black } from '@expo-google-fonts/inter';
 import { Ubuntu_400Regular, Ubuntu_500Medium, Ubuntu_700Bold } from '@expo-google-fonts/ubuntu';
 import { UbuntuMono_400Regular } from '@expo-google-fonts/ubuntu-mono';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Stack, Href, useRouter, useSegments } from 'expo-router';
+import { Stack, Href, useRouter, useSegments, Slot } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, createContext, useContext } from 'react';
 import { View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
@@ -14,22 +15,39 @@ import '@/global.css';
 import { GluestackUIProvider } from '~/components/ui/gluestack-ui-provider';
 import { Spinner } from '~/components/ui/spinner';
 import { ThemeProvider, useTheme } from '~/components/ui/ThemeProvider/ThemeProvider';
-import { SessionProvider } from '~/context/AuthenticationContext';
+import { SessionProvider, useSessionContext } from '~/context/AuthenticationContext';
 import { SoundProvider } from '~/context/SoundContext';
+import useInitializeDailyTasks from '~/hooks/useInitializeDailyTasks';
 import { isFirstVisit } from '~/utils/isFirstVisit';
 import { supabase } from '~/utils/supabase';
 
 SplashScreen.preventAutoHideAsync();
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: 3,
-      staleTime: 60_000,
-    },
-  },
+const queryClient = new QueryClient();
+
+const InitializationContext = createContext<{
+  initialized: boolean;
+  hasTasksFromYesterday: boolean;
+}>({
+  initialized: false,
+  hasTasksFromYesterday: false,
 });
 
+export const useInitializationContext = () => useContext(InitializationContext);
+
 export default function RootLayout() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
+        <SessionProvider>
+          <GluestackModeWrapper />
+        </SessionProvider>
+      </ThemeProvider>
+    </QueryClientProvider>
+  );
+}
+
+function GluestackModeWrapper() {
+  const { theme } = useTheme();
   const [fontsLoaded, fontError] = useFonts({
     Inter_900Black,
     DelaGothicOne_400Regular,
@@ -41,6 +59,8 @@ export default function RootLayout() {
   const [isSupabaseInitialized, setSupabaseInitialized] = useState(false);
   const segments = useSegments();
   const router = useRouter();
+  const { session, isLoading: sessionLoading } = useSessionContext();
+  const { initialized, hasTasksFromYesterday } = useInitializeDailyTasks();
 
   useEffect(() => {
     if (fontsLoaded || fontError) {
@@ -51,7 +71,7 @@ export default function RootLayout() {
   useEffect(() => {
     const initializeSupabase = async () => {
       try {
-        supabase;
+        supabase; // Ensure supabase is initialized
         setSupabaseInitialized(true);
       } catch (error) {
         console.error('Failed to initialize Supabase:', error);
@@ -61,27 +81,44 @@ export default function RootLayout() {
   }, []);
 
   useEffect(() => {
-    if (!isSupabaseInitialized) return;
+    if (!isSupabaseInitialized || !fontsLoaded || fontError || sessionLoading || !initialized) {
+      return;
+    }
 
     const checkAndRedirect = async () => {
       try {
         const isFirst = await isFirstVisit();
 
-        // If it's first visit and not already in onboarding
         if (isFirst && !segments[0]?.includes('onboarding')) {
-          setTimeout(() => {
-            router.replace('/(onboarding)/splash' as Href);
-          }, 50);
+          router.replace('/(onboarding)/splash' as Href);
+          return;
+        }
+
+        if (session) {
+          if (hasTasksFromYesterday) {
+            router.push('/(tasks)/tasks-of-yesterday' as Href);
+          } else {
+            // router.push('/(drawer)' as Href);
+          }
         }
       } catch (error) {
-        console.error('Failed to check first visit:', error);
+        console.error('Failed to check first visit or session:', error);
       }
     };
 
     checkAndRedirect();
-  }, [segments, isSupabaseInitialized]);
+  }, [
+    isSupabaseInitialized,
+    fontsLoaded,
+    fontError,
+    segments,
+    session,
+    sessionLoading,
+    initialized,
+    hasTasksFromYesterday,
+  ]);
 
-  if (!isSupabaseInitialized || (!fontsLoaded && !fontError)) {
+  if (!isSupabaseInitialized || (!fontsLoaded && !fontError) || sessionLoading || !initialized) {
     return (
       <View className="flex-1 justify-center">
         <Spinner size="large" />
@@ -90,20 +127,8 @@ export default function RootLayout() {
   }
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
-        <GluestackModeWrapper></GluestackModeWrapper>
-      </ThemeProvider>
-    </QueryClientProvider>
-  );
-}
-
-function GluestackModeWrapper() {
-  const { theme } = useTheme();
-
-  return (
-    <GluestackUIProvider mode={theme}>
-      <SessionProvider>
+    <InitializationContext.Provider value={{ initialized, hasTasksFromYesterday }}>
+      <GluestackUIProvider mode={theme}>
         <GestureHandlerRootView style={{ flex: 1 }}>
           <SoundProvider>
             <Stack
@@ -122,7 +147,7 @@ function GluestackModeWrapper() {
             </Stack>
           </SoundProvider>
         </GestureHandlerRootView>
-      </SessionProvider>
-    </GluestackUIProvider>
+      </GluestackUIProvider>
+    </InitializationContext.Provider>
   );
 }

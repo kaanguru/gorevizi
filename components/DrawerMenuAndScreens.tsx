@@ -11,7 +11,6 @@ export default function DrawerMenuAndScreens() {
     await signOut();
     router.replace('/login');
   };
-
   return (
     <Drawer
       screenOptions={{

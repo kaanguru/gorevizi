@@ -88,7 +88,7 @@ export default function TaskDetailPage() {
   const handleDeleteTask = (taskID: string): void => {
     setShowAlertDialog(false);
     deleteTask(taskID);
-    router.push('/(drawer)/');
+    router.push('/(drawer)');
   };
   return (
     <ScrollView className=" flex-1 bg-background-light dark:bg-background-dark">

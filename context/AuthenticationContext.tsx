@@ -1,4 +1,3 @@
-/* eslint-disable functional/no-throw-statements */
 // context/AuthenticationContext.tsx
 import { Session } from '@supabase/supabase-js';
 import { useRouter } from 'expo-router';
@@ -6,7 +5,6 @@ import { createContext, useContext, useState, ReactNode, useEffect } from 'react
 
 import { useSession } from '~/hooks/useSession';
 import { useAuth } from '~/utils/auth/auth';
-import initializeDailyTasks from '~/utils/initializeDailyTasks';
 
 type SessionContextType = {
   session: Session | null;
@@ -27,15 +25,16 @@ export function useSessionContext() {
 }
 
 export function SessionProvider({ children }: Readonly<{ children: ReactNode }>) {
-  const { data, isLoading: queryIsLoading, refetch, isSuccess: sessionIsSuccess } = useSession();
+  const { data, isLoading: queryIsLoading, refetch } = useSession();
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
+
   const {
     signInWithEmail,
     signUpWithEmail,
     signOut: authSignOut,
     loading: authLoading,
-  } = useAuth(); // Use useAuth
+  } = useAuth();
 
   useEffect(() => {
     if (!queryIsLoading) {
@@ -43,23 +42,13 @@ export function SessionProvider({ children }: Readonly<{ children: ReactNode }>)
     }
   }, [queryIsLoading]);
 
-  useEffect(() => {
-    if (sessionIsSuccess) {
-      const initializeTasks = async () => {
-        await initializeDailyTasks();
-      };
-      initializeTasks();
-    }
-  }, [sessionIsSuccess]);
-
   const signIn = async (email: string, password: string) => {
     const result = await signInWithEmail(email, password);
     if (result && result.error) {
       console.error('Sign in error:', result.error.message);
       return;
     }
-    await refetch(); // Refetch session data
-    router.replace('/');
+    await refetch();
   };
 
   const signUp = async (email: string, password: string) => {
@@ -69,17 +58,22 @@ export function SessionProvider({ children }: Readonly<{ children: ReactNode }>)
       return;
     }
     await refetch();
-    router.replace('/'); // Redirect after successful sign-up (or to a welcome screen)
   };
 
   const signOut = async () => {
-    await authSignOut(); // Use the signOut function from useAuth
-    await refetch(); // Refetch to clear the session
+    await authSignOut();
+    await refetch();
     router.replace('/login');
   };
 
-  // Combine loading states.  authLoading is from useAuth, isLoading is the initial load.
   const combinedLoading = isLoading || authLoading;
+  useEffect(() => {
+    if (!combinedLoading) {
+      if (data?.session) {
+        router.replace('/(drawer)');
+      }
+    }
+  }, [combinedLoading, data?.session, router]);
 
   return (
     <SessionContext.Provider

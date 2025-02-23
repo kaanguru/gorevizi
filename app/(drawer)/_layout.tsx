@@ -1,12 +1,29 @@
+// file:///d%3A/PROJELER/0157_gorevizi/gorevizi/app/(drawer)/_layout.tsx
 // app\(drawer)\_layout.tsx
+import { Redirect } from 'expo-router';
+import { View } from 'react-native';
 import DrawerMenuAndScreens from '~/components/DrawerMenuAndScreens';
-import { SessionProvider } from '~/context/AuthenticationContext';
+import { Spinner } from '~/components/ui/spinner';
+import { useSessionContext } from '~/context/AuthenticationContext';
+import { useInitializationContext } from '../_layout';
+
 const DrawerLayout = () => {
-  return (
-    <SessionProvider>
-      <DrawerMenuAndScreens />
-    </SessionProvider>
-  );
+  const { session, isLoading } = useSessionContext();
+  const { initialized } = useInitializationContext(); // Use the context
+
+  if (isLoading || !initialized) {
+    return (
+      <View className="flex-1 justify-center">
+        <Spinner size="large" />
+      </View>
+    );
+  }
+
+  if (!session) {
+    return <Redirect href="/login" />;
+  }
+
+  return <DrawerMenuAndScreens />;
 };
 
 export default DrawerLayout;

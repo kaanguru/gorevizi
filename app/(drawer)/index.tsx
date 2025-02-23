@@ -43,10 +43,8 @@ export default function TaskList() {
   const { mutate: updateHealthAndHappiness, isPending: isCreatingHealthAndHappiness } =
     useUpdateHealthAndHappiness();
   const { data: healthAndHappiness } = useHealthAndHappinessQuery(user?.id);
-  // Create a state variable to hold the reordered tasks
   const [reorderedTasks, setReorderedTasks] = useState<Task[]>([]);
 
-  // Update reorderedTasks whenever filteredTasks or tasks change
   useEffect(() => {
     const newReorderedTasks = isFiltered ? filteredTasks : tasks;
     if (!R.equals(reorderedTasks, newReorderedTasks)) {

@@ -96,8 +96,8 @@ importers:
         specifier: 8.2.0
         version: 8.2.0(expo@52.0.37(@babel/core@7.26.9)(@babel/preset-env@7.26.8(@babel/core@7.26.9))(@expo/metro-runtime@4.0.1(react-native@0.76.7(@babel/core@7.26.9)(@babel/preset-env@7.26.8(@babel/core@7.26.9))(@types/react@18.3.18)(react@18.3.1)))(react-native@0.76.7(@babel/core@7.26.9)(@babel/preset-env@7.26.8(@babel/core@7.26.9))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1))(react-native@0.76.7(@babel/core@7.26.9)(@babel/preset-env@7.26.8(@babel/core@7.26.9))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1)
       '@react-native-picker/picker':
-        specifier: ^2.11.0
-        version: 2.11.0(react-native@0.76.7(@babel/core@7.26.9)(@babel/preset-env@7.26.8(@babel/core@7.26.9))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1)
+        specifier: ^2.9.0
+        version: 2.9.0(react-native@0.76.7(@babel/core@7.26.9)(@babel/preset-env@7.26.8(@babel/core@7.26.9))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1)
       '@react-navigation/drawer':
         specifier: ^7.1.1
         version: 7.1.1(7f28aa1d76f0afc3b06edf36fe54f03b)
@@ -241,8 +241,8 @@ importers:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@22.13.5)
       jest-expo:
-        specifier: ^52.0.4
-        version: 52.0.4(@babel/core@7.26.9)(expo@52.0.37(@babel/core@7.26.9)(@babel/preset-env@7.26.8(@babel/core@7.26.9))(@expo/metro-runtime@4.0.1(react-native@0.76.7(@babel/core@7.26.9)(@babel/preset-env@7.26.8(@babel/core@7.26.9))(@types/react@18.3.18)(react@18.3.1)))(react-native@0.76.7(@babel/core@7.26.9)(@babel/preset-env@7.26.8(@babel/core@7.26.9))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1))(jest@29.7.0(@types/node@22.13.5))(react-dom@18.3.1(react@18.3.1))(react-native@0.76.7(@babel/core@7.26.9)(@babel/preset-env@7.26.8(@babel/core@7.26.9))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1)(webpack@5.97.1)
+        specifier: ^52.0.5
+        version: 52.0.5(@babel/core@7.26.9)(expo@52.0.37(@babel/core@7.26.9)(@babel/preset-env@7.26.8(@babel/core@7.26.9))(@expo/metro-runtime@4.0.1(react-native@0.76.7(@babel/core@7.26.9)(@babel/preset-env@7.26.8(@babel/core@7.26.9))(@types/react@18.3.18)(react@18.3.1)))(react-native@0.76.7(@babel/core@7.26.9)(@babel/preset-env@7.26.8(@babel/core@7.26.9))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1))(jest@29.7.0(@types/node@22.13.5))(react-dom@18.3.1(react@18.3.1))(react-native@0.76.7(@babel/core@7.26.9)(@babel/preset-env@7.26.8(@babel/core@7.26.9))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1)(webpack@5.97.1)
       jscodeshift:
         specifier: 0.15.2
         version: 0.15.2(@babel/preset-env@7.26.8(@babel/core@7.26.9))
@@ -1624,8 +1624,8 @@ packages:
       react-native-windows:
         optional: true
 
-  '@react-native-picker/picker@2.11.0':
-    resolution: {integrity: sha512-QuZU6gbxmOID5zZgd/H90NgBnbJ3VV6qVzp6c7/dDrmWdX8S0X5YFYgDcQFjE3dRen9wB9FWnj2VVdPU64adSg==}
+  '@react-native-picker/picker@2.9.0':
+    resolution: {integrity: sha512-khEhIW/uhfMqq/+tvg4rEAiPGT8GX+Y6QydlP2TSMSmRHoSJK+ShXvXZXSr4Sii4imkj4BwvLunGywwtQDODqg==}
     peerDependencies:
       react: '*'
       react-native: '*'
@@ -4152,8 +4152,8 @@ packages:
     resolution: {integrity: sha512-DOSwCRqXirTOyheM+4d5YZOrWcdu0LNZ87ewUoywbcb2XR4wKgqiG8vNeYwhjFMbEkfju7wx2GYH0P2gevGvFw==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
 
-  jest-expo@52.0.4:
-    resolution: {integrity: sha512-6+MDQnpwWi3Cka+GvzncCEw8y8LTLiulf9RMII9MZMmML68dRp+njYvZQQutRkF+WwVZLM2id59puYAsKBL1Qg==}
+  jest-expo@52.0.5:
+    resolution: {integrity: sha512-2jjdE81tWxH5PPe5SGR9rxLZbPtuM7ihEL+43xlJIjgxcplsMpFV9Nb8r5h3IpG+aVDjMiQXqF25n9dqqD09OQ==}
     hasBin: true
     peerDependencies:
       expo: '*'
@@ -8582,7 +8582,7 @@ snapshots:
     optionalDependencies:
       expo: 52.0.37(@babel/core@7.26.9)(@babel/preset-env@7.26.8(@babel/core@7.26.9))(@expo/metro-runtime@4.0.1(react-native@0.76.7(@babel/core@7.26.9)(@babel/preset-env@7.26.8(@babel/core@7.26.9))(@types/react@18.3.18)(react@18.3.1)))(react-native@0.76.7(@babel/core@7.26.9)(@babel/preset-env@7.26.8(@babel/core@7.26.9))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1)
 
-  '@react-native-picker/picker@2.11.0(react-native@0.76.7(@babel/core@7.26.9)(@babel/preset-env@7.26.8(@babel/core@7.26.9))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1)':
+  '@react-native-picker/picker@2.9.0(react-native@0.76.7(@babel/core@7.26.9)(@babel/preset-env@7.26.8(@babel/core@7.26.9))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1)':
     dependencies:
       react: 18.3.1
       react-native: 0.76.7(@babel/core@7.26.9)(@babel/preset-env@7.26.8(@babel/core@7.26.9))(@types/react@18.3.18)(react@18.3.1)
@@ -11745,7 +11745,7 @@ snapshots:
       jest-mock: 29.7.0
       jest-util: 29.7.0
 
-  jest-expo@52.0.4(@babel/core@7.26.9)(expo@52.0.37(@babel/core@7.26.9)(@babel/preset-env@7.26.8(@babel/core@7.26.9))(@expo/metro-runtime@4.0.1(react-native@0.76.7(@babel/core@7.26.9)(@babel/preset-env@7.26.8(@babel/core@7.26.9))(@types/react@18.3.18)(react@18.3.1)))(react-native@0.76.7(@babel/core@7.26.9)(@babel/preset-env@7.26.8(@babel/core@7.26.9))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1))(jest@29.7.0(@types/node@22.13.5))(react-dom@18.3.1(react@18.3.1))(react-native@0.76.7(@babel/core@7.26.9)(@babel/preset-env@7.26.8(@babel/core@7.26.9))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1)(webpack@5.97.1):
+  jest-expo@52.0.5(@babel/core@7.26.9)(expo@52.0.37(@babel/core@7.26.9)(@babel/preset-env@7.26.8(@babel/core@7.26.9))(@expo/metro-runtime@4.0.1(react-native@0.76.7(@babel/core@7.26.9)(@babel/preset-env@7.26.8(@babel/core@7.26.9))(@types/react@18.3.18)(react@18.3.1)))(react-native@0.76.7(@babel/core@7.26.9)(@babel/preset-env@7.26.8(@babel/core@7.26.9))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1))(jest@29.7.0(@types/node@22.13.5))(react-dom@18.3.1(react@18.3.1))(react-native@0.76.7(@babel/core@7.26.9)(@babel/preset-env@7.26.8(@babel/core@7.26.9))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1)(webpack@5.97.1):
     dependencies:
       '@expo/config': 10.0.10
       '@expo/json-file': 9.0.2
