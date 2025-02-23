@@ -19,6 +19,7 @@ const SessionContext = createContext<SessionContextType | null>(null);
 export function useSessionContext() {
   const context = useContext(SessionContext);
   if (!context) {
+    // eslint-disable-next-line functional/no-throw-statements
     throw new Error('useSessionContext must be used within a SessionProvider');
   }
   return context;
@@ -67,13 +68,16 @@ export function SessionProvider({ children }: Readonly<{ children: ReactNode }>)
   };
 
   const combinedLoading = isLoading || authLoading;
-  useEffect(() => {
+
+  /*   useEffect(() => {
     if (!combinedLoading) {
       if (data?.session) {
         router.replace('/(drawer)');
+      } else {
+        router.replace('/login');
       }
     }
-  }, [combinedLoading, data?.session, router]);
+  }, [combinedLoading, data?.session, router]); */
 
   return (
     <SessionContext.Provider

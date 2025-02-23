@@ -2,10 +2,12 @@
 // app\(drawer)\_layout.tsx
 import { Redirect } from 'expo-router';
 import { View } from 'react-native';
+
+import { useInitializationContext } from '../_layout';
+
 import DrawerMenuAndScreens from '~/components/DrawerMenuAndScreens';
 import { Spinner } from '~/components/ui/spinner';
 import { useSessionContext } from '~/context/AuthenticationContext';
-import { useInitializationContext } from '../_layout';
 
 const DrawerLayout = () => {
   const { session, isLoading } = useSessionContext();

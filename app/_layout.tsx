@@ -18,6 +18,7 @@ import { ThemeProvider, useTheme } from '~/components/ui/ThemeProvider/ThemeProv
 import { SessionProvider, useSessionContext } from '~/context/AuthenticationContext';
 import { SoundProvider } from '~/context/SoundContext';
 import useInitializeDailyTasks from '~/hooks/useInitializeDailyTasks';
+import { isFirstLaunchToday } from '~/utils/isFirstLaunchToday';
 import { isFirstVisit } from '~/utils/isFirstVisit';
 import { supabase } from '~/utils/supabase';
 
@@ -87,18 +88,18 @@ function GluestackModeWrapper() {
 
     const checkAndRedirect = async () => {
       try {
-        const isFirst = await isFirstVisit();
+        const isFirstInstall = await isFirstVisit();
 
-        if (isFirst && !segments[0]?.includes('onboarding')) {
+        if (isFirstInstall && !segments[0]?.includes('onboarding')) {
           router.replace('/(onboarding)/splash' as Href);
           return;
         }
-
-        if (session) {
+        const isFirstToday = await isFirstLaunchToday();
+        if (isFirstToday && session) {
           if (hasTasksFromYesterday) {
             router.push('/(tasks)/tasks-of-yesterday' as Href);
           } else {
-            // router.push('/(drawer)' as Href);
+            router.push('/(drawer)' as Href);
           }
         }
       } catch (error) {

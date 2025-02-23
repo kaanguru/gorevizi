@@ -1,14 +1,16 @@
 // useInitializeDailyTasks.ts
+import { Href, router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import useTasksQuery from '~/hooks/useTasksQueries';
+
 import { useUpdateHealthAndHappiness } from './useHealthAndHappinessMutations';
+import useHealthAndHappinessQuery from './useHealthAndHappinessQueries';
 import { useUser } from './useUser';
+
+import useTasksQuery from '~/hooks/useTasksQueries';
 import genRandomInt from '~/utils/genRandomInt';
 import { isFirstLaunchToday } from '~/utils/isFirstLaunchToday';
 import resetRecurringTasks from '~/utils/tasks/resetRecurringTasks';
 import wasTaskDueYesterday from '~/utils/tasks/wasTaskDueYesterday';
-import useHealthAndHappinessQuery from './useHealthAndHappinessQueries';
-import { Href, router } from 'expo-router';
 
 function useInitializeDailyTasks() {
   const { data: notCompletedTasks } = useTasksQuery();
@@ -26,8 +28,7 @@ function useInitializeDailyTasks() {
         const isFirstLaunchTodayResult = await isFirstLaunchToday();
         if (!isFirstLaunchTodayResult) return;
 
-        const incompleteTasksFromYesterday =
-          notCompletedTasks?.filter((task) => wasTaskDueYesterday(task)) || [];
+        const incompleteTasksFromYesterday = notCompletedTasks?.filter(wasTaskDueYesterday) || [];
         setHasTasksFromYesterday(incompleteTasksFromYesterday.length > 0);
         if (hasTasksFromYesterday) {
           // punish user
@@ -46,10 +47,12 @@ function useInitializeDailyTasks() {
       } catch (error) {
         console.error('Error initializing tasks:', error);
       } finally {
+        await new Promise((resolve) => setTimeout(resolve, 100)); // Optional: Simulate async init
+
         setInitialized(true);
-        if (hasTasksFromYesterday) {
+        /*  if (hasTasksFromYesterday) {
           router.push('/(tasks)/tasks-of-yesterday' as Href);
-        }
+        } */
       }
     };
 
