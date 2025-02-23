@@ -4,7 +4,7 @@ import { Inter_900Black } from '@expo-google-fonts/inter';
 import { Ubuntu_400Regular, Ubuntu_500Medium, Ubuntu_700Bold } from '@expo-google-fonts/ubuntu';
 import { UbuntuMono_400Regular } from '@expo-google-fonts/ubuntu-mono';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Stack, Href, useRouter, useSegments, Slot } from 'expo-router';
+import { Stack, Href, useRouter, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import React, { useEffect, useState, createContext, useContext } from 'react';
 import { View } from 'react-native';
@@ -23,12 +23,15 @@ import { isFirstVisit } from '~/utils/isFirstVisit';
 import { supabase } from '~/utils/supabase';
 
 SplashScreen.preventAutoHideAsync();
+
 const queryClient = new QueryClient();
 
-const InitializationContext = createContext<{
-  initialized: boolean;
-  hasTasksFromYesterday: boolean;
-}>({
+const InitializationContext = createContext<
+  Readonly<{
+    initialized: boolean;
+    hasTasksFromYesterday: boolean;
+  }>
+>({
   initialized: false,
   hasTasksFromYesterday: false,
 });

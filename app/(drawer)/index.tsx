@@ -1,6 +1,6 @@
 import { Stack, useFocusEffect, useRouter } from 'expo-router';
 import * as R from 'ramda';
-import React, { useCallback, useState, memo, useEffect } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { FlatList, Pressable, RefreshControl, View } from 'react-native';
 
 import { TaskItem } from '~/components/DraggableTaskItem';
@@ -8,10 +8,11 @@ import Confetti from '~/components/lotties/Confetti';
 import TaskListEmptyComponent from '~/components/TaskListEmptyComponent';
 import { Box } from '~/components/ui/box';
 import { Fab, FabIcon } from '~/components/ui/fab';
-import { AddIcon, CalendarDaysIcon, Icon, DownloadIcon, EyeIcon } from '~/components/ui/icon';
+import { AddIcon, CalendarDaysIcon, Icon, EyeIcon } from '~/components/ui/icon';
 import { Spinner } from '~/components/ui/spinner';
 import { Text } from '~/components/ui/text';
 import { useTheme } from '~/components/ui/ThemeProvider/ThemeProvider';
+import { useSoundContext } from '~/context/SoundContext';
 import useFilteredTasks from '~/hooks/useFilteredTasks';
 import { useUpdateHealthAndHappiness } from '~/hooks/useHealthAndHappinessMutations';
 import useHealthAndHappinessQuery from '~/hooks/useHealthAndHappinessQueries';
@@ -20,7 +21,6 @@ import { useToggleComplete } from '~/hooks/useTasksMutations';
 import useTasksQueries from '~/hooks/useTasksQueries';
 import useUpdateTaskPositions from '~/hooks/useUpdateTaskPositions';
 import { useUser } from '~/hooks/useUser';
-import { useSoundContext } from '~/context/SoundContext';
 import { Task } from '~/types';
 import genRandomInt from '~/utils/genRandomInt';
 import isTaskDueToday from '~/utils/tasks/isTaskDueToday';

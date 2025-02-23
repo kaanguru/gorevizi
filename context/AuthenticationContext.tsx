@@ -69,16 +69,6 @@ export function SessionProvider({ children }: Readonly<{ children: ReactNode }>)
 
   const combinedLoading = isLoading || authLoading;
 
-  /*   useEffect(() => {
-    if (!combinedLoading) {
-      if (data?.session) {
-        router.replace('/(drawer)');
-      } else {
-        router.replace('/login');
-      }
-    }
-  }, [combinedLoading, data?.session, router]); */
-
   return (
     <SessionContext.Provider
       value={{

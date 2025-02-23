@@ -1,4 +1,3 @@
-// file:///d%3A/PROJELER/0157_gorevizi/gorevizi/app/(drawer)/_layout.tsx
 // app\(drawer)\_layout.tsx
 import { Redirect } from 'expo-router';
 import { View } from 'react-native';

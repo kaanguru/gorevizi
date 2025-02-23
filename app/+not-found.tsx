@@ -1,4 +1,3 @@
-// file:///d%3A/PROJELER/0157_gorevizi/gorevizi/app/%2Bnot-found.tsx
 import { Link, Stack, useSegments } from 'expo-router';
 import React from 'react';
 import { Text, View } from 'react-native';
