@@ -1,5 +1,6 @@
-import { Task } from '~/types';
 import { supabase } from '../supabase';
+
+import { Task } from '~/types';
 
 export default async function updateTask(taskID: Task['id'], updates: Readonly<Partial<Task>>) {
   const { data, error } = await supabase.from('tasks').update(updates).eq('id', taskID).select();

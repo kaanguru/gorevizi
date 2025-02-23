@@ -1,10 +1,11 @@
-import { Tables } from '~/database.types';
 import {
   differenceInDays,
   differenceInWeeks,
   differenceInMonths,
   differenceInYears,
 } from 'date-fns';
+
+import { Tables } from '~/database.types';
 
 function calculateSuccessPercentage(
   task: Readonly<Tables<'tasks'>>,

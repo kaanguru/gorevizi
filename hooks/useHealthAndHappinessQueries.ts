@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+
 import { Tables } from '~/database.types';
 import { supabase } from '~/utils/supabase';
 

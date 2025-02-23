@@ -1,10 +1,11 @@
-import { RepeatPeriod } from '~/types';
-import { calculateRepeatText } from '~/utils/tasks/calculateRepeatText';
-import { Text } from '~/components/ui/text';
 import { Box } from './ui/box';
 import { Center } from './ui/center';
 import { HStack } from './ui/hstack';
 import { Slider, SliderTrack, SliderFilledTrack, SliderThumb } from './ui/slider';
+
+import { Text } from '~/components/ui/text';
+import { RepeatPeriod } from '~/types';
+import { calculateRepeatText } from '~/utils/tasks/calculateRepeatText';
 
 export const RepeatFrequencySlider = ({
   period,

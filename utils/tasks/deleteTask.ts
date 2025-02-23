@@ -1,5 +1,6 @@
-import { Task } from '~/types';
 import { supabase } from '../supabase';
+
+import { Task } from '~/types';
 
 export default async function deleteTask(taskID: Task['id']) {
   const { error } = await supabase.from('tasks').delete().eq('id', taskID);

@@ -1,10 +1,11 @@
 /* eslint-disable functional/prefer-immutable-types */
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { router } from 'expo-router';
 import { Alert } from 'react-native';
+
+import { TaskFormData } from '~/types';
 import { supabase } from '~/utils/supabase';
 import updateTask from '~/utils/tasks/updateTask';
-import { TaskFormData } from '~/types';
-import { router } from 'expo-router';
 
 export default function useChecklistItemMutations(taskID: number | string) {
   const queryClient = useQueryClient();

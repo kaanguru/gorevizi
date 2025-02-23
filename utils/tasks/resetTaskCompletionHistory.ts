@@ -1,5 +1,5 @@
-import { supabase } from '~/utils/supabase';
 import { Tables } from '~/database.types';
+import { supabase } from '~/utils/supabase';
 
 export default async function resetTaskCompletionHistory(): Promise<{
   data: Tables<'task_completion_history'>[] | null;

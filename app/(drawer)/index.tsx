@@ -1,31 +1,30 @@
-import React, { useCallback, useState, memo, useEffect } from 'react';
-import { FlatList, Pressable, RefreshControl, View } from 'react-native';
 import { Stack, useFocusEffect, useRouter } from 'expo-router';
-import { Task } from '~/types';
 import * as R from 'ramda';
+import React, { useCallback, useState, useEffect } from 'react';
+import { FlatList, Pressable, RefreshControl, View } from 'react-native';
 
-import { Fab, FabIcon } from '~/components/ui/fab';
-import { Box } from '~/components/ui/box';
-import { AddIcon, CalendarDaysIcon, Icon, DownloadIcon, EyeIcon } from '~/components/ui/icon';
-import { Spinner } from '~/components/ui/spinner';
 import { TaskItem } from '~/components/DraggableTaskItem';
-import reOrder from '~/utils/tasks/reOrder';
-import isTaskDueToday from '~/utils/tasks/isTaskDueToday';
-import useTasksQueries from '~/hooks/useTasksQueries';
-import useFilteredTasks from '~/hooks/useFilteredTasks';
-
-import { useToggleComplete } from '~/hooks/useTasksMutations';
-import useUpdateTaskPositions from '~/hooks/useUpdateTaskPositions';
-import useTaskCompleteSound from '~/hooks/useTaskCompleteSound';
-import { Text } from '~/components/ui/text';
 import Confetti from '~/components/lotties/Confetti';
 import TaskListEmptyComponent from '~/components/TaskListEmptyComponent';
+import { Box } from '~/components/ui/box';
+import { Fab, FabIcon } from '~/components/ui/fab';
+import { AddIcon, CalendarDaysIcon, Icon, EyeIcon } from '~/components/ui/icon';
+import { Spinner } from '~/components/ui/spinner';
+import { Text } from '~/components/ui/text';
+import { useTheme } from '~/components/ui/ThemeProvider/ThemeProvider';
 import { useSoundContext } from '~/context/SoundContext';
+import useFilteredTasks from '~/hooks/useFilteredTasks';
 import { useUpdateHealthAndHappiness } from '~/hooks/useHealthAndHappinessMutations';
 import useHealthAndHappinessQuery from '~/hooks/useHealthAndHappinessQueries';
+import useTaskCompleteSound from '~/hooks/useTaskCompleteSound';
+import { useToggleComplete } from '~/hooks/useTasksMutations';
+import useTasksQueries from '~/hooks/useTasksQueries';
+import useUpdateTaskPositions from '~/hooks/useUpdateTaskPositions';
 import { useUser } from '~/hooks/useUser';
+import { Task } from '~/types';
 import genRandomInt from '~/utils/genRandomInt';
-import { useTheme } from '~/components/ui/ThemeProvider/ThemeProvider';
+import isTaskDueToday from '~/utils/tasks/isTaskDueToday';
+import reOrder from '~/utils/tasks/reOrder';
 
 export default function TaskList() {
   const [isFiltered, setIsFiltered] = useState<boolean>(true);
@@ -44,10 +43,8 @@ export default function TaskList() {
   const { mutate: updateHealthAndHappiness, isPending: isCreatingHealthAndHappiness } =
     useUpdateHealthAndHappiness();
   const { data: healthAndHappiness } = useHealthAndHappinessQuery(user?.id);
-  // Create a state variable to hold the reordered tasks
   const [reorderedTasks, setReorderedTasks] = useState<Task[]>([]);
 
-  // Update reorderedTasks whenever filteredTasks or tasks change
   useEffect(() => {
     const newReorderedTasks = isFiltered ? filteredTasks : tasks;
     if (!R.equals(reorderedTasks, newReorderedTasks)) {

@@ -1,8 +1,8 @@
-import { View, Text, Dimensions, Pressable } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
+import { Image } from 'expo-image';
 import { Href, useRouter } from 'expo-router';
 import { useState, useRef } from 'react';
-import { Image } from 'expo-image';
+import { View, Text, Dimensions, Pressable } from 'react-native';
 
 interface TutorialItem {
   id: number;

@@ -1,6 +1,8 @@
-import isTaskDueToday from '../isTaskDueToday';
-import { Tables } from '~/database.types';
 import { addDays, addWeeks, addMonths, addYears } from 'date-fns';
+
+import isTaskDueToday from '../isTaskDueToday';
+
+import { Tables } from '~/database.types';
 import { DayOfWeek } from '~/types';
 
 //bypass test for now

@@ -1,13 +1,14 @@
+import { Waypoints } from 'lucide-react-native';
 import { useState, useEffect, useCallback } from 'react';
+
 import DraggableItem from '~/components/DraggableItem';
 import { Box } from '~/components/ui/box';
+import { Button, ButtonIcon, ButtonText } from '~/components/ui/button';
 import { HStack } from '~/components/ui/hstack';
 import { Icon, AddIcon } from '~/components/ui/icon';
-import { Button, ButtonIcon, ButtonText } from '~/components/ui/button';
 import { Text } from '~/components/ui/text';
 import { VStack } from '~/components/ui/vstack';
 import { TaskFormData } from '~/types';
-import { Waypoints } from 'lucide-react-native';
 
 const ChecklistSection = ({
   items,

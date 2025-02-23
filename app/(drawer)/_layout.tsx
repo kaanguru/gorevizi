@@ -1,104 +1,30 @@
-import { Ionicons } from '@expo/vector-icons';
-import { Drawer } from 'expo-router/drawer';
-import { router } from 'expo-router';
-import { useAuth } from '~/utils/auth/auth';
+// app\(drawer)\_layout.tsx
+import { Redirect } from 'expo-router';
+import { View } from 'react-native';
+
+import { useInitializationContext } from '../_layout';
+
+import DrawerMenuAndScreens from '~/components/DrawerMenuAndScreens';
+import { Spinner } from '~/components/ui/spinner';
+import { useSessionContext } from '~/context/AuthenticationContext';
+
 const DrawerLayout = () => {
-  const { signOut } = useAuth();
+  const { session, isLoading } = useSessionContext();
+  const { initialized } = useInitializationContext(); // Use the context
 
-  const handleSignOut = async () => {
-    await signOut();
-    router.replace('/(auth)/login');
-  };
+  if (isLoading || !initialized) {
+    return (
+      <View className="flex-1 justify-center">
+        <Spinner size="large" />
+      </View>
+    );
+  }
 
-  return (
-    <Drawer
-      screenOptions={{
-        headerShown: true,
-        headerStyle: {
-          backgroundColor: '#051824',
-        },
-        headerTintColor: '#FFEFC2',
-        drawerStyle: {
-          backgroundColor: '#FFEFC2',
-          opacity: 0.9,
-          width: 240,
-        },
-        drawerActiveTintColor: '#76AB21',
-        drawerInactiveTintColor: '#2F450D',
-        drawerLabelStyle: {
-          fontFamily: 'DelaGothicOne_400Regular',
-          fontSize: 16,
-          fontWeight: '400',
-          marginBottom: 10,
-          marginTop: 10,
-        },
-      }}>
-      <Drawer.Screen
-        name="index"
-        options={{
-          headerTitle: 'Due Tasks',
-          headerTitleStyle: {
-            color: '#FFEFC2',
-            fontFamily: 'DelaGothicOne_400Regular',
-            fontSize: 14,
-            fontWeight: '400',
-          },
-          drawerLabel: 'Due Tasks',
-          drawerIcon: ({ size, color }) => (
-            <Ionicons name="list-outline" size={size} color={color} />
-          ),
-        }}
-      />
-      <Drawer.Screen
-        name="stats"
-        options={{
-          headerTitle: 'Stats',
-          headerTitleStyle: {
-            color: '#FFEFC2',
-            fontFamily: 'DelaGothicOne_400Regular',
-            fontSize: 14,
-            fontWeight: '400',
-          },
-          drawerLabel: 'Stats',
-          drawerIcon: ({ size, color }) => (
-            <Ionicons name="stats-chart-outline" size={size} color={color} />
-          ),
-        }}
-      />
-      <Drawer.Screen
-        name="settings"
-        options={{
-          headerTitle: 'Settings',
-          drawerLabel: 'Settings',
-          headerTitleStyle: {
-            color: '#FFEFC2',
-            fontFamily: 'DelaGothicOne_400Regular',
-            fontSize: 14,
-            fontWeight: '400',
-          },
-          drawerIcon: ({ size, color }) => (
-            <Ionicons name="settings-outline" size={size} color={color} />
-          ),
-        }}
-      />
-      <Drawer.Screen
-        name="signout"
-        options={{
-          headerTitle: 'Sign Out',
-          drawerLabel: 'Sign Out',
+  if (!session) {
+    return <Redirect href="/login" />;
+  }
 
-          drawerIcon: ({ size, color }) => (
-            <Ionicons name="log-out-outline" size={size} color={color} />
-          ),
-        }}
-        listeners={{
-          drawerItemPress: () => {
-            handleSignOut();
-          },
-        }}
-      />
-    </Drawer>
-  );
+  return <DrawerMenuAndScreens />;
 };
 
 export default DrawerLayout;

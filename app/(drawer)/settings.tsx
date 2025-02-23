@@ -1,9 +1,9 @@
+import { router } from 'expo-router';
+import { Moon, Sun, Volume2, VolumeX } from 'lucide-react-native';
 import { useState } from 'react';
 import { View } from 'react-native';
-import { router } from 'expo-router';
 
-import { useResetCompletionHistory } from '~/hooks/useTaskCompletionHistory';
-import { useUser } from '~/hooks/useUser';
+import LogoPortrait from '~/components/lotties/LogoPortrait';
 import {
   AlertDialog,
   AlertDialogContent,
@@ -11,6 +11,12 @@ import {
   AlertDialogFooter,
   AlertDialogBody,
 } from '~/components/ui/alert-dialog';
+import { Box } from '~/components/ui/box';
+import { Button, ButtonIcon, ButtonText } from '~/components/ui/button';
+import { Heading } from '~/components/ui/heading';
+import { HStack } from '~/components/ui/hstack';
+import { AlertCircleIcon, ArrowLeftIcon, EditIcon, Icon, TrashIcon } from '~/components/ui/icon';
+import { Input, InputField } from '~/components/ui/input';
 import {
   Modal,
   ModalBackdrop,
@@ -20,18 +26,12 @@ import {
   ModalBody,
   ModalFooter,
 } from '~/components/ui/modal';
-import { Input, InputField } from '~/components/ui/input';
-import { Text } from '~/components/ui/text';
-import { Heading } from '~/components/ui/heading';
-import { AlertCircleIcon, ArrowLeftIcon, EditIcon, Icon, TrashIcon } from '~/components/ui/icon';
-import { Button, ButtonIcon, ButtonText } from '~/components/ui/button';
 import { Switch } from '~/components/ui/switch';
-import { Moon, Sun, Volume2, VolumeX } from 'lucide-react-native';
-import { HStack } from '~/components/ui/hstack';
-import { Box } from '~/components/ui/box';
-import { useSoundContext } from '~/context/SoundContext';
+import { Text } from '~/components/ui/text';
 import { useTheme } from '~/components/ui/ThemeProvider/ThemeProvider';
-import LogoPortrait from '~/components/lotties/LogoPortrait';
+import { useSoundContext } from '~/context/SoundContext';
+import { useResetCompletionHistory } from '~/hooks/useTaskCompletionHistory';
+import { useUser } from '~/hooks/useUser';
 
 export default function SettingsScreen() {
   const { theme, toggleTheme } = useTheme();

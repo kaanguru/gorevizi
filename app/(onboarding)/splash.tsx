@@ -1,9 +1,10 @@
 import { Href, useRouter } from 'expo-router';
 import { useEffect } from 'react';
-import { Box } from '~/components/ui/box';
-import { Text } from '~/components/ui/text';
+
 import LogoPortrait from '~/components/lotties/LogoPortrait';
+import { Box } from '~/components/ui/box';
 import { Pressable } from '~/components/ui/pressable';
+import { Text } from '~/components/ui/text';
 export default function SplashScreen() {
   const router = useRouter();
 

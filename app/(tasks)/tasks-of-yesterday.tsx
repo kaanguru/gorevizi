@@ -1,14 +1,15 @@
+import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { View, FlatList, SafeAreaView, Alert, ListRenderItem } from 'react-native';
-import useTasksQuery from '~/hooks/useTasksQueries';
-import wasTaskDueYesterday from '~/utils/tasks/wasTaskDueYesterday';
-import { Text } from '~/components/ui/text';
-import { Task } from '~/types';
-import { Pressable } from '~/components/ui/pressable';
-import { Card } from '~/components/ui/card';
-import { router } from 'expo-router';
+
 import Header from '~/components/Header';
+import { Card } from '~/components/ui/card';
+import { Pressable } from '~/components/ui/pressable';
+import { Text } from '~/components/ui/text';
 import { Tables } from '~/database.types';
+import useTasksQuery from '~/hooks/useTasksQueries';
+import { Task } from '~/types';
+import wasTaskDueYesterday from '~/utils/tasks/wasTaskDueYesterday';
 
 function TasksOfYesterday() {
   const { data: notCompletedTasks } = useTasksQuery('not-completed');
