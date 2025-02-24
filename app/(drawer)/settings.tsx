@@ -105,7 +105,8 @@ export default function SettingsScreen() {
             </ModalHeader>
             <ModalCloseButton onPress={() => setShowModal(false)} />
             <ModalBody className="flex flex-col gap-2">
-              Set your new mail address
+              {' '}
+              <Text size="sm">Set your new mail address</Text>
               <Input>
                 <InputField
                   placeholder="New email address"

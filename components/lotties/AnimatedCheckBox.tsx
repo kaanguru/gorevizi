@@ -13,11 +13,20 @@ export default function AnimatedCheckBox({
   width = 30,
   style,
 }: Readonly<CheckBoxProps>) {
+  const animation = useRef<LottieView>(null);
+
+  useEffect(() => {
+    if (animation.current) {
+      animation.current.play(60, 0);
+    }
+  }, []);
+
   return (
     <LottieView
-      autoPlay
+      ref={animation}
+      autoPlay={false}
       loop={false}
-      speed={1}
+      speed={1.5}
       key="checkbox"
       style={[
         {

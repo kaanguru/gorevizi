@@ -10,7 +10,7 @@ interface TutorialItem {
   title: string;
   description: string;
 }
-
+// TODO: webp dosyaları oluştur
 const tutorials: TutorialItem[] = [
   {
     id: 1,

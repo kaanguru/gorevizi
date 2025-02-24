@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, FlatList } from 'react-native';
 
 import { Tables } from '@/database.types';
@@ -11,11 +11,13 @@ import { Card } from '~/components/ui/card';
 import { Divider } from '~/components/ui/divider';
 import { Heading } from '~/components/ui/heading';
 import { HStack } from '~/components/ui/hstack';
+import { Progress, ProgressFilledTrack } from '~/components/ui/progress';
 import { Spinner } from '~/components/ui/spinner';
 import { Text } from '~/components/ui/text';
 import useHealthAndHappinessQuery from '~/hooks/useHealthAndHappinessQueries';
 import useTasksQuery from '~/hooks/useTasksQueries';
 import { useUser } from '~/hooks/useUser';
+import calculateLevel, { untilNextLevel } from '~/utils/calculateLevel';
 
 export default function Stats() {
   const { data = [], isLoading, error } = useTasksQuery('completed');
@@ -25,6 +27,23 @@ export default function Stats() {
     isLoading: isLoadingHealthAndHappiness,
     error: errorHealthAndHappiness,
   } = useHealthAndHappinessQuery(user?.id);
+
+  const level = useMemo(() => {
+    if (!healthAndHappiness) return 0;
+
+    const health = healthAndHappiness.health ?? 0;
+    const happiness = healthAndHappiness.happiness ?? 0;
+
+    return calculateLevel(health, happiness);
+  }, [healthAndHappiness]);
+  const untilNext = useMemo(() => {
+    if (!healthAndHappiness) return 0;
+
+    const health = healthAndHappiness.health ?? 0;
+    const happiness = healthAndHappiness.happiness ?? 0;
+
+    return untilNextLevel(health, happiness);
+  }, [healthAndHappiness]);
 
   if (isLoading) {
     return (
@@ -48,6 +67,14 @@ export default function Stats() {
 
   return (
     <View className="flex-1 justify-evenly bg-background-light dark:bg-background-dark">
+      <Text
+        size="3xl"
+        className="text-center font-delaGothicOne text-typography-black dark:text-typography-white">
+        Level {level}
+      </Text>
+      <Progress value={Number(untilNext.toFixed(2))} size="md" orientation="horizontal">
+        <ProgressFilledTrack />
+      </Progress>
       <HStack className="basis-6/6 justify-evenly">
         <Card className="m-1 w-2/6 rounded-lg bg-[#1982C4] p-5">
           <Healthy height={120} width={120} />

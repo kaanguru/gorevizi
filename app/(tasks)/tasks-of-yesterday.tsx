@@ -23,7 +23,7 @@ function TasksOfYesterday() {
   if (!tasksDueYesterday || tasksDueYesterday.length === 0) {
     return (
       <SafeAreaView>
-        <Text>No tasks to mark from yesterday!</Text>
+        <Text>No tasks to complete from yesterday!</Text>
       </SafeAreaView>
     );
   }

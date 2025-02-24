@@ -2,9 +2,8 @@
 import { Redirect } from 'expo-router';
 import { View } from 'react-native';
 
-import { useInitializationContext } from '../_layout';
-
 import DrawerMenuAndScreens from '~/components/DrawerMenuAndScreens';
+import { useInitializationContext } from '~/components/GluestackModeWrapper';
 import { Spinner } from '~/components/ui/spinner';
 import { useSessionContext } from '~/context/AuthenticationContext';
 
