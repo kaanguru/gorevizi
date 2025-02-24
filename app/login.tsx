@@ -10,8 +10,8 @@ import { resetFirstVisit } from '~/utils/isFirstVisit';
 
 export default function Login() {
   const router = useRouter();
-  const [email, setEmail] = useState('asdfafga@ff.gg');
-  const [password, setPassword] = useState('123qweasd');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loading] = useState(false);
   const { signIn } = useSessionContext();
 
