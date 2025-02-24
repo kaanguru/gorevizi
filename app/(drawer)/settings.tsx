@@ -100,12 +100,11 @@ export default function SettingsScreen() {
           <ModalBackdrop />
           <ModalContent>
             <ModalHeader className="flex-col items-start gap-0.5">
-              <Heading>Need to use a different email address?</Heading>
+              <Text className="text-center">Need to use a different email address?</Text>
               <Text size="sm">No worries, we’ll send you reset instructions</Text>
             </ModalHeader>
             <ModalCloseButton onPress={() => setShowModal(false)} />
             <ModalBody className="flex flex-col gap-2">
-              {' '}
               <Text size="sm">Set your new mail address</Text>
               <Input>
                 <InputField
@@ -156,9 +155,9 @@ export default function SettingsScreen() {
         <AlertDialogContent>
           <AlertDialogHeader>
             <Icon as={AlertCircleIcon} className="mr-2" />
-            <Heading className="font-semibold text-typography-950" size="md">
+            <Text className="font-semibold text-typography-950" size="md">
               Are you sure you want to Reset History?
-            </Heading>
+            </Text>
           </AlertDialogHeader>
 
           <AlertDialogBody className="mb-4 mt-3">

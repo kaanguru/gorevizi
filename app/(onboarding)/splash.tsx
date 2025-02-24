@@ -11,7 +11,7 @@ export default function SplashScreen() {
   useEffect(() => {
     const timer = setTimeout(() => {
       router.replace('/(onboarding)/tutorial' as Href);
-    }, 7000);
+    }, 6500);
 
     return () => clearTimeout(timer);
   }, []);

@@ -52,7 +52,7 @@ const DraggableItem = memo(
     const animatedStyle = useAnimatedStyle(() => ({
       transform: [{ translateY: animatedValue.value }],
       zIndex: isDragging ? 1 : 0,
-      position: 'absolute',
+      position: 'relative',
       left: 0,
       right: 0,
     }));
@@ -60,7 +60,7 @@ const DraggableItem = memo(
     return (
       <GestureHandlerRootView>
         <Animated.View style={animatedStyle}>
-          <Box className="mb-2 px-2">
+          <Box className="mb-1  px-2 py-1">
             <HStack space="sm" className="items-center">
               <GestureDetector gesture={panGesture}>
                 <Animated.View>

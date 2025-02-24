@@ -97,126 +97,126 @@ export default function CreateTask() {
     }));
   }, []);
   return (
-    <VStack space="xl" className="flex-1 bg-background-light dark:bg-background-dark">
+    <VStack space="xs" className="flex-1 bg-background-light dark:bg-background-dark">
       <Header headerTitle="Create Task" />
-      <Box className="flex-1">
-        <ScrollView className="flex-1 px-4">
-          <VStack space="md">
-            <FormInput
-              title={formData.title}
-              notes={formData.notes}
-              setTitle={(title: string) => setFormData((prev) => ({ ...prev, title }))}
-              setNotes={(notes: string) => setFormData((prev) => ({ ...prev, notes }))}
-            />
-            <RepeatPeriodSelector
-              repeatPeriod={formData.repeatPeriod}
-              setRepeatPeriod={(value: string) =>
-                setFormData((prev) => ({ ...prev, repeatPeriod: value as RepeatPeriod | '' }))
-              }
-            />
+      <ScrollView className="my-0 px-4">
+        <VStack space="xs">
+          <FormInput
+            title={formData.title}
+            notes={formData.notes}
+            setTitle={(title: string) => setFormData((prev) => ({ ...prev, title }))}
+            setNotes={(notes: string) => setFormData((prev) => ({ ...prev, notes }))}
+          />
+          <RepeatPeriodSelector
+            repeatPeriod={formData.repeatPeriod}
+            setRepeatPeriod={(value: string) =>
+              setFormData((prev) => ({ ...prev, repeatPeriod: value as RepeatPeriod | '' }))
+            }
+          />
 
-            {(formData.repeatPeriod === 'Daily' || formData.repeatPeriod === 'Monthly') && (
-              <RepeatFrequencySlider
-                period={formData.repeatPeriod}
-                frequency={formData.repeatFrequency}
-                onChange={(value) => setFormData((prev) => ({ ...prev, repeatFrequency: value }))}
-              />
-            )}
+          {(formData.repeatPeriod === 'Daily' || formData.repeatPeriod === 'Monthly') && (
+            <RepeatFrequencySlider
+              period={formData.repeatPeriod}
+              frequency={formData.repeatFrequency}
+              onChange={(value) => setFormData((prev) => ({ ...prev, repeatFrequency: value }))}
+            />
+          )}
 
-            {formData.repeatPeriod === 'Weekly' && (
-              <Box className="mt-4 p-2">
-                <HStack space="md" className="mb-4">
-                  <Text className="w-1/6">Repeat Every</Text>
-                  <RepeatFrequencySlider
-                    period={formData.repeatPeriod}
-                    frequency={formData.repeatFrequency}
-                    onChange={(value) =>
-                      setFormData((prev) => ({ ...prev, repeatFrequency: value }))
-                    }
-                  />
-                </HStack>
-                <HStack space="md">
-                  <Text className="mb-2">Repeat on</Text>
-                </HStack>
-                <WeekdaySelector
-                  selectedDays={formData.repeatOnWk}
-                  onDayToggle={(day, isSelected) => {
-                    setFormData((prev) => ({
-                      ...prev,
-                      repeatOnWk: isSelected
-                        ? [...prev.repeatOnWk, day]
-                        : prev.repeatOnWk.filter((d) => d !== day),
-                    }));
-                  }}
+          {formData.repeatPeriod === 'Weekly' && (
+            <Box className="mt-4 p-2">
+              <HStack space="md" className="mb-4">
+                <Text className="w-1/6">Repeat Every</Text>
+                <RepeatFrequencySlider
+                  period={formData.repeatPeriod}
+                  frequency={formData.repeatFrequency}
+                  onChange={(value) => setFormData((prev) => ({ ...prev, repeatFrequency: value }))}
                 />
-              </Box>
-            )}
-
-            {formData.repeatPeriod === 'Yearly' && (
-              <Box className="mt-4">
-                <HStack space="md">
-                  <Text>Repeat Every Year</Text>
-                </HStack>
-              </Box>
-            )}
-
-            <Box className="mt-4">
-              <HStack space="md" className="items-center">
-                <Checkbox
-                  value="custom-start-date"
-                  isChecked={formData.isCustomStartDateEnabled}
-                  onChange={(isSelected: boolean) => {
-                    setFormData((prev) => ({
-                      ...prev,
-                      isCustomStartDateEnabled: isSelected,
-                      customStartDate: isSelected ? new Date() : null,
-                    }));
-                  }}>
-                  <CheckboxIndicator>
-                    <CheckboxIcon />
-                  </CheckboxIndicator>
-                  <CheckboxLabel>Custom Start Date</CheckboxLabel>
-                </Checkbox>
               </HStack>
-            </Box>
-
-            {formData.isCustomStartDateEnabled && (
-              <Box className="mt-4">
-                <HStack space="xl">
-                  <Text className="my-auto text-typography-black">Start Date</Text>
-                  <Text className="my-auto">{formData.customStartDate?.toDateString()}</Text>
-                  <Button size="xs" variant="outline" onPress={() => setShowDatePicker(true)}>
-                    <ButtonText>Change Date</ButtonText>
-                  </Button>
-                </HStack>
-              </Box>
-            )}
-
-            {showDatePicker && (
-              <DateTimePicker
-                value={formData.customStartDate || new Date()}
-                mode="date"
-                onChange={(_, selectedDate) => {
-                  setShowDatePicker(false);
-                  if (selectedDate) {
-                    setFormData((prev) => ({ ...prev, customStartDate: selectedDate }));
-                  }
+              <HStack space="md">
+                <Text className="mb-2">Repeat on</Text>
+              </HStack>
+              <WeekdaySelector
+                selectedDays={formData.repeatOnWk}
+                onDayToggle={(day, isSelected) => {
+                  setFormData((prev) => ({
+                    ...prev,
+                    repeatOnWk: isSelected
+                      ? [...prev.repeatOnWk, day]
+                      : prev.repeatOnWk.filter((d) => d !== day),
+                  }));
                 }}
               />
-            )}
+            </Box>
+          )}
 
-            <ChecklistSection
-              items={formData.checklistItems}
-              onAdd={handleAddChecklistItem}
-              onRemove={handleRemoveChecklistItem}
-              onUpdate={handleUpdateChecklistItem}
-              setFormData={setFormData}
+          {formData.repeatPeriod === 'Yearly' && (
+            <Box className="mt-4">
+              <HStack space="md">
+                <Text>Repeat Every Year</Text>
+              </HStack>
+            </Box>
+          )}
+
+          <Box className="my-4">
+            <HStack space="md" className="items-center">
+              <Checkbox
+                value="custom-start-date"
+                isChecked={formData.isCustomStartDateEnabled}
+                onChange={(isSelected: boolean) => {
+                  setFormData((prev) => ({
+                    ...prev,
+                    isCustomStartDateEnabled: isSelected,
+                    customStartDate: isSelected ? new Date() : null,
+                  }));
+                }}>
+                <CheckboxIndicator>
+                  <CheckboxIcon />
+                </CheckboxIndicator>
+                <CheckboxLabel>Custom Start Date</CheckboxLabel>
+              </Checkbox>
+            </HStack>
+          </Box>
+
+          {formData.isCustomStartDateEnabled && (
+            <Box className="mt-4">
+              <HStack space="xl">
+                <Text className="my-auto text-typography-black">Start Date</Text>
+                <Text className="my-auto">{formData.customStartDate?.toDateString()}</Text>
+                <Button size="xs" variant="outline" onPress={() => setShowDatePicker(true)}>
+                  <ButtonText>Change Date</ButtonText>
+                </Button>
+              </HStack>
+            </Box>
+          )}
+
+          {showDatePicker && (
+            <DateTimePicker
+              value={formData.customStartDate || new Date()}
+              mode="date"
+              onChange={(_, selectedDate) => {
+                setShowDatePicker(false);
+                if (selectedDate) {
+                  setFormData((prev) => ({ ...prev, customStartDate: selectedDate }));
+                }
+              }}
             />
-          </VStack>
-        </ScrollView>
-      </Box>
-      <Box className="px-4 py-2">
-        <Button onPress={handleCreate} testID="create-task-button" disabled={isCreatingTask}>
+          )}
+
+          <ChecklistSection
+            items={formData.checklistItems}
+            onAdd={handleAddChecklistItem}
+            onRemove={handleRemoveChecklistItem}
+            onUpdate={handleUpdateChecklistItem}
+            setFormData={setFormData}
+          />
+        </VStack>
+      </ScrollView>
+      <Box className="my-0 px-4">
+        <Button
+          size="lg"
+          onPress={handleCreate}
+          testID="create-task-button"
+          disabled={isCreatingTask}>
           <ButtonText>{isCreatingTask ? 'Creating...' : 'Create'}</ButtonText>
         </Button>
       </Box>

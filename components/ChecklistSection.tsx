@@ -62,17 +62,20 @@ const ChecklistSection = ({
   );
 
   return (
-    <VStack space="md">
-      <HStack space="md" className="my-4 items-center px-2">
+    <VStack space="sm" className="my-0">
+      <HStack space="md" className="my-0 items-center px-2">
         <Button size="md" variant="outline" action="secondary" onPress={onAdd}>
           <ButtonText size="lg" className="text-typography-black dark:text-typography-white">
             Add Routines
           </ButtonText>
           <ButtonIcon as={AddIcon} className="text-typography-black dark:text-typography-white" />
-          <ButtonIcon className="me-2 text-end text-typography-white" as={Waypoints} />
+          <ButtonIcon
+            className="me-2 text-end text-typography-black dark:text-typography-white"
+            as={Waypoints}
+          />
         </Button>
       </HStack>
-      <Box className="relative" style={{ height: items.length * 60 + 16 }}>
+      <Box className="relative mb-6" style={{ height: items.length * 60 + 15 }}>
         {items.map((item, index) => (
           <DraggableItem
             key={item.id}

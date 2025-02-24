@@ -17,7 +17,7 @@ import { Text } from '~/components/ui/text';
 import useHealthAndHappinessQuery from '~/hooks/useHealthAndHappinessQueries';
 import useTasksQuery from '~/hooks/useTasksQueries';
 import { useUser } from '~/hooks/useUser';
-import calculateLevel, { untilNextLevel } from '~/utils/calculateLevel';
+import calculateLevel, { percentageUntilNextLevel } from '~/utils/calculateLevel';
 
 export default function Stats() {
   const { data = [], isLoading, error } = useTasksQuery('completed');
@@ -36,16 +36,17 @@ export default function Stats() {
 
     return calculateLevel(health, happiness);
   }, [healthAndHappiness]);
+
   const untilNext = useMemo(() => {
     if (!healthAndHappiness) return 0;
 
     const health = healthAndHappiness.health ?? 0;
     const happiness = healthAndHappiness.happiness ?? 0;
 
-    return untilNextLevel(health, happiness);
+    return percentageUntilNextLevel(health, happiness);
   }, [healthAndHappiness]);
 
-  if (isLoading) {
+  if (isLoading || isLoadingHealthAndHappiness) {
     return (
       <Box className="flex-1 items-center justify-center">
         <Spinner size="large" />
@@ -53,7 +54,7 @@ export default function Stats() {
     );
   }
 
-  if (error) {
+  if (error || errorHealthAndHappiness) {
     return (
       <View>
         <Text>Error: {error?.message}</Text>
@@ -72,12 +73,14 @@ export default function Stats() {
         className="text-center font-delaGothicOne text-typography-black dark:text-typography-white">
         Level {level}
       </Text>
-      <Progress value={Number(untilNext.toFixed(2))} size="md" orientation="horizontal">
-        <ProgressFilledTrack />
-      </Progress>
+      <Box className="m-2 flex-1 items-center justify-center pb-3">
+        <Progress value={Number(untilNext.toFixed(2))} size="md" orientation="horizontal">
+          <ProgressFilledTrack />
+        </Progress>
+      </Box>
       <HStack className="basis-6/6 justify-evenly">
-        <Card className="m-1 w-2/6 rounded-lg bg-[#1982C4] p-5">
-          <Healthy height={120} width={120} />
+        <Card className="m-1 w-2/6 rounded-lg bg-[#1982C4] p-2">
+          <Healthy height={100} width={120} />
           <Heading className="justify-between text-center text-typography-white dark:text-typography-black">
             Health
           </Heading>
@@ -85,12 +88,12 @@ export default function Stats() {
             orientation="horizontal"
             className="my-2 flex w-full self-center bg-background-500"
           />
-          <Text bold size="5xl" className="p-3 text-center font-mono text-[#FFCA3A]">
+          <Text bold size="4xl" className="p-3 text-center font-mono text-[#FFCA3A]">
             {healthAndHappiness?.health || 0}
           </Text>
         </Card>
-        <Card className="m-1 w-2/6 rounded-lg bg-[#4F10A8] p-5">
-          <Happy height={120} width={120} />
+        <Card className="m-1 w-2/6 rounded-lg bg-[#4F10A8] p-2">
+          <Happy height={100} width={120} />
           <Heading className="justify-between text-center text-typography-white dark:text-typography-black">
             Happiness
           </Heading>
@@ -98,7 +101,7 @@ export default function Stats() {
             orientation="horizontal"
             className="my-2 flex w-full self-center bg-background-500"
           />
-          <Text bold size="5xl" className="p-3 text-center font-mono text-[#FFCA3A]">
+          <Text bold size="4xl" className="p-3 text-center font-mono text-[#FFCA3A]">
             {healthAndHappiness?.happiness || 0}
           </Text>
         </Card>

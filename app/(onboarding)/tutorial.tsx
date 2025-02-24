@@ -1,37 +1,32 @@
 import { FlashList } from '@shopify/flash-list';
-import { Image } from 'expo-image';
+import { Video, ResizeMode } from 'expo-av';
 import { Href, useRouter } from 'expo-router';
 import { useState, useRef } from 'react';
 import { View, Text, Dimensions, Pressable } from 'react-native';
+
+import { Button, ButtonText } from '~/components/ui/button';
 
 interface TutorialItem {
   id: number;
   image: any;
   title: string;
-  description: string;
 }
-// TODO: webp dosyaları oluştur
+
 const tutorials: TutorialItem[] = [
   {
     id: 1,
-    image: require('../../assets/tutorial1.png'),
-    title: 'Tutorial 1',
-    description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt',
+    image: require('../../assets/tut/tut-create.webm'),
+    title: 'Create a new task',
   },
   {
     id: 2,
-    image: require('../../assets/tutorial2.png'),
-    title: 'Tutorial 2',
-    description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt',
+    image: require('../../assets/tut/tut-create-weekly.webm'),
+    title: 'Create a new weekly task',
   },
   {
     id: 3,
-    image: require('../../assets/tutorial2.png'),
-    title: 'Tutorial 3',
-    description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt',
+    image: require('../../assets/tut/tut-create-level.webm'),
+    title: 'Track your progress',
   },
 ];
 
@@ -44,12 +39,16 @@ export default function TutorialScreen() {
 
   // Specify type for renderItem
   const renderItem = ({ item }: Readonly<{ item: TutorialItem }>) => (
-    <View className="h-full items-center justify-center px-5" style={{ width: SCREEN_WIDTH }}>
-      <View className="mb-5 h-72 w-72 items-center justify-center rounded-xl bg-gray-100">
-        <Image source={item.image} className="h-48 w-48" contentFit="contain" />
-      </View>
+    <View className="h-full items-center justify-evenly px-5" style={{ width: SCREEN_WIDTH }}>
+      <Video
+        source={item.image}
+        style={{ width: SCREEN_WIDTH, height: 700 }}
+        isLooping
+        resizeMode={ResizeMode.CONTAIN}
+        shouldPlay
+        isMuted
+      />
       <Text className="text-navy-800 mb-2.5 text-2xl font-bold">{item.title}</Text>
-      <Text className="text-center text-base text-gray-600">{item.description}</Text>
     </View>
   );
 
@@ -66,7 +65,7 @@ export default function TutorialScreen() {
   };
 
   return (
-    <View className="flex-1 bg-white">
+    <View className="flex-1 bg-background-light dark:bg-background-dark">
       <View className="flex-1">
         <FlashList
           ref={flashListRef}
@@ -83,23 +82,29 @@ export default function TutorialScreen() {
         />
       </View>
 
-      <View className="px-5 pb-5">
-        <View id="paginator" className="mb-5 flex-row items-center justify-center">
+      <View className=" px-1 pb-1">
+        <View id="paginator" className="mb-1 flex-row items-center justify-center">
           {tutorials.map((_, index) => (
             <View
               key={index}
-              className={`mx-1 h-2 w-2 rounded-full ${
-                index === currentIndex ? 'bg-navy-800' : 'bg-gray-300'
+              className={`m-1 h-2 w-2 rounded-full ${
+                index === currentIndex
+                  ? 'bg-background-primary'
+                  : 'bg-background-dark dark:bg-background-light'
               }`}
             />
           ))}
         </View>
 
-        <Pressable className="bg-navy-800 rounded-lg px-6 py-3" onPress={handleContinue}>
-          <Text className="text-center text-base font-semibold text-gray-500">
+        <Button
+          variant="outline"
+          size="md"
+          onPress={handleContinue}
+          className="bg-background-light dark:bg-background-dark">
+          <ButtonText className="text-typography-gray">
             {currentIndex === tutorials.length - 1 ? 'Get Started' : 'Continue'}
-          </Text>
-        </Pressable>
+          </ButtonText>
+        </Button>
       </View>
     </View>
   );

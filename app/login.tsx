@@ -6,6 +6,7 @@ import { Button, ButtonText } from '@/components/ui/button';
 
 import LogoPortrait from '~/components/lotties/LogoPortrait';
 import { useSessionContext } from '~/context/AuthenticationContext';
+import { resetFirstVisit } from '~/utils/isFirstVisit';
 
 export default function Login() {
   const router = useRouter();
@@ -69,6 +70,10 @@ export default function Login() {
           onPress={() => router.push('/register')}>
           <ButtonText className={styles.buttonText}>Don't have an account? Register</ButtonText>
         </Button>
+
+        {/*  <Button size="sm" className={styles.registerButton} onPress={resetFirstVisit}>
+          <ButtonText className={styles.buttonText}>R-F-W</ButtonText>
+        </Button> */}
       </View>
     </View>
   );

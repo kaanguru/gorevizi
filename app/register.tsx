@@ -68,7 +68,7 @@ export default function Register() {
             secureTextEntry
           />
         </View>
-        <View>
+        <View className="mb-8">
           <Text className={styles.text}>Confirm Password</Text>
           <TextInput
             className="w-full rounded-lg border border-primary-400 bg-background-light px-4 py-3"
@@ -93,6 +93,6 @@ export default function Register() {
 
 const styles = {
   button: 'mt-8 bg-background-dark dark:bg-background-light rounded ',
-  buttonText: 'text-center text-typography-white ',
+  buttonText: 'text-center text-typography-white dark:text-typography-black',
   text: 'mb-2 text-typography-black dark:text-typography-white',
 };

@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Href, router } from 'expo-router';
 
 const FIRST_VISIT_KEY = '@gorevizi:first_visit';
 
@@ -20,6 +21,8 @@ export const isFirstVisit = async (): Promise<boolean> => {
 export const resetFirstVisit = async (): Promise<void> => {
   try {
     await AsyncStorage.removeItem(FIRST_VISIT_KEY);
+    await new Promise((resolve) => setTimeout(resolve, 150));
+    router.replace('/(onboarding)/splash' as Href);
   } catch (error) {
     console.error('Error resetting first visit:', error);
   }
