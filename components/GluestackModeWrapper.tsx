@@ -50,7 +50,9 @@ export default function GluestackModeWrapper() {
   useEffect(() => {
     const initializeSupabase = async () => {
       try {
-        supabase; // Ensure supabase is initialized
+        // supabase; // Ensure supabase is initialized
+        await supabase.auth.getSession();
+
         setSupabaseInitialized(true);
       } catch (error) {
         console.error('Failed to initialize Supabase:', error);
@@ -58,7 +60,13 @@ export default function GluestackModeWrapper() {
     };
     initializeSupabase();
   }, []);
-
+  useEffect(() => {
+    if (fontError) {
+      console.error('Font loading error:', fontError);
+      // Proceed without custom fonts
+      SplashScreen.hideAsync();
+    }
+  }, [fontError]);
   useEffect(() => {
     if (!isSupabaseInitialized || !fontsLoaded || fontError || sessionLoading || !initialized) {
       return;
@@ -102,6 +110,8 @@ export default function GluestackModeWrapper() {
       SplashScreen.hideAsync();
     } else {
       const timeout = setTimeout(() => {
+        console.warn('Timeout reached, forcing splash screen hide');
+
         SplashScreen.hideAsync(); // Fallback timeout
       }, 5000);
       return () => clearTimeout(timeout);
