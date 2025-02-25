@@ -26,4 +26,4 @@ android
 .windsurfrules
 coverage/**/*
 
-components/ui/*
+# components/ui/*
