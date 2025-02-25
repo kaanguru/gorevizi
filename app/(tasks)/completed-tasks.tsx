@@ -68,7 +68,7 @@ export default function CompletedTasks() {
   }
 
   return (
-    <View className="bg-background-light p-4 dark:bg-background-dark">
+    <View className="flex-1 bg-background-light p-4 dark:bg-background-dark">
       <Header headerTitle="Completed Tasks" />
       <FlatList
         data={tasks}
