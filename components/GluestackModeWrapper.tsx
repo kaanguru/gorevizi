@@ -29,6 +29,7 @@ const InitializationContext = createContext<
 });
 
 export const useInitializationContext = () => useContext(InitializationContext);
+SplashScreen.preventAutoHideAsync();
 
 export default function GluestackModeWrapper() {
   const { theme } = useTheme();
@@ -93,10 +94,19 @@ export default function GluestackModeWrapper() {
     fontError,
     segments,
     session,
-    sessionLoading,
     initialized,
     hasTasksFromYesterday,
   ]);
+  useEffect(() => {
+    if (isSupabaseInitialized && fontsLoaded && !sessionLoading && initialized) {
+      SplashScreen.hideAsync();
+    } else {
+      const timeout = setTimeout(() => {
+        SplashScreen.hideAsync(); // Fallback timeout
+      }, 5000);
+      return () => clearTimeout(timeout);
+    }
+  }, [isSupabaseInitialized, fontsLoaded, sessionLoading, initialized]);
 
   if (!isSupabaseInitialized || (!fontsLoaded && !fontError) || sessionLoading || !initialized) {
     return (
