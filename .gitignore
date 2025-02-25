@@ -27,3 +27,4 @@ android
 coverage/**/*
 
 # components/ui/*
+.env.local

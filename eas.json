@@ -4,10 +4,8 @@
   },
   "build": {
     "preview": {
-      "environment": {
-        "EXPO_PUBLIC_SUPABASE_URL": "${env:EXPO_PUBLIC_SUPABASE_URL}",
-        "EXPO_PUBLIC_SUPABASE_ANON_KEY": "${env:EXPO_PUBLIC_SUPABASE_ANON_KEY}"
-      },
+      "environment": "preview",
+
       "developmentClient": false,
       "android": {
         "gradleCommand": ":app:assembleRelease",
@@ -16,10 +14,8 @@
       "distribution": "internal"
     },
     "development": {
-      "environment": {
-        "EXPO_PUBLIC_SUPABASE_URL": "${env:EXPO_PUBLIC_SUPABASE_URL}",
-        "EXPO_PUBLIC_SUPABASE_ANON_KEY": "${env:EXPO_PUBLIC_SUPABASE_ANON_KEY}"
-      },
+      "environment": "development",
+
       "developmentClient": true,
       "android": {
         "gradleCommand": ":app:assembleDebug",
@@ -28,10 +24,8 @@
       "distribution": "internal"
     },
     "production": {
-      "environment": {
-        "EXPO_PUBLIC_SUPABASE_URL": "${env:EXPO_PUBLIC_SUPABASE_URL}",
-        "EXPO_PUBLIC_SUPABASE_ANON_KEY": "${env:EXPO_PUBLIC_SUPABASE_ANON_KEY}"
-      },
+      "environment": "production",
+
       "autoIncrement": true,
       "android": {
         "gradleCommand": ":app:assembleRelease"
