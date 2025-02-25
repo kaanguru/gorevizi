@@ -29,6 +29,7 @@ const InitializationContext = createContext<
 });
 
 export const useInitializationContext = () => useContext(InitializationContext);
+
 export default function GluestackModeWrapper() {
   const { theme } = useTheme();
   const [fontsLoaded, fontError] = useFonts({
@@ -44,12 +45,6 @@ export default function GluestackModeWrapper() {
   const router = useRouter();
   const { session, isLoading: sessionLoading } = useSessionContext();
   const { initialized, hasTasksFromYesterday } = useInitializeDailyTasks();
-
-  useEffect(() => {
-    if (fontsLoaded || fontError) {
-      SplashScreen.hideAsync();
-    }
-  }, [fontsLoaded, fontError]);
 
   useEffect(() => {
     const initializeSupabase = async () => {
@@ -86,6 +81,8 @@ export default function GluestackModeWrapper() {
         }
       } catch (error) {
         console.error('Failed to check first visit or session:', error);
+      } finally {
+        await SplashScreen.hideAsync();
       }
     };
 
