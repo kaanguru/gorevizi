@@ -1,16 +1,44 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import Drawer from 'expo-router/drawer';
+import React, { useState, useEffect } from 'react'; // Import useEffect
+import { View, Text } from 'react-native';
 
 import { useAuth } from '~/utils/auth/auth';
 
 export default function DrawerMenuAndScreens() {
   const { signOut } = useAuth();
+  const [error, setError] = useState<Error | null>(null); // State for error handling
 
   const handleSignOut = async () => {
-    await signOut();
-    router.replace('/login');
+    try {
+      await signOut();
+      router.replace('/login');
+    } catch (err: any) {
+      console.error('Error during sign out:', err); // Log the error
+      setError(err); // Set the error state
+    }
   };
+
+  useEffect(() => {
+    // This is for debugging purposes. It allows you to examine what is happening.
+    console.log('DrawerMenuAndScreens mounted');
+
+    // Example of how to check for potential issues, adjust as needed:
+    if (!signOut) {
+      console.warn('signOut function is not available');
+    }
+  }, [signOut]);
+
+  if (error) {
+    // Display an error message to the user
+    return (
+      <View className="flex-1 items-center justify-center">
+        <Text className="text-red-500">An error occurred: {error.message}</Text>
+      </View>
+    );
+  }
+
   return (
     <Drawer
       screenOptions={{

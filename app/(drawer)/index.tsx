@@ -1,16 +1,15 @@
 import { Stack, useFocusEffect, useRouter } from 'expo-router';
 import * as R from 'ramda';
 import React, { useCallback, useState, useEffect } from 'react';
-import { FlatList, Pressable, RefreshControl, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 
 import { TaskItem } from '~/components/DraggableTaskItem';
 import Confetti from '~/components/lotties/Confetti';
-import TaskListEmptyComponent from '~/components/TaskListEmptyComponent';
+import TaskListDisplay from '~/components/TaskListDisplay';
 import { Box } from '~/components/ui/box';
 import { Fab, FabIcon } from '~/components/ui/fab';
 import { AddIcon, CalendarDaysIcon, Icon, EyeIcon } from '~/components/ui/icon';
 import { Spinner } from '~/components/ui/spinner';
-import { Text } from '~/components/ui/text';
 import { useTheme } from '~/components/ui/ThemeProvider/ThemeProvider';
 import { useSoundContext } from '~/context/SoundContext';
 import useFilteredTasks from '~/hooks/useFilteredTasks';
@@ -26,7 +25,7 @@ import genRandomInt from '~/utils/genRandomInt';
 import isTaskDueToday from '~/utils/tasks/isTaskDueToday';
 import reOrder from '~/utils/tasks/reOrder';
 
-export default function TaskList() {
+export default function Index() {
   const [isFiltered, setIsFiltered] = useState<boolean>(true);
   const [showConfetti, setShowConfetti] = useState<boolean>(false);
   const { isSoundEnabled } = useSoundContext();
@@ -54,8 +53,8 @@ export default function TaskList() {
 
   const handleReorder = useCallback(
     (from: number, to: number) => {
-      const newTasks = reOrder(from, to, [...reorderedTasks]); // Create a new array
-      setReorderedTasks(newTasks); // Update the state with the new array
+      const newTasks = reOrder(from, to, [...reorderedTasks]);
+      setReorderedTasks(newTasks);
 
       updateTaskPositionsMutation(newTasks);
     },
@@ -153,43 +152,14 @@ export default function TaskList() {
             {showConfetti ? <Confetti /> : <Spinner size="large" />}
           </Box>
         ) : (
-          <>
-            <Text
-              size="xs"
-              className="absolute right-5 top-1 text-center font-mono text-typography-black dark:text-typography-white">
-              {isFiltered ? "Today's" : 'All Tasks'}
-            </Text>
-            <FlatList
-              contentContainerStyle={{
-                gap: 16,
-                margin: 3,
-              }}
-              data={reorderedTasks} // Use the reorderedTasks state
-              renderItem={renderTaskItem}
-              keyExtractor={keyExtractor}
-              ListEmptyComponent={<TaskListEmptyComponent />}
-              refreshControl={
-                <RefreshControl
-                  refreshing={isRefetching}
-                  onRefresh={refetch}
-                  progressViewOffset={100}
-                  colors={['#000000']}
-                  progressBackgroundColor="#ffffff"
-                />
-              }
-              showsVerticalScrollIndicator={true}
-              persistentScrollbar={true}
-              initialNumToRender={10}
-              maxToRenderPerBatch={3}
-              windowSize={6}
-              removeClippedSubviews={true}
-              getItemLayout={(data, index) => ({
-                length: 94,
-                offset: 110 * index,
-                index,
-              })}
-            />
-          </>
+          <TaskListDisplay
+            isFiltered={isFiltered}
+            reorderedTasks={reorderedTasks}
+            renderTaskItem={renderTaskItem}
+            keyExtractor={keyExtractor}
+            isRefetching={isRefetching}
+            refetch={refetch}
+          />
         )}
         <Fab
           size="lg"
