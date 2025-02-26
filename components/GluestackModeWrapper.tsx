@@ -50,9 +50,7 @@ export default function GluestackModeWrapper() {
   useEffect(() => {
     const initializeSupabase = async () => {
       try {
-        // supabase; // Ensure supabase is initialized
-        await supabase.auth.getSession();
-
+        supabase; // Ensure supabase is initialized
         setSupabaseInitialized(true);
       } catch (error) {
         console.error('Failed to initialize Supabase:', error);

@@ -11,13 +11,8 @@ export default function DrawerMenuAndScreens() {
   const [error, setError] = useState<Error | null>(null); // State for error handling
 
   const handleSignOut = async () => {
-    try {
-      await signOut();
-      router.replace('/login');
-    } catch (err: any) {
-      console.error('Error during sign out:', err); // Log the error
-      setError(err); // Set the error state
-    }
+    await signOut();
+    router.replace('/login');
   };
 
   if (error) {
