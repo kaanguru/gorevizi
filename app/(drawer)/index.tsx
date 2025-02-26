@@ -45,6 +45,10 @@ export default function Index() {
   const [reorderedTasks, setReorderedTasks] = useState<Task[]>([]);
 
   useEffect(() => {
+    console.log('app\(drawer)\index.tsx mounted');
+  }, []);
+
+  useEffect(() => {
     const newReorderedTasks = isFiltered ? filteredTasks : tasks;
     if (!R.equals(reorderedTasks, newReorderedTasks)) {
       setReorderedTasks(newReorderedTasks);

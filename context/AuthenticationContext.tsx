@@ -46,6 +46,7 @@ export function SessionProvider({ children }: Readonly<{ children: ReactNode }>)
   const signIn = async (email: string, password: string) => {
     const result = await signInWithEmail(email, password);
     if (result && result.error) {
+      //TODO: handle error in UI
       console.error('Sign in error:', result.error.message);
       return;
     }
@@ -55,6 +56,8 @@ export function SessionProvider({ children }: Readonly<{ children: ReactNode }>)
   const signUp = async (email: string, password: string) => {
     const result = await signUpWithEmail(email, password);
     if (result && result.error) {
+      //TODO: handle error in UI
+
       console.error('Sign up error:', result.error.message);
       return;
     }

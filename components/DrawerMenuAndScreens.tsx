@@ -20,16 +20,6 @@ export default function DrawerMenuAndScreens() {
     }
   };
 
-  useEffect(() => {
-    // This is for debugging purposes. It allows you to examine what is happening.
-    console.log('DrawerMenuAndScreens mounted');
-
-    // Example of how to check for potential issues, adjust as needed:
-    if (!signOut) {
-      console.warn('signOut function is not available');
-    }
-  }, [signOut]);
-
   if (error) {
     // Display an error message to the user
     return (
