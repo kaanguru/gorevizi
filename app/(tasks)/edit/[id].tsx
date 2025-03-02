@@ -1,3 +1,4 @@
+import { FontAwesome6, Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -12,7 +13,6 @@ import { Box } from '~/components/ui/box';
 import { Button, ButtonIcon, ButtonText } from '~/components/ui/button';
 import { Checkbox, CheckboxIndicator, CheckboxIcon, CheckboxLabel } from '~/components/ui/checkbox';
 import { HStack } from '~/components/ui/hstack';
-import { TrashIcon } from '~/components/ui/icon';
 import { Spinner } from '~/components/ui/spinner';
 import { Text } from '~/components/ui/text';
 import { VStack } from '~/components/ui/vstack';
@@ -236,9 +236,7 @@ export default function EditTask() {
                       customStartDate: isSelected ? new Date() : null,
                     }));
                   }}>
-                  <CheckboxIndicator>
-                    <CheckboxIcon />
-                  </CheckboxIndicator>
+                  <CheckboxIndicator></CheckboxIndicator>
                   <CheckboxLabel>Custom Start Date</CheckboxLabel>
                 </Checkbox>
               </HStack>
@@ -292,7 +290,7 @@ export default function EditTask() {
             onPress={handleDelete}
             className="flex-1">
             <ButtonText className="text-destructive-500">Delete</ButtonText>
-            <ButtonIcon className="text-white" as={TrashIcon} />
+            <Ionicons name="trash-bin" size={24} color="white" />
           </Button>
           <Button
             onPress={handleSave}

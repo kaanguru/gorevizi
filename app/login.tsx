@@ -18,6 +18,7 @@ export default function Login() {
   const handleLogin = async function () {
     try {
       await signIn(email, password);
+      router.replace('/');
     } catch (err: any) {
       console.error(err.message || 'An error occurred during login.');
     }

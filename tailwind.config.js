@@ -175,7 +175,13 @@ module.exports = {
         extrablack: '950',
       },
       fontSize: {
-        '2xs': '10px',
+        '2xs': '14px',
+        xs: '16px',
+        sm: '18px',
+        md: '20px',
+        lg: '24px',
+        xl: '28px',
+        '2xl': '32px',
       },
       boxShadow: {
         'hard-1': '-2px 2px 8px 0px rgba(38, 38, 38, 0.20)',

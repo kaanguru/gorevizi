@@ -1,5 +1,5 @@
+import { FontAwesome6 } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { SmilePlus } from 'lucide-react-native';
 import React from 'react';
 
 import Header from '~/components/Header';
@@ -23,7 +23,7 @@ const WarningPage = () => {
         </Text>
         <Button size="lg" onPress={() => router.push('/(tasks)/create-task')}>
           <ButtonText>I can handle more!</ButtonText>
-          <ButtonIcon as={SmilePlus} className="ms-3 text-typography-white"></ButtonIcon>
+          <FontAwesome6 name="face-smile-wink" size={24} color="black" />{' '}
         </Button>
       </Card>
     </>

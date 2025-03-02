@@ -1,5 +1,5 @@
+import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { Undo } from 'lucide-react-native';
 import { useCallback } from 'react';
 import React, { View, FlatList } from 'react-native';
 
@@ -59,7 +59,7 @@ export default function CompletedTasks() {
               variant="outline"
               action="positive"
               onPress={() => handleMarkIncomplete(item.id)}>
-              <ButtonIcon as={Undo}></ButtonIcon>
+              <Ionicons name="arrow-undo" size={24} color="black" />
             </Button>
           </View>
         </Pressable>

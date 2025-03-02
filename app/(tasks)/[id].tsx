@@ -1,5 +1,6 @@
+import { FontAwesome6, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Image } from 'expo-image';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
-import { CalendarSync, Pencil, Trash2, Waypoints } from 'lucide-react-native';
 import React, { useCallback } from 'react';
 import { ScrollView } from 'react-native';
 import Markdown from 'react-native-markdown-display';
@@ -21,10 +22,10 @@ import { Checkbox, CheckboxIndicator, CheckboxLabel, CheckboxIcon } from '~/comp
 import { Divider } from '~/components/ui/divider';
 import { Heading } from '~/components/ui/heading';
 import { HStack } from '~/components/ui/hstack';
-import { CheckIcon, Icon, TrashIcon } from '~/components/ui/icon';
 import { Pressable } from '~/components/ui/pressable';
 import { Spinner } from '~/components/ui/spinner';
 import { Text } from '~/components/ui/text';
+import { useTheme } from '~/components/ui/ThemeProvider/ThemeProvider';
 import { VStack } from '~/components/ui/vstack';
 import useChecklistItemMutations from '~/hooks/useCheckListMutations';
 import useChecklistItemsQuery from '~/hooks/useCheckListQueries';
@@ -47,7 +48,7 @@ export default function TaskDetailPage() {
 
   const { data: task, isLoading, isError, error, refetch } = useTaskById(taskID);
   const { mutate: deleteTask } = useDeleteTask();
-
+  const { theme } = useTheme();
   const [showAlertDialog, setShowAlertDialog] = React.useState(false);
   const handleClose = () => setShowAlertDialog(false);
 
@@ -94,26 +95,26 @@ export default function TaskDetailPage() {
     <ScrollView className=" flex-1 bg-background-light dark:bg-background-dark">
       <VStack space="sm" className="flex-1 ">
         <Header headerTitle="" />
-        <HStack className="-mt-12 justify-end">
-          <Pressable onPress={() => router.push(`/(tasks)/edit/${taskID}`)}>
-            <Icon
-              size="xl"
-              className="mx-5 my-0  py-0 text-typography-black dark:text-typography-white"
-              as={Pencil}
+        <HStack className="-mt-12 me-5 justify-end">
+          <Pressable className="px-4" onPress={() => router.push(`/(tasks)/edit/${taskID}`)}>
+            <FontAwesome6
+              name="pencil"
+              size={18}
+              color={theme === 'dark' ? '#FFFAEB' : '#051824'}
             />
           </Pressable>
           <Pressable onPress={() => setShowAlertDialog(true)}>
-            <Icon
-              size="xl"
-              className="mx-5 my-0  py-0 text-typography-black dark:text-typography-white"
-              as={Trash2}
-            />
+            <Ionicons name="trash-bin" size={18} color={theme === 'dark' ? '#FFFAEB' : '#051824'} />
           </Pressable>
           <AlertDialog isOpen={showAlertDialog} onClose={handleClose}>
             <AlertDialogBackdrop />
             <AlertDialogContent className="w-full max-w-[415px] items-center gap-4">
               <Box className="h-[52px] w-[52px] items-center justify-center rounded-full bg-background-error">
-                <Icon as={TrashIcon} size="lg" className="stroke-error-500" />
+                <Ionicons
+                  name="trash-bin"
+                  size={24}
+                  color={theme === 'dark' ? '#FFFAEB' : '#051824'}
+                />
               </Box>
               <AlertDialogHeader className="mb-2">
                 <Heading size="md">Delete Task?</Heading>
@@ -169,7 +170,9 @@ export default function TaskDetailPage() {
                 value="is_complete">
                 <CheckboxLabel>{task.is_complete ? 'Completed' : 'Not Completed'}</CheckboxLabel>
                 <CheckboxIndicator>
-                  <CheckboxIcon as={CheckIcon} className="bg-success-100" />
+                  {task.is_complete ? (
+                    <FontAwesome6 name="check" size={16} color="#8AC926" />
+                  ) : null}
                 </CheckboxIndicator>
               </Checkbox>
             )}
@@ -184,7 +187,7 @@ export default function TaskDetailPage() {
           {task.repeat_period && (
             <VStack className="bg-gray.50 rounded-lg p-4">
               <VStack className="items-center justify-center">
-                <Icon as={CalendarSync} size="xl" color="#CC9900" className="t m-3 " />
+                <MaterialCommunityIcons name="calendar-sync" size={24} color="#CC9900" />
                 <Text size="md" bold className="text-typography-white  dark:text-typography-black">
                   Every {task.repeat_frequency} {getRepeatPeriodLabel(task.repeat_period)}{' '}
                 </Text>
@@ -217,11 +220,8 @@ export default function TaskDetailPage() {
         {checklistItems && checklistItems.length > 0 ? (
           <VStack className="m-3 flex-col p-4" space="xl">
             <HStack>
-              <Icon
-                size="md"
-                as={Waypoints}
-                className="me-2 text-typography-black dark:text-typography-white"
-              />
+              <Image source="~/assets/waypoints.png" style={{ width: 24, height: 24 }} />
+
               <Text size="lg" className="pb-2 text-typography-black dark:text-typography-white">
                 Routine Steps
               </Text>
@@ -237,9 +237,7 @@ export default function TaskDetailPage() {
                       is_complete: !item.is_complete,
                     })
                   }>
-                  <CheckboxIndicator size="lg" className="h-8 w-8">
-                    <CheckboxIcon className="p-4" as={CheckIcon} />
-                  </CheckboxIndicator>
+                  <CheckboxIndicator size="lg" className="h-8 w-8"></CheckboxIndicator>
                   <CheckboxLabel className="ms-3">{item.content}</CheckboxLabel>
                 </Checkbox>
               </Box>

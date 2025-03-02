@@ -1,5 +1,6 @@
+import { Ionicons } from '@expo/vector-icons';
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { router } from 'expo-router';
-import { Moon, Sun, Volume2, VolumeX } from 'lucide-react-native';
 import { useState } from 'react';
 import { View } from 'react-native';
 
@@ -12,10 +13,8 @@ import {
   AlertDialogBody,
 } from '~/components/ui/alert-dialog';
 import { Box } from '~/components/ui/box';
-import { Button, ButtonIcon, ButtonText } from '~/components/ui/button';
-import { Heading } from '~/components/ui/heading';
+import { Button, ButtonText } from '~/components/ui/button';
 import { HStack } from '~/components/ui/hstack';
-import { AlertCircleIcon, ArrowLeftIcon, EditIcon, Icon, TrashIcon } from '~/components/ui/icon';
 import { Input, InputField } from '~/components/ui/input';
 import {
   Modal,
@@ -56,7 +55,7 @@ export default function SettingsScreen() {
   const handleSubmit = () => {
     console.log('New Email:', newEmail);
     setShowModal(false);
-    // Here you would typically send the new email to your backend for verification and update
+    //TODO: send the new email to your backend for verification and update
   };
   return (
     <View className="flex-1 bg-background-light  p-5 dark:bg-background-dark">
@@ -93,7 +92,7 @@ export default function SettingsScreen() {
             action="positive"
             className="m-2"
             onPress={() => setShowModal(true)}>
-            <ButtonIcon as={EditIcon} />
+            <FontAwesome6 name="edit" size={24} color="black" />
           </Button>
         </HStack>
         <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
@@ -126,7 +125,7 @@ export default function SettingsScreen() {
                   setShowModal(false);
                 }}
                 className="w-full">
-                <ButtonIcon as={ArrowLeftIcon} />
+                <FontAwesome6 name="circle-arrow-left" size={24} color="black" />
                 <ButtonText>Back to settings</ButtonText>
               </Button>
             </ModalFooter>
@@ -141,12 +140,16 @@ export default function SettingsScreen() {
           <ButtonText className="text-typography-950 dark:text-typography-50">
             Reset Statistics
           </ButtonText>
-          <ButtonIcon className="text-white" as={TrashIcon} />
+          <Ionicons name="trash-bin" size={24} color="white" />
         </Button>
 
         <Box className=" bg-background-light p-0 dark:bg-background-dark">
           <Button onPress={toggleTheme}>
-            <ButtonIcon size="xl" as={theme === 'light' ? Moon : Sun} />
+            {theme === 'light' ? (
+              <FontAwesome6 name="moon" size={24} color="#FFFAEB" />
+            ) : (
+              <FontAwesome6 name="sun" size={24} color="#051824" />
+            )}
           </Button>
         </Box>
       </View>
@@ -154,7 +157,7 @@ export default function SettingsScreen() {
       <AlertDialog isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <Icon as={AlertCircleIcon} className="mr-2" />
+            <Ionicons name="alert-circle" size={24} color="black" />
             <Text className="font-semibold text-typography-950" size="md">
               Are you sure you want to Reset History?
             </Text>
@@ -180,12 +183,21 @@ export default function SettingsScreen() {
       </AlertDialog>
       <Box className="mt-5 flex-row items-center justify-between rounded-lg bg-background-dark p-4 dark:bg-background-light">
         <View className="flex-row items-center">
-          <Icon
-            as={isSoundEnabled ? Volume2 : VolumeX}
-            size="lg"
-            className="me-3 text-typography-500"
-          />
-          <Text className="text-typography-white dark:text-typography-black">
+          {isSoundEnabled ? (
+            <FontAwesome6
+              name="volume-high"
+              size={24}
+              color={theme === 'light' ? '#8AC926' : '#ff006e'}
+            />
+          ) : (
+            <FontAwesome6
+              name="volume-xmark"
+              size={24}
+              color={theme === 'light' ? '#8AC926' : '#ff006e'}
+            />
+          )}
+
+          <Text className="ms-4 text-typography-white dark:text-typography-black">
             {isSoundEnabled ? 'Sound Enabled' : 'Sound Disabled'}
           </Text>
         </View>

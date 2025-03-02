@@ -1,12 +1,13 @@
-import { Waypoints } from 'lucide-react-native';
+import { FontAwesome6 } from '@expo/vector-icons';
+import { Image } from 'expo-image';
 import { useState, useEffect, useCallback } from 'react';
 
 import DraggableItem from '~/components/DraggableItem';
 import { Box } from '~/components/ui/box';
 import { Button, ButtonIcon, ButtonText } from '~/components/ui/button';
 import { HStack } from '~/components/ui/hstack';
-import { Icon, AddIcon } from '~/components/ui/icon';
 import { Text } from '~/components/ui/text';
+import { useTheme } from '~/components/ui/ThemeProvider/ThemeProvider';
 import { VStack } from '~/components/ui/vstack';
 import { TaskFormData } from '~/types';
 
@@ -25,6 +26,8 @@ const ChecklistSection = ({
 }>) => {
   const [draggingIndex, setDraggingIndex] = useState<number | null>(null);
   const [positions, setPositions] = useState<number[]>([]);
+  const { theme } = useTheme();
+  const ITEM_HEIGHT = 42;
 
   useEffect(() => {
     setPositions(items.map((_, i) => i));
@@ -36,7 +39,7 @@ const ChecklistSection = ({
 
   const handleDragEnd = useCallback(
     (index: number, translationY: number) => {
-      const newIndex = Math.round((translationY + index * 60) / 60);
+      const newIndex = Math.round((translationY + index * ITEM_HEIGHT) / ITEM_HEIGHT);
       const validIndex = Math.max(0, Math.min(newIndex, items.length - 1));
 
       if (validIndex !== index) {
@@ -68,14 +71,14 @@ const ChecklistSection = ({
           <ButtonText size="lg" className="text-typography-black dark:text-typography-white">
             Add Routines
           </ButtonText>
-          <ButtonIcon as={AddIcon} className="text-typography-black dark:text-typography-white" />
-          <ButtonIcon
-            className="me-2 text-end text-typography-black dark:text-typography-white"
-            as={Waypoints}
-          />
+          <FontAwesome6 name="add" size={16} color={theme === 'dark' ? '#FFFAEB' : '#051824'} />
         </Button>
       </HStack>
-      <Box className="relative mb-6" style={{ height: items.length * 60 + 15 }}>
+      <VStack
+        className="relative mb-6"
+        style={{
+          height: ITEM_HEIGHT * items.length,
+        }}>
         {items.map((item, index) => (
           <DraggableItem
             key={item.id}
@@ -89,7 +92,7 @@ const ChecklistSection = ({
             onDragEnd={(translationY) => handleDragEnd(index, translationY)}
           />
         ))}
-      </Box>
+      </VStack>
     </VStack>
   );
 };

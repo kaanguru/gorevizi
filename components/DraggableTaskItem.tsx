@@ -1,6 +1,7 @@
 /* eslint-disable functional/immutable-data */
 //DraggableTaskItem.tsx
-import { Waypoints, GripVertical } from 'lucide-react-native';
+import { FontAwesome5 } from '@expo/vector-icons';
+import { Image } from 'expo-image';
 import React, { memo } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
@@ -16,22 +17,20 @@ import Animated, {
 import AnimatedCheckBox from './lotties/AnimatedCheckBox';
 import { Box } from './ui/box';
 import { Checkbox, CheckboxIcon, CheckboxIndicator } from './ui/checkbox';
-import { CheckIcon, Icon } from './ui/icon';
 import { Pressable } from './ui/pressable';
 
 import { Text } from '~/components/ui/text';
+import { useTheme } from '~/components/ui/ThemeProvider/ThemeProvider';
 import useChecklistItems from '~/hooks/useCheckListQueries';
 import { TaskItemProps } from '~/types';
 import shortenText from '~/utils/shortenText';
 
-// Define a comparison function for memo
 const areEqual = (prevProps: Readonly<TaskItemProps>, nextProps: Readonly<TaskItemProps>) => {
-  // Compare relevant props that affect rendering
   return (
     prevProps.task.id === nextProps.task.id &&
     prevProps.task.title === nextProps.task.title &&
     prevProps.task.is_complete === nextProps.task.is_complete &&
-    prevProps.index === nextProps.index // Important: Compare the index
+    prevProps.index === nextProps.index
   );
 };
 
@@ -43,6 +42,7 @@ export const TaskItem = memo(
     const isDragging = useSharedValue(false);
 
     const { checkListItemsLength, isCheckListItemsLoading } = useChecklistItems(task.id);
+    const { theme } = useTheme();
 
     const taskHasChecklistItems = checkListItemsLength > 0;
     const panGesture = Gesture.Pan()
@@ -88,7 +88,7 @@ export const TaskItem = memo(
             isChecked={task.is_complete}
             onChange={handleToggleComplete}
             size="lg"
-            className="ms-3 ">
+            className="my-auto ms-3">
             <CheckboxIndicator
               size="lg"
               className="h-8 w-8  bg-background-400 text-white dark:bg-background-light">
@@ -111,7 +111,10 @@ export const TaskItem = memo(
                   <Text size="sm" className="me-1 text-typography-white">
                     {checkListItemsLength}
                   </Text>
-                  <Icon className="me-2 text-end text-typography-white" as={Waypoints} />
+                  <Image
+                    source={require('~/assets/waypoints.png')}
+                    style={{ width: 24, height: 24 }}
+                  />
                 </>
               ) : (
                 isCheckListItemsLoading && <ActivityIndicator size="small" color="#FF006E" />
@@ -144,8 +147,12 @@ export const TaskItem = memo(
           </Pressable>
           {isFiltered && (
             <GestureDetector gesture={panGesture}>
-              <Box className=" h-full w-9">
-                <Icon as={GripVertical} size="xl" className="m-auto  text-white" />
+              <Box className="my-auto h-full w-9 items-center justify-center">
+                <FontAwesome5
+                  name="grip-vertical"
+                  size={24}
+                  color={theme === 'light' ? '#FFFAEB' : '#051824'}
+                />
               </Box>
             </GestureDetector>
           )}
@@ -153,5 +160,5 @@ export const TaskItem = memo(
       </Animated.View>
     );
   },
-  areEqual, // Pass the comparison function to memo
+  areEqual,
 );

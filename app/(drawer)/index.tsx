@@ -1,14 +1,14 @@
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { Stack, useFocusEffect, useRouter } from 'expo-router';
 import * as R from 'ramda';
 import React, { useCallback, useState, useEffect } from 'react';
-import { Pressable, View } from 'react-native';
+import { Pressable, View, Text } from 'react-native';
 
 import { TaskItem } from '~/components/DraggableTaskItem';
 import Confetti from '~/components/lotties/Confetti';
 import TaskListDisplay from '~/components/TaskListDisplay';
 import { Box } from '~/components/ui/box';
 import { Fab, FabIcon } from '~/components/ui/fab';
-import { AddIcon, CalendarDaysIcon, Icon, EyeIcon } from '~/components/ui/icon';
 import { Spinner } from '~/components/ui/spinner';
 import { useTheme } from '~/components/ui/ThemeProvider/ThemeProvider';
 import { useSoundContext } from '~/context/SoundContext';
@@ -43,10 +43,6 @@ export default function Index() {
     useUpdateHealthAndHappiness();
   const { data: healthAndHappiness } = useHealthAndHappinessQuery(user?.id);
   const [reorderedTasks, setReorderedTasks] = useState<Task[]>([]);
-
-  useEffect(() => {
-    console.log('app\(drawer)\index.tsx mounted');
-  }, []);
 
   useEffect(() => {
     const newReorderedTasks = isFiltered ? filteredTasks : tasks;
@@ -140,44 +136,61 @@ export default function Index() {
           },
           headerRight: () => (
             <>
-              <Pressable onPress={handleFilterTodayPress} className="p-5">
-                <Icon
-                  as={isFiltered ? CalendarDaysIcon : EyeIcon}
-                  className="m-1 h-6 w-6 text-typography-black dark:text-typography-white"
-                />
-              </Pressable>
+              {reorderedTasks.length > 0 && (
+                <Pressable onPress={handleFilterTodayPress} className="p-5">
+                  {isFiltered ? (
+                    <FontAwesome6
+                      name="calendar-days"
+                      size={18}
+                      color={theme === 'dark' ? '#FFFAEB' : '#051824'}
+                    />
+                  ) : (
+                    <FontAwesome6
+                      name="eye"
+                      size={18}
+                      color={theme === 'dark' ? '#FFFAEB' : '#051824'}
+                    />
+                  )}
+                </Pressable>
+              )}
             </>
           ),
         }}
       />
-      <View className="flex-1 bg-background-light  p-5 dark:bg-background-dark">
-        {showLoading ? (
-          <Box className="flex-1 items-center justify-center">
-            {showConfetti ? <Confetti /> : <Spinner size="large" />}
-          </Box>
-        ) : (
-          <TaskListDisplay
-            isFiltered={isFiltered}
-            reorderedTasks={reorderedTasks}
-            renderTaskItem={renderTaskItem}
-            keyExtractor={keyExtractor}
-            isRefetching={isRefetching}
-            refetch={refetch}
-          />
-        )}
-        <Fab
-          size="lg"
-          className="absolute bottom-5 right-5 "
-          onPress={() => {
-            if (tasks.filter(isTaskDueToday).length > 8) {
-              router.push('/(tasks)/soManyTasksWarning');
-            } else {
-              router.push('/(tasks)/create-task');
-            }
-          }}>
-          <FabIcon size="xl" stroke={'#ff006e'} as={AddIcon} />
-        </Fab>
-      </View>
+      {
+        <View className="flex-1 bg-background-light  p-5 dark:bg-background-dark">
+          {showLoading ? (
+            <Box className="flex-1 items-center justify-center">
+              {showConfetti ? <Confetti /> : <Spinner size="large" />}
+            </Box>
+          ) : (
+            <>
+              <TaskListDisplay
+                isFiltered={isFiltered}
+                reorderedTasks={reorderedTasks}
+                renderTaskItem={renderTaskItem}
+                keyExtractor={keyExtractor}
+                isRefetching={isRefetching}
+                refetch={refetch}
+              />
+            </>
+          )}
+          {
+            <Fab
+              size="lg"
+              className="absolute bottom-5 right-5 "
+              onPress={() => {
+                if (tasks.filter(isTaskDueToday).length > 8) {
+                  router.push('/(tasks)/soManyTasksWarning');
+                } else {
+                  router.push('/(tasks)/create-task');
+                }
+              }}>
+              <FontAwesome6 name="add" size={24} color="#ff006e" />
+            </Fab>
+          }
+        </View>
+      }
     </>
   );
 }

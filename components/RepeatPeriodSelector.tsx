@@ -1,4 +1,4 @@
-import { ChevronDownIcon } from './ui/icon';
+import { FontAwesome6 } from '@expo/vector-icons';
 
 import {
   Select,
@@ -28,7 +28,7 @@ export default function RepeatPeriodSelector({
       className="my-4 h-6">
       <SelectTrigger size="lg">
         <SelectInput size="md" className="py-2 text-base" placeholder="Select repeat period" />
-        <SelectIcon as={ChevronDownIcon} />
+        <FontAwesome6 name="circle-chevron-right" size={24} color="black" />
       </SelectTrigger>
       <SelectPortal>
         <SelectBackdrop />

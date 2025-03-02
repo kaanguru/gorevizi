@@ -1,16 +1,18 @@
 /* eslint-disable functional/immutable-data */
-import { useEffect, useRef, memo } from 'react';
-import { TextInput } from 'react-native';
+import { FontAwesome5, Ionicons } from '@expo/vector-icons';
+import { useEffect, memo } from 'react';
 import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
 import Animated, { useSharedValue, useAnimatedStyle, runOnJS } from 'react-native-reanimated';
 
-import { GripVerticalIcon, Icon, TrashIcon } from './ui/icon';
 import { Input, InputField } from './ui/input';
 
 import { Box } from '~/components/ui/box';
 import { Button } from '~/components/ui/button';
 import { HStack } from '~/components/ui/hstack';
+import { useTheme } from '~/components/ui/ThemeProvider/ThemeProvider';
 import { TaskFormData } from '~/types';
+
+const ITEM_HEIGHT = 42;
 
 const DraggableItem = memo(
   ({
@@ -32,10 +34,11 @@ const DraggableItem = memo(
     onDragStart: () => void;
     onDragEnd: (translationY: number) => void;
   }>) => {
-    const animatedValue = useSharedValue(position * 9);
+    const animatedValue = useSharedValue(position * ITEM_HEIGHT);
+    const { theme } = useTheme();
 
     useEffect(() => {
-      animatedValue.value = position * 9;
+      animatedValue.value = position * ITEM_HEIGHT;
     }, [position]);
 
     const panGesture = Gesture.Pan()
@@ -43,7 +46,7 @@ const DraggableItem = memo(
         runOnJS(onDragStart)();
       })
       .onChange((event) => {
-        animatedValue.value = event.translationY + position * 9;
+        animatedValue.value = event.translationY + position * ITEM_HEIGHT;
       })
       .onEnd((event) => {
         runOnJS(onDragEnd)(event.translationY);
@@ -60,11 +63,15 @@ const DraggableItem = memo(
     return (
       <GestureHandlerRootView>
         <Animated.View style={animatedStyle}>
-          <Box className="mb-1  px-2 py-1">
+          <Box className="my-1px-2 py-1">
             <HStack space="sm" className="items-center">
               <GestureDetector gesture={panGesture}>
                 <Animated.View>
-                  <Icon as={GripVerticalIcon} className="m-2 h-4 w-4 text-typography-500" />
+                  <FontAwesome5
+                    name="grip-vertical"
+                    size={18}
+                    color={theme === 'dark' ? '#FFFAEB' : '#051824'}
+                  />
                 </Animated.View>
               </GestureDetector>
               <Input className="flex-1 bg-white" variant="rounded" size="md">
@@ -80,7 +87,11 @@ const DraggableItem = memo(
                 />
               </Input>
               <Button size="sm" variant="link" onPress={() => onRemove(index)}>
-                <Icon as={TrashIcon} className="m-2 h-4 w-4 text-typography-500" />
+                <Ionicons
+                  name="trash-bin"
+                  size={24}
+                  color={theme === 'dark' ? '#FFFAEB' : '#051824'}
+                />
               </Button>
             </HStack>
           </Box>

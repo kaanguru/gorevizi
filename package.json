@@ -30,7 +30,9 @@
   },
   "jest": {
     "preset": "jest-expo",
-    "setupFiles": ["./jest.setup.ts"],
+    "setupFiles": [
+      "./jest.setup.ts"
+    ],
     "transformIgnorePatterns": [
       "node_modules/(?!(?:.pnpm/)?((jest-)?react-native|@react-native(-community)?|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@sentry/react-native|native-base|react-native-svg))"
     ]
@@ -97,7 +99,8 @@
     "react-native-markdown-display": "^7.0.2",
     "react-native-reanimated": "3.16.2",
     "react-native-safe-area-context": "4.12.0",
-    "react-native-screens": "~4.4.0"
+    "react-native-screens": "~4.4.0",
+    "react-native-svg": "15.11.2"
   },
   "devDependencies": {
     "@babel/core": "^7.26.9",
@@ -125,23 +128,10 @@
     "tailwindcss": "^3.4.17",
     "typescript": "~5.3.3"
   },
-  "packageManager": "pnpm@10.5.0+sha512.11106a5916c7406fe4b8cb8e3067974b8728f47308a4f5ac5e850304afa6f57e2847d7950dfe78877d8d36bfb401d381c4215db3a4c3547ffa63c14333a6fa51",
-  "expo": {
-    "doctor": {
-      "reactNativeDirectoryCheck": {
-        "exclude": [
-          "@faker-js/faker",
-          "@gluestack-ui/button",
-          "@gluestack-ui/icon",
-          "@gluestack-ui/input",
-          "@gluestack-ui/nativewind-utils",
-          "@gluestack-ui/overlay",
-          "@gluestack-ui/spinner",
-          "@gluestack-ui/toast",
-          "date-fns",
-          "react-native-css-interop"
-        ]
-      }
-    }
+  "packageManager": "pnpm@10.5.2+sha512.da9dc28cd3ff40d0592188235ab25d3202add8a207afbedc682220e4a0029ffbff4562102b9e6e46b4e3f9e8bd53e6d05de48544b0c57d4b0179e22c76d1199b",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@sentry/cli"
+    ]
   }
 }
