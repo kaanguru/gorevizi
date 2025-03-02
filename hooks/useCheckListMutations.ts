@@ -32,11 +32,33 @@ export default function useChecklistItemMutations(taskID: number | string) {
       Alert.alert('Error', error.message);
     },
   });
+  const upsertChecklistItemMutation = useMutation({
+    async mutationFn(content: string) {
+      const { data, error } = await supabase
+        .from('checklistitems')
+        .upsert({ content, task_id: +taskID })
+        .select()
+        .single();
+
+      if (error) {
+        throw new Error(error.message);
+      }
+      return data;
+    },
+    async onSuccess() {
+      await queryClient.invalidateQueries({
+        queryKey: ['checklistItems', taskID],
+      });
+    },
+    onError(error) {
+      Alert.alert('Error', error.message);
+    },
+  });
 
   const updateChecklistItemMutation = useMutation({
     mutationFn: async (formData: Readonly<TaskFormData>) => {
       if (!taskID) throw new Error('No task ID');
-
+      //TODO: TASK kaldırılmalı sadece checklist items güncellenmeli
       const updatedTask = await updateTask(+taskID, {
         title: formData.title.trim(),
         notes: formData.notes.trim() || null,
@@ -122,9 +144,10 @@ export default function useChecklistItemMutations(taskID: number | string) {
   });
 
   return {
-    addChecklistItem: addChecklistItemMutation.mutateAsync,
-    updateChecklistItem: updateChecklistItemMutation.mutateAsync,
-    deleteChecklistItem: deleteChecklistItemMutation.mutateAsync,
-    updateChecklistItemCompletion: updateChecklistItemCompletionMutation.mutateAsync,
+    addChecklistItem: addChecklistItemMutation.mutate,
+    upsertChecklistItem: upsertChecklistItemMutation.mutate,
+    updateChecklistItem: updateChecklistItemMutation.mutate,
+    deleteChecklistItem: deleteChecklistItemMutation.mutate,
+    updateChecklistItemCompletion: updateChecklistItemCompletionMutation.mutate,
   };
 }

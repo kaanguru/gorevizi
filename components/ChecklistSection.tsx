@@ -1,12 +1,9 @@
 import { FontAwesome6 } from '@expo/vector-icons';
-import { Image } from 'expo-image';
 import { useState, useEffect, useCallback } from 'react';
 
 import DraggableItem from '~/components/DraggableItem';
-import { Box } from '~/components/ui/box';
-import { Button, ButtonIcon, ButtonText } from '~/components/ui/button';
+import { Button, ButtonText } from '~/components/ui/button';
 import { HStack } from '~/components/ui/hstack';
-import { Text } from '~/components/ui/text';
 import { useTheme } from '~/components/ui/ThemeProvider/ThemeProvider';
 import { VStack } from '~/components/ui/vstack';
 import { TaskFormData } from '~/types';

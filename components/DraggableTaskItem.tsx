@@ -1,7 +1,6 @@
 /* eslint-disable functional/immutable-data */
 //DraggableTaskItem.tsx
-import { FontAwesome5 } from '@expo/vector-icons';
-import { Image } from 'expo-image';
+import { MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
 import React, { memo } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
@@ -111,9 +110,10 @@ export const TaskItem = memo(
                   <Text size="sm" className="me-1 text-typography-white">
                     {checkListItemsLength}
                   </Text>
-                  <Image
-                    source={require('~/assets/waypoints.png')}
-                    style={{ width: 24, height: 24 }}
+                  <MaterialIcons
+                    name="event-repeat"
+                    size={16}
+                    color={theme === 'light' ? '#FFFAEB' : '#051824'}
                   />
                 </>
               ) : (

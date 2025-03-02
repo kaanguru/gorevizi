@@ -1,4 +1,4 @@
-import { FontAwesome6, Ionicons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -10,34 +10,30 @@ import Header from '~/components/Header';
 import { RepeatFrequencySlider } from '~/components/RepeatFrequencySlider';
 import RepeatPeriodSelector from '~/components/RepeatPeriodSelector';
 import { Box } from '~/components/ui/box';
-import { Button, ButtonIcon, ButtonText } from '~/components/ui/button';
-import { Checkbox, CheckboxIndicator, CheckboxIcon, CheckboxLabel } from '~/components/ui/checkbox';
+import { Button, ButtonText } from '~/components/ui/button';
+import { Checkbox, CheckboxIndicator, CheckboxLabel } from '~/components/ui/checkbox';
 import { HStack } from '~/components/ui/hstack';
 import { Spinner } from '~/components/ui/spinner';
 import { Text } from '~/components/ui/text';
 import { VStack } from '~/components/ui/vstack';
 import WeekdaySelector from '~/components/WeekDaySelector';
 import { Tables } from '~/database.types';
+import useChecklistItemMutations from '~/hooks/useCheckListMutations';
 import useChecklistItems from '~/hooks/useCheckListQueries';
 import { useUpdateTask, useDeleteTask, useToggleComplete } from '~/hooks/useTasksMutations';
 import { useTaskById } from '~/hooks/useTasksQueries';
 import { RepeatPeriod, Task, TaskFormData } from '~/types';
-import { supabase } from '~/utils/supabase';
-
-// In component props:
-type EditTaskProps = {
-  initialTask: Tables<'tasks'>;
-  checklistItems: Tables<'checklistitems'>[];
-};
 
 export default function EditTask() {
   const router = useRouter();
   const { id: taskID } = useLocalSearchParams<{ id: string }>();
   const { checkListItems, isCheckListItemsLoading, isCheckListItemsError } =
     useChecklistItems(taskID);
-  const { data: theTask, isLoading, isError, error: taskError } = useTaskById(taskID);
+  const { data: theTask, isLoading, isError } = useTaskById(taskID);
   const updateTaskMutation = useUpdateTask();
   const deleteTaskMutation = useDeleteTask();
+  const { upsertChecklistItem, addChecklistItem, updateChecklistItem, deleteChecklistItem } =
+    useChecklistItemMutations(taskID);
 
   const [formData, setFormData] = useState<TaskFormData>({
     title: '',
@@ -110,6 +106,9 @@ export default function EditTask() {
         Alert.alert('Error', 'Failed to update task');
         console.error(error);
       },
+    });
+    formData.checklistItems.forEach((item) => {
+      // update checklist items of task;
     });
   };
 
