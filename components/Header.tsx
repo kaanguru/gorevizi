@@ -15,12 +15,12 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ headerTitle }) => {
   const { theme } = useTheme();
   return (
-    <HStack id="header" space="4xl" className=" bg-background-light dark:bg-background-dark">
+    <HStack id="header" space="4xl" className=" mt-1 bg-background-light dark:bg-background-dark">
       <Box className="mx-1 mb-3 rounded-full bg-background-dark  dark:bg-background-light">
         <Button size="md" variant="link" onPress={() => router.back()}>
           <FontAwesome6
             name="arrow-left"
-            size={18}
+            size={20}
             style={{ padding: 8 }}
             color={theme === 'light' ? '#FFFAEB' : '#051824'}
           />
@@ -29,8 +29,8 @@ const Header: React.FC<HeaderProps> = ({ headerTitle }) => {
       <Box className="my-auto">
         <Text
           bold
-          size="xl"
-          className="font-heading text-typography-black dark:text-typography-white">
+          size="lg"
+          className="mb-3 font-heading text-typography-black dark:text-typography-white">
           {headerTitle}
         </Text>
       </Box>

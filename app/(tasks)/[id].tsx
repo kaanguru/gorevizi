@@ -96,15 +96,15 @@ export default function TaskDetailPage() {
       <VStack space="sm" className="flex-1 ">
         <Header headerTitle="" />
         <HStack className="-mt-12 me-5 justify-end">
-          <Pressable className="px-4" onPress={() => router.push(`/(tasks)/edit/${taskID}`)}>
+          <Pressable className="px-5" onPress={() => router.push(`/(tasks)/edit/${taskID}`)}>
             <FontAwesome6
               name="pencil"
-              size={18}
+              size={22}
               color={theme === 'dark' ? '#FFFAEB' : '#051824'}
             />
           </Pressable>
-          <Pressable onPress={() => setShowAlertDialog(true)}>
-            <Ionicons name="trash-bin" size={18} color={theme === 'dark' ? '#FFFAEB' : '#051824'} />
+          <Pressable className="me-1" onPress={() => setShowAlertDialog(true)}>
+            <Ionicons name="trash-bin" size={24} color={theme === 'dark' ? '#FF006E' : '#BE004E'} />
           </Pressable>
           <AlertDialog isOpen={showAlertDialog} onClose={handleClose}>
             <AlertDialogBackdrop />
@@ -144,7 +144,7 @@ export default function TaskDetailPage() {
             </AlertDialogContent>
           </AlertDialog>
         </HStack>
-        <Card className="mx-5 bg-background-dark text-typography-white dark:bg-background-light dark:text-typography-black">
+        <Card className="mx-5 mt-4 bg-background-dark text-typography-white dark:bg-background-light dark:text-typography-black">
           <Heading
             size="2xl"
             className="justify-self-center p-4 text-center text-typography-white dark:text-typography-black">
@@ -206,16 +206,24 @@ export default function TaskDetailPage() {
             </VStack>
           )}
         </Card>
-
-        {task.updated_at && (
-          <VStack className="items-end px-4">
+        <HStack className="m-2  justify-between px-1" space="lg">
+          <VStack className="items-start px-2">
             <Text size="xs" bold>
-              update
+              start
             </Text>
-            <Text size="md">{new Date(task.updated_at!).toLocaleDateString()}</Text>
+            <Text size="md">{new Date(task.created_at!).toLocaleDateString()}</Text>
             <Divider />
           </VStack>
-        )}
+          {task.updated_at && (
+            <VStack className="items-end px-2">
+              <Text size="xs" bold>
+                update
+              </Text>
+              <Text size="md">{new Date(task.updated_at!).toLocaleDateString()}</Text>
+              <Divider />
+            </VStack>
+          )}
+        </HStack>
 
         {checklistItems && checklistItems.length > 0 ? (
           <VStack className="m-3 flex-col p-4" space="xl">

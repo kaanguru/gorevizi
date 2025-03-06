@@ -29,10 +29,7 @@ function TaskSuccessPercentage({ task }: Readonly<{ task: Tables<'tasks'> }>) {
       variant="elevated"
       className="rounded-xl bg-background-50 p-6 shadow-lg dark:bg-background-info">
       <Pressable onPress={onPress}>
-        <Text
-          bold
-          size="xl"
-          className="text-typography-dark mb-2  p-2 font-semibold dark:text-white">
+        <Text bold size="lg" className="mb-2 p-2  text-typography-black  dark:text-white">
           {task.title}
         </Text>
         <Center className="my-3">
@@ -40,7 +37,7 @@ function TaskSuccessPercentage({ task }: Readonly<{ task: Tables<'tasks'> }>) {
             <ProgressFilledTrack />
           </Progress>
         </Center>
-        <Text size="xl" className="font-bold text-[#537817] dark:text-success-300">
+        <Text size="lg" className="font-bold text-[#537817] dark:text-success-300">
           {successPercentage.toFixed(2)}%
         </Text>
       </Pressable>

@@ -8,11 +8,14 @@ import { Button, ButtonIcon } from '~/components/ui/button';
 import { Card } from '~/components/ui/card';
 import { Pressable } from '~/components/ui/pressable';
 import { Text } from '~/components/ui/text';
+import { useTheme } from '~/components/ui/ThemeProvider/ThemeProvider';
 import { Tables } from '~/database.types';
 import { useToggleComplete } from '~/hooks/useTasksMutations';
 import useTasksQueries from '~/hooks/useTasksQueries';
 
 export default function CompletedTasks() {
+  const { theme } = useTheme();
+
   const {
     data: tasks,
     error: completedTasksError,
@@ -59,7 +62,11 @@ export default function CompletedTasks() {
               variant="outline"
               action="positive"
               onPress={() => handleMarkIncomplete(item.id)}>
-              <Ionicons name="arrow-undo" size={24} color="black" />
+              <Ionicons
+                name="arrow-undo"
+                size={20}
+                color={theme === 'light' ? '#FFFAEB' : '#051824'}
+              />
             </Button>
           </View>
         </Pressable>

@@ -3,6 +3,9 @@ import { useEffect, useState } from 'react';
 import { View, FlatList, SafeAreaView, Alert, ListRenderItem } from 'react-native';
 
 import Header from '~/components/Header';
+import WellDone from '~/components/lotties/WellDone';
+import { Box } from '~/components/ui/box';
+import { Button, ButtonText } from '~/components/ui/button';
 import { Card } from '~/components/ui/card';
 import { Pressable } from '~/components/ui/pressable';
 import { Text } from '~/components/ui/text';
@@ -22,9 +25,15 @@ function TasksOfYesterday() {
 
   if (!tasksDueYesterday || tasksDueYesterday.length === 0) {
     return (
-      <SafeAreaView>
-        <Text>No tasks to complete from yesterday!</Text>
-      </SafeAreaView>
+      <Box className="flex-1 flex-col items-center justify-center bg-background-light dark:bg-background-dark">
+        <WellDone />
+        <Text className=" my-10 text-center text-typography-black dark:text-typography-white">
+          No tasks to complete from yesterday!
+        </Text>
+        <Button action="primary" variant="solid" size="md" onPress={() => router.push('/')}>
+          <ButtonText>Go to Today's Tasks</ButtonText>
+        </Button>
+      </Box>
     );
   }
   const renderItem: ListRenderItem<Task> = ({ item }) => {
@@ -35,7 +44,7 @@ function TasksOfYesterday() {
           variant="outline"
           className="m-3 bg-background-dark dark:bg-background-light">
           <Text
-            size="lg"
+            size="md"
             bold
             className="text-center text-typography-white dark:text-typography-black">
             {item.title}
@@ -50,9 +59,10 @@ function TasksOfYesterday() {
       <View className="h-full bg-background-light p-4 dark:bg-background-dark">
         <Text
           className="text-center text-typography-black dark:text-typography-white"
-          size="lg"
+          size="md"
           bold>
-          Mark the tasks you did yesterday as complete
+          These are the tasks you have missed to complete from yesterday. Please check your list
+          every evening not to miss any tasks.
         </Text>
         <FlatList
           data={tasksDueYesterday}

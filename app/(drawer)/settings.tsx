@@ -59,7 +59,16 @@ export default function SettingsScreen() {
   };
   return (
     <View className="flex-1 flex-col bg-background-light  p-5 dark:bg-background-dark">
-      <LogoPortrait height={230} width={85} />
+      <Box id='theme-toggle' className=" bg-background-light p-0 dark:bg-background-dark" style={{ position: 'absolute', top: 5, right: 5 }}>
+          <Button onPress={toggleTheme}>
+            {theme === 'light' ? (
+              <FontAwesome6 name="moon" size={20} color="#FFFAEB" />
+            ) : (
+              <FontAwesome6 name="sun" size={20} color="#051824" />
+            )}
+          </Button>
+        </Box>
+      <LogoPortrait height={220} width={85} />
       <View className="mb-5 flex-1 flex-col items-center justify-items-start gap-9 p-12 ">
         <Button
           variant="outline"
@@ -143,15 +152,7 @@ export default function SettingsScreen() {
           <Ionicons name="trash-bin" size={24} color="white" />
         </Button>
 
-        <Box className=" bg-background-light p-0 dark:bg-background-dark">
-          <Button onPress={toggleTheme}>
-            {theme === 'light' ? (
-              <FontAwesome6 name="moon" size={24} color="#FFFAEB" />
-            ) : (
-              <FontAwesome6 name="sun" size={24} color="#051824" />
-            )}
-          </Button>
-        </Box>
+        
       </View>
 
       <AlertDialog isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)}>

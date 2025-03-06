@@ -69,7 +69,7 @@ export default function Stats() {
   return (
     <View className="flex-1 justify-evenly bg-background-light dark:bg-background-dark">
       <Text
-        size="3xl"
+        size="2xl"
         className="text-center font-delaGothicOne text-typography-black dark:text-typography-white">
         Level {level}
       </Text>

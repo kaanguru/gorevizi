@@ -138,6 +138,7 @@ export const TaskItem = memo(
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
                       color: '#fff',
+                      fontSize: 12,
                     },
                   }}>
                   {shortenText(task.notes)}
