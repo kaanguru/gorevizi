@@ -16,7 +16,7 @@ import { Spinner } from '~/components/ui/spinner';
 import { Text } from '~/components/ui/text';
 import useHealthAndHappinessQuery from '~/hooks/useHealthAndHappinessQueries';
 import useTasksQuery from '~/hooks/useTasksQueries';
-import { useUser } from '~/hooks/useUser';
+import useUser from '~/hooks/useUser';
 import calculateLevel, { percentageUntilNextLevel } from '~/utils/calculateLevel';
 
 export default function Stats() {
@@ -81,7 +81,7 @@ export default function Stats() {
       <HStack className="basis-6/6 justify-evenly">
         <Card className="m-1 w-2/6 rounded-lg bg-[#1982C4] p-2">
           <Healthy height={100} width={120} />
-          <Heading className="justify-between text-center text-typography-white dark:text-typography-black">
+          <Heading size='md' className="justify-between text-center text-typography-white dark:text-typography-black">
             Health
           </Heading>
           <Divider
@@ -94,7 +94,7 @@ export default function Stats() {
         </Card>
         <Card className="m-1 w-2/6 rounded-lg bg-[#4F10A8] p-2">
           <Happy height={100} width={120} />
-          <Heading className="justify-between text-center text-typography-white dark:text-typography-black">
+          <Heading size='md' className="justify-between text-center text-typography-white dark:text-typography-black">
             Happiness
           </Heading>
           <Divider

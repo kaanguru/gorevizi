@@ -25,7 +25,7 @@ export function useSessionContext() {
   return context;
 }
 
-export function SessionProvider({ children }: Readonly<{ children: ReactNode }>) {
+export default function SessionProvider({ children }: Readonly<{ children: ReactNode }>) {
   const { data, isLoading: queryIsLoading, refetch } = useSession();
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();

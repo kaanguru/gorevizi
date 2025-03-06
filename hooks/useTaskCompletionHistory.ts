@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { useUser } from './useUser';
+import useUser  from './useUser';
 
 import { supabase } from '~/utils/supabase';
 import getTaskCompletionHistory from '~/utils/tasks/getTaskCompletionHistory';

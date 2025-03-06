@@ -7,8 +7,8 @@ import { useEffect } from 'react';
 import '@/global.css';
 
 import GluestackModeWrapper from '~/components/GluestackModeWrapper';
-import { ThemeProvider } from '~/components/ui/ThemeProvider/ThemeProvider';
-import { SessionProvider } from '~/context/AuthenticationContext';
+import ThemeProvider from '~/components/ui/ThemeProvider/ThemeProvider';
+import SessionProvider from '~/context/AuthenticationContext';
 
 const navigationIntegration = Sentry.reactNavigationIntegration({
   enableTimeToInitialDisplay: !isRunningInExpoGo(),

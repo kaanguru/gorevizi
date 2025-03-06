@@ -30,7 +30,7 @@ import { Text } from '~/components/ui/text';
 import { useTheme } from '~/components/ui/ThemeProvider/ThemeProvider';
 import { useSoundContext } from '~/context/SoundContext';
 import { useResetCompletionHistory } from '~/hooks/useTaskCompletionHistory';
-import { useUser } from '~/hooks/useUser';
+import  useUser from '~/hooks/useUser';
 
 export default function SettingsScreen() {
   const { theme, toggleTheme } = useTheme();
@@ -58,7 +58,7 @@ export default function SettingsScreen() {
     //TODO: send the new email to your backend for verification and update
   };
   return (
-    <View className="flex-1 bg-background-light  p-5 dark:bg-background-dark">
+    <View className="flex-1 flex-col bg-background-light  p-5 dark:bg-background-dark">
       <LogoPortrait height={230} width={85} />
       <View className="mb-5 flex-1 flex-col items-center justify-items-start gap-9 p-12 ">
         <Button

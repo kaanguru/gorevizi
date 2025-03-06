@@ -18,7 +18,7 @@ import WeekdaySelector from '~/components/WeekDaySelector';
 import { useUpdateHealthAndHappiness } from '~/hooks/useHealthAndHappinessMutations';
 import useHealthAndHappinessQuery from '~/hooks/useHealthAndHappinessQueries';
 import { useCreateTask } from '~/hooks/useTasksMutations';
-import { useUser } from '~/hooks/useUser';
+import useUser from '~/hooks/useUser';
 import { RepeatPeriod, TaskFormData } from '~/types';
 import genRandomInt from '~/utils/genRandomInt';
 

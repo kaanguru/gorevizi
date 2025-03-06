@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 
 import { useUpdateHealthAndHappiness } from './useHealthAndHappinessMutations';
 import useHealthAndHappinessQuery from './useHealthAndHappinessQueries';
-import { useUser } from './useUser';
+import useUser from './useUser';
 
 import useTasksQuery from '~/hooks/useTasksQueries';
 import genRandomInt from '~/utils/genRandomInt';

@@ -25,7 +25,7 @@ export default function Login() {
   };
 
   return (
-    <View className="flex-1 bg-background-light px-5 pt-12 dark:bg-background-dark">
+    <View className="bg-background-light px-5 pt-12 dark:bg-background-dark">
       <LogoPortrait height={300} width={110} />
 
       <Text className="mb-8 text-2xl font-bold text-typography-black dark:text-typography-white">
