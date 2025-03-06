@@ -151,7 +151,7 @@ export const TaskItem = memo(
               <Box className="my-auto h-full w-9 items-center justify-center">
                 <FontAwesome5
                   name="grip-vertical"
-                  size={24}
+                  size={18}
                   color={theme === 'light' ? '#FFFAEB' : '#051824'}
                 />
               </Box>
