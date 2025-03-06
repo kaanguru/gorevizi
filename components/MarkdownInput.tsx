@@ -55,7 +55,7 @@ export default function MarkdownInput({ notes, setNotes }: Readonly<MarkdownInpu
             placeholder="Notes with markdown support"
             value={notes}
             onChangeText={setNotes}
-            className="bg-background-gray min-h-[80px] py-2 !text-black"
+            className="bg-background-gray min-h-[80px] py-2 !text-black *:text-black dark:bg-background-light"
           />
         </Textarea>
       )}

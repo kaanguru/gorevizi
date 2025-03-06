@@ -67,7 +67,9 @@ export default function SessionProvider({ children }: Readonly<{ children: React
   const signOut = async () => {
     await authSignOut();
     await refetch();
-    router.replace('/login');
+    if (router.canGoBack()) {
+      router.replace('/login');
+    }
   };
 
   const combinedLoading = isLoading || authLoading;

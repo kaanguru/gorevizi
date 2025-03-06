@@ -65,8 +65,12 @@ export default function GluestackModeWrapper() {
       SplashScreen.hideAsync();
     }
   }, [fontError]);
+
   useEffect(() => {
     if (!isSupabaseInitialized || !fontsLoaded || fontError || sessionLoading || !initialized) {
+      if (fontError) {
+        SplashScreen.hideAsync();
+      }
       return;
     }
 
@@ -89,7 +93,7 @@ export default function GluestackModeWrapper() {
       } catch (error) {
         console.error('Failed to check first visit or session:', error);
       } finally {
-        await SplashScreen.hideAsync();
+        SplashScreen.hideAsync();
       }
     };
 
@@ -103,18 +107,6 @@ export default function GluestackModeWrapper() {
     initialized,
     hasTasksFromYesterday,
   ]);
-  useEffect(() => {
-    if (isSupabaseInitialized && fontsLoaded && !sessionLoading && initialized) {
-      SplashScreen.hideAsync();
-    } else {
-      const timeout = setTimeout(() => {
-        console.warn('Timeout reached, forcing splash screen hide');
-
-        SplashScreen.hideAsync(); // Fallback timeout
-      }, 5000);
-      return () => clearTimeout(timeout);
-    }
-  }, [isSupabaseInitialized, fontsLoaded, sessionLoading, initialized]);
 
   if (!isSupabaseInitialized || (!fontsLoaded && !fontError) || sessionLoading || !initialized) {
     return (

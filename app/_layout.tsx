@@ -2,7 +2,8 @@ import * as Sentry from '@sentry/react-native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { isRunningInExpoGo } from 'expo';
 import { useNavigationContainerRef } from 'expo-router';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { View } from 'react-native';
 
 import '@/global.css';
 
@@ -24,20 +25,26 @@ Sentry.init({
 const queryClient = new QueryClient();
 
 export default function RootLayout() {
-  const ref = useNavigationContainerRef();
+  const refNav = useNavigationContainerRef();
+  const [isNavigationReady, setIsNavigationReady] = useState(false);
 
+  // Wait for navigation container to be ready
   useEffect(() => {
-    if (ref?.current) {
-      navigationIntegration.registerNavigationContainer(ref);
+    if (refNav?.current) {
+      navigationIntegration.registerNavigationContainer(refNav);
+      setIsNavigationReady(true);
     }
-  }, [ref]);
-
+  }, [refNav]);
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
-        <SessionProvider>
-          <GluestackModeWrapper />
-        </SessionProvider>
+        {isNavigationReady ? (
+          <SessionProvider>
+            <GluestackModeWrapper />
+          </SessionProvider>
+        ) : (
+          <View style={{ flex: 1, backgroundColor: '#FFFAEB' }} />
+        )}
       </ThemeProvider>
     </QueryClientProvider>
   );

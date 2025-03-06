@@ -3,10 +3,12 @@ import { useEffect, useState } from 'react';
 import { View, FlatList, SafeAreaView, Alert, ListRenderItem } from 'react-native';
 
 import Header from '~/components/Header';
+import TuneUp from '~/components/lotties/TuneUp';
 import WellDone from '~/components/lotties/WellDone';
 import { Box } from '~/components/ui/box';
 import { Button, ButtonText } from '~/components/ui/button';
 import { Card } from '~/components/ui/card';
+import { Divider } from '~/components/ui/divider';
 import { Pressable } from '~/components/ui/pressable';
 import { Text } from '~/components/ui/text';
 import { Tables } from '~/database.types';
@@ -25,7 +27,7 @@ function TasksOfYesterday() {
 
   if (!tasksDueYesterday || tasksDueYesterday.length === 0) {
     return (
-      <Box className="flex-1 flex-col items-center justify-center bg-background-light dark:bg-background-dark">
+      <Box className="flex-1 flex-col items-center justify-center bg-background-light p-4 dark:bg-background-dark">
         <WellDone />
         <Text className=" my-10 text-center text-typography-black dark:text-typography-white">
           No tasks to complete from yesterday!
@@ -36,17 +38,14 @@ function TasksOfYesterday() {
       </Box>
     );
   }
-  const renderItem: ListRenderItem<Task> = ({ item }) => {
+  const taskOfYesterday: ListRenderItem<Task> = ({ item }) => {
     return (
       <Pressable onPress={() => router.push(`/(tasks)/${item.id}`)}>
-        <Card
-          size="lg"
-          variant="outline"
-          className="m-3 bg-background-dark dark:bg-background-light">
+        <Card size="md" variant="outline" className="m-6 rounded">
           <Text
-            size="md"
+            size="lg"
             bold
-            className="text-center text-typography-white dark:text-typography-black">
+            className="text-center text-typography-black dark:text-typography-white">
             {item.title}
           </Text>
         </Card>
@@ -55,18 +54,27 @@ function TasksOfYesterday() {
   };
   return (
     <SafeAreaView>
-      <Header headerTitle="Yesterday's Tasks" />
+      <Header headerTitle=" 🎶    🎵 Tasklist Tune-Up! 🎹" />
       <View className="h-full bg-background-light p-4 dark:bg-background-dark">
-        <Text
-          className="text-center text-typography-black dark:text-typography-white"
-          size="md"
-          bold>
-          These are the tasks you have missed to complete from yesterday. Please check your list
-          every evening not to miss any tasks.
+        <Text size="md" className="text-center text-typography-black dark:text-typography-white">
+          Deadlines sound like heavy metal 🎸 and your brain’s stuck on elevator music 🎵
         </Text>
+        <Text
+          className="my-10 text-center text-typography-black dark:text-typography-white"
+          size="lg"
+          bold>
+          Your to-do list hit a sour note yesterday—no worries, we’ll remix it! 🎶
+        </Text>
+        <Text
+          size="sm"
+          className="m-5 text-center text-typography-black dark:text-typography-white">
+          🎧 Check your tasks before you turn into a human metronome
+        </Text>
+        <TuneUp />
+        <Divider className="my-4" />
         <FlatList
           data={tasksDueYesterday}
-          renderItem={renderItem}
+          renderItem={taskOfYesterday}
           keyExtractor={(item) => item.id.toString()}
         />
       </View>

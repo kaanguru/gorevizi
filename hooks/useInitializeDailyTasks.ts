@@ -47,12 +47,11 @@ function useInitializeDailyTasks() {
       } catch (error) {
         console.error('Error initializing tasks:', error);
       } finally {
-        await new Promise((resolve) => setTimeout(resolve, 100)); // Optional: Simulate async init
-
+        await new Promise((resolve) => setTimeout(resolve, 100)); // Simulate some asynchronous task
         setInitialized(true);
-        /*  if (hasTasksFromYesterday) {
+        if (hasTasksFromYesterday) {
           router.push('/(tasks)/tasks-of-yesterday' as Href);
-        } */
+        }
       }
     };
 
