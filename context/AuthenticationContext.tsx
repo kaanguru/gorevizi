@@ -2,6 +2,7 @@
 import { Session } from '@supabase/supabase-js';
 import { useRouter } from 'expo-router';
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import { ToastAndroid } from 'react-native';
 
 import { useSession } from '~/hooks/useSession';
 import { useAuth } from '~/utils/auth/auth';
@@ -18,6 +19,7 @@ const SessionContext = createContext<SessionContextType | null>(null);
 
 export function useSessionContext() {
   const context = useContext(SessionContext);
+
   if (!context) {
     // eslint-disable-next-line functional/no-throw-statements
     throw new Error('useSessionContext must be used within a SessionProvider');
@@ -29,7 +31,9 @@ export default function SessionProvider({ children }: Readonly<{ children: React
   const { data, isLoading: queryIsLoading, refetch } = useSession();
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
-
+  const showToast = (mes: string) => {
+    ToastAndroid.show(mes, ToastAndroid.LONG);
+  };
   const {
     signInWithEmail,
     signUpWithEmail,
@@ -46,7 +50,7 @@ export default function SessionProvider({ children }: Readonly<{ children: React
   const signIn = async (email: string, password: string) => {
     const result = await signInWithEmail(email, password);
     if (result && result.error) {
-      //TODO: handle error in UI
+      showToast('Sign in error: ' + result.error.message);
       console.error('Sign in error:', result.error.message);
       return;
     }
@@ -56,8 +60,7 @@ export default function SessionProvider({ children }: Readonly<{ children: React
   const signUp = async (email: string, password: string) => {
     const result = await signUpWithEmail(email, password);
     if (result && result.error) {
-      //TODO: handle error in UI
-
+      showToast('Sign up error: ' + result.error.message);
       console.error('Sign up error:', result.error.message);
       return;
     }

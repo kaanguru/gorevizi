@@ -46,6 +46,7 @@ export default function GluestackModeWrapper() {
   const router = useRouter();
   const { session, isLoading: sessionLoading } = useSessionContext();
   const { initialized, hasTasksFromYesterday } = useInitializeDailyTasks();
+  const [isAppReady, setIsAppReady] = useState(false);
 
   useEffect(() => {
     const initializeSupabase = async () => {
@@ -58,19 +59,15 @@ export default function GluestackModeWrapper() {
     };
     initializeSupabase();
   }, []);
+
   useEffect(() => {
     if (fontError) {
       console.error('Font loading error:', fontError);
-      // Proceed without custom fonts
-      SplashScreen.hideAsync();
     }
   }, [fontError]);
 
   useEffect(() => {
     if (!isSupabaseInitialized || !fontsLoaded || fontError || sessionLoading || !initialized) {
-      if (fontError) {
-        SplashScreen.hideAsync();
-      }
       return;
     }
 
@@ -93,7 +90,7 @@ export default function GluestackModeWrapper() {
       } catch (error) {
         console.error('Failed to check first visit or session:', error);
       } finally {
-        SplashScreen.hideAsync();
+        setIsAppReady(true);
       }
     };
 
@@ -107,6 +104,12 @@ export default function GluestackModeWrapper() {
     initialized,
     hasTasksFromYesterday,
   ]);
+
+  useEffect(() => {
+    if (isAppReady) {
+      SplashScreen.hideAsync();
+    }
+  }, [isAppReady]);
 
   if (!isSupabaseInitialized || (!fontsLoaded && !fontError) || sessionLoading || !initialized) {
     return (

@@ -21,6 +21,18 @@
           "project": "gorevizi",
           "url": "https://sentry.io/"
         }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#fffaec",
+          "image": "./assets/splash-l.png",
+          "dark": {
+            "image": "./assets/splash-d.png",
+            "backgroundColor": "#00173D"
+          },
+          "imageWidth": 393
+        }
       ]
     ],
     "experiments": {
@@ -28,17 +40,10 @@
       "tsconfigPaths": true
     },
     "orientation": "portrait",
-    "icon": "./assets/icons/icon.png",
     "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#fffaec"
-    },
+
     "assetBundlePatterns": ["**/*"],
-    "ios": {
-      "supportsTablet": true
-    },
+
     "android": {
       "permissions": ["android.permission.ACCESS_NETWORK_STATE"],
       "adaptiveIcon": {

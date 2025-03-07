@@ -1,3 +1,4 @@
+// hooks/useCheckListMutations.ts
 /* eslint-disable functional/prefer-immutable-types */
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { router } from 'expo-router';
@@ -32,6 +33,7 @@ export default function useChecklistItemMutations(taskID: number | string) {
       Alert.alert('Error', error.message);
     },
   });
+
   const upsertChecklistItemMutation = useMutation({
     async mutationFn(content: string) {
       const { data, error } = await supabase
@@ -58,7 +60,7 @@ export default function useChecklistItemMutations(taskID: number | string) {
   const updateChecklistItemMutation = useMutation({
     mutationFn: async (formData: Readonly<TaskFormData>) => {
       if (!taskID) throw new Error('No task ID');
-      //TODO: TASK kaldırılmalı sadece checklist items güncellenmeli
+
       const updatedTask = await updateTask(+taskID, {
         title: formData.title.trim(),
         notes: formData.notes.trim() || null,
@@ -78,14 +80,16 @@ export default function useChecklistItemMutations(taskID: number | string) {
       if (deleteError) throw new Error('Failed to clear existing checklist items');
 
       if (formData.checklistItems.length > 0) {
-        const { error: insertError } = await supabase.from('checklistitems').insert(
-          formData.checklistItems.map((item, index) => ({
-            task_id: +taskID,
-            content: item.content.trim(),
-            position: index,
-            is_complete: item.isComplete || false,
-          })),
-        );
+        const checklistItemsToInsert = formData.checklistItems.map((item, index) => ({
+          task_id: +taskID,
+          content: item.content.trim(),
+          position: index,
+          is_complete: item.isComplete || false,
+        }));
+
+        const { error: insertError } = await supabase
+          .from('checklistitems')
+          .insert(checklistItemsToInsert);
 
         if (insertError) throw new Error('Failed to update checklist items');
       }
@@ -119,6 +123,7 @@ export default function useChecklistItemMutations(taskID: number | string) {
       Alert.alert('Error', error.message);
     },
   });
+
   const updateChecklistItemCompletionMutation = useMutation({
     async mutationFn({ id, is_complete }: { id: number; is_complete: boolean }) {
       const { data, error } = await supabase

@@ -6,8 +6,7 @@ import { Database } from '~/database.types';
 const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL || '';
 const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || '';
 if (!supabaseUrl || !supabaseAnonKey) {
-  // eslint-disable-next-line functional/no-throw-statements
-  throw new Error('Supabase credentials are missing. Please check your environment variables.');
+  console.error('Supabase credentials are missing. Please check your environment variables.');
 }
 export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
   auth: {

@@ -55,7 +55,7 @@ export default function SettingsScreen() {
   const handleSubmit = () => {
     console.log('New Email:', newEmail);
     setShowModal(false);
-    //TODO: send the new email to your backend for verification and update
+    // TODO  send the new email to your backend for verification and update
   };
   return (
     <View className="flex-1 flex-col bg-background-light  p-5 dark:bg-background-dark">
