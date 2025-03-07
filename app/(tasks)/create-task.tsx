@@ -71,10 +71,10 @@ export default function CreateTask() {
       checklistItems: [
         ...prev.checklistItems,
         {
+          id: Date.now().toString(),
           content: '',
           isComplete: false,
           position: prev.checklistItems.length,
-          id: Date.now().toString(),
         },
       ],
     }));

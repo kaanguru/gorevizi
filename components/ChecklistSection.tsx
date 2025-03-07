@@ -1,5 +1,6 @@
 import { FontAwesome6 } from '@expo/vector-icons';
 import { useState, useEffect, useCallback } from 'react';
+import { ScrollView } from 'react-native';
 
 import DraggableItem from '~/components/DraggableItem';
 import { Button, ButtonText } from '~/components/ui/button';
@@ -62,17 +63,21 @@ const ChecklistSection = ({
   );
 
   return (
-    <VStack space="sm" className="my-0">
-      <HStack space="md" className="my-0 items-center px-2">
-        <Button size="md" variant="outline" action="secondary" onPress={onAdd}>
-          <ButtonText size="lg" className="text-typography-black dark:text-typography-white">
-            Add Routines
-          </ButtonText>
-          <FontAwesome6 name="add" size={16} color={theme === 'dark' ? '#FFFAEB' : '#051824'} />
-        </Button>
-      </HStack>
+    <VStack
+      space="sm"
+      className="mb-20 pb-20"
+      style={{
+        height: ITEM_HEIGHT * items.length * 1.66,
+      }}>
+      <Button size="md" variant="outline" action="secondary" onPress={onAdd}>
+        <ButtonText size="lg" className="text-typography-black dark:text-typography-white">
+          Add Routines
+        </ButtonText>
+        <FontAwesome6 name="add" size={16} color={theme === 'dark' ? '#FFFAEB' : '#051824'} />
+      </Button>
+
       <VStack
-        className="relative mb-6"
+        className="pb-9"
         style={{
           height: ITEM_HEIGHT * items.length,
         }}>

@@ -108,7 +108,8 @@ export default function EditTask() {
       },
     });
     formData.checklistItems.forEach((item) => {
-      // update checklist items of task;
+      // TODO update checklist items of task;
+      upsertChecklistItem(item.content);
     });
   };
 
@@ -157,12 +158,10 @@ export default function EditTask() {
   }
 
   return (
-    <VStack
-      space="xl"
-      className="flex-1  justify-evenly bg-background-light dark:bg-background-dark">
+    <VStack space="md" className="flex-1  bg-background-light dark:bg-background-dark">
       <Header headerTitle={formData.title} />
-      <Box className="flex-1">
-        <ScrollView className="me-6 flex-1 ps-4">
+      <ScrollView className="my-4 pb-6">
+        <Box className="flex-1  p-4">
           <VStack space="md">
             <FormInput
               title={formData.title}
@@ -278,28 +277,26 @@ export default function EditTask() {
               />
             )}
           </VStack>
-        </ScrollView>
-      </Box>
-      <Box className="px-4 py-2">
-        <HStack space="md" className="justify-between">
-          <Button
-            size="md"
-            variant="solid"
-            action="negative"
-            onPress={handleDelete}
-            className="flex-1">
-            <ButtonText className="text-destructive-500">Delete</ButtonText>
-            <Ionicons name="trash-bin" size={24} color="white" />
-          </Button>
-          <Button
-            onPress={handleSave}
-            testID="save-task-button"
-            className="flex-1"
-            disabled={updateTaskMutation.isPending}>
-            <ButtonText>{updateTaskMutation.isPending ? 'Saving...' : 'Save'}</ButtonText>
-          </Button>
-        </HStack>
-      </Box>
+        </Box>
+      </ScrollView>
+      <HStack space="md" className="mx-5 justify-between">
+        <Button
+          size="md"
+          variant="solid"
+          action="negative"
+          onPress={handleDelete}
+          className="flex-1">
+          <ButtonText className="text-destructive-500">Delete</ButtonText>
+          <Ionicons name="trash-bin" size={24} color="white" />
+        </Button>
+        <Button
+          onPress={handleSave}
+          testID="save-task-button"
+          className="flex-1"
+          disabled={updateTaskMutation.isPending}>
+          <ButtonText>{updateTaskMutation.isPending ? 'Saving...' : 'Save'}</ButtonText>
+        </Button>
+      </HStack>
     </VStack>
   );
 }

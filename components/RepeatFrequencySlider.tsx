@@ -13,13 +13,13 @@ export const RepeatFrequencySlider = ({
   onChange,
 }: Readonly<{
   period: RepeatPeriod;
-  frequency: number;
+  frequency: number | null;
   onChange: (value: number) => void;
 }>) => (
   <Box className="mt-4">
     <HStack space="xl">
       <Text>Repeat Every</Text>
-      <Text className="my-auto">{calculateRepeatText(period, frequency)}</Text>
+      <Text className="my-auto">{calculateRepeatText(period, frequency as number)}</Text>
     </HStack>
     <HStack space="xl">
       <Center className="m-auto h-1/6 w-4/6">

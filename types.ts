@@ -9,7 +9,7 @@ interface TaskFormData {
   title: string;
   notes: string;
   repeatPeriod: RepeatPeriod | '';
-  repeatFrequency: number;
+  repeatFrequency: number | null;
   repeatOnWk: DayOfWeek[];
   customStartDate: Date | null;
   isCustomStartDateEnabled: boolean;
