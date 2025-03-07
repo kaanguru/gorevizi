@@ -28,3 +28,4 @@ coverage/**/*
 
 # components/ui/*
 .env.local
+*.7z

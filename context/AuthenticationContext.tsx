@@ -13,6 +13,7 @@ type SessionContextType = {
   signUp: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
   isLoading: boolean;
+  authError: string | null;
 };
 
 const SessionContext = createContext<SessionContextType | null>(null);
@@ -39,6 +40,7 @@ export default function SessionProvider({ children }: Readonly<{ children: React
     signUpWithEmail,
     signOut: authSignOut,
     loading: authLoading,
+    error: authError,
   } = useAuth();
 
   useEffect(() => {
@@ -62,6 +64,7 @@ export default function SessionProvider({ children }: Readonly<{ children: React
     if (result && result.error) {
       showToast('Sign up error: ' + result.error.message);
       console.error('Sign up error:', result.error.message);
+
       return;
     }
     await refetch();
@@ -85,6 +88,7 @@ export default function SessionProvider({ children }: Readonly<{ children: React
         signUp,
         signOut,
         isLoading: combinedLoading,
+        authError,
       }}>
       {children}
     </SessionContext.Provider>

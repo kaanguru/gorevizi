@@ -1,3 +1,4 @@
+// components/GluestackModeWrapper.tsx
 import { DelaGothicOne_400Regular, useFonts } from '@expo-google-fonts/dela-gothic-one';
 import { Inter_900Black } from '@expo-google-fonts/inter';
 import { Ubuntu_400Regular, Ubuntu_500Medium, Ubuntu_700Bold } from '@expo-google-fonts/ubuntu';
@@ -107,7 +108,9 @@ export default function GluestackModeWrapper() {
 
   useEffect(() => {
     if (isAppReady) {
-      SplashScreen.hideAsync();
+      setTimeout(() => {
+        SplashScreen.hideAsync();
+      }, 300);
     }
   }, [isAppReady]);
 

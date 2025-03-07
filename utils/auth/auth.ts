@@ -14,6 +14,7 @@ AppState.addEventListener('change', (state) => {
 
 export const useAuth = () => {
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const signInWithEmail = async (
     email: string,
@@ -24,6 +25,7 @@ export const useAuth = () => {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
 
       if (error) {
+        setError(error.message);
         return { error: { message: error.message || 'Unknown error when signing in' } };
       }
       return null;
@@ -80,5 +82,6 @@ export const useAuth = () => {
     signUpWithEmail,
     signOut,
     loading,
+    error,
   };
 };

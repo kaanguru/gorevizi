@@ -43,7 +43,15 @@
     "userInterfaceStyle": "light",
 
     "assetBundlePatterns": ["**/*"],
-
+    "splash": {
+      "backgroundColor": "#fffaec",
+      "image": "./assets/splash-l.png",
+      "dark": {
+        "image": "./assets/splash-d.png",
+        "backgroundColor": "#00173D"
+      },
+      "imageWidth": 393
+    },
     "android": {
       "permissions": ["android.permission.ACCESS_NETWORK_STATE"],
       "adaptiveIcon": {
