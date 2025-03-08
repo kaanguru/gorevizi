@@ -1,7 +1,8 @@
+// app/(tasks)/edit/[id].tsx
 import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Alert, ScrollView } from 'react-native';
 
 import ChecklistSection from '~/components/ChecklistSection';
@@ -17,14 +18,14 @@ import { Spinner } from '~/components/ui/spinner';
 import { Text } from '~/components/ui/text';
 import { VStack } from '~/components/ui/vstack';
 import WeekdaySelector from '~/components/WeekDaySelector';
-import { Tables } from '~/database.types';
 import useChecklistItemMutations from '~/hooks/useCheckListMutations';
 import useChecklistItems from '~/hooks/useCheckListQueries';
-import { useUpdateTask, useDeleteTask, useToggleComplete } from '~/hooks/useTasksMutations';
+import { useUpdateTask, useDeleteTask } from '~/hooks/useTasksMutations';
 import { useTaskById } from '~/hooks/useTasksQueries';
-import { RepeatPeriod, Task, TaskFormData } from '~/types';
+import { RepeatPeriod, TaskFormData } from '~/types';
+import createTaskUpdate from '~/utils/createTaskUpdate';
 
-export default function EditTask() {
+const EditTask = () => {
   const router = useRouter();
   const { id: taskID } = useLocalSearchParams<{ id: string }>();
   const { checkListItems, isCheckListItemsLoading, isCheckListItemsError } =
@@ -32,8 +33,7 @@ export default function EditTask() {
   const { data: theTask, isLoading, isError } = useTaskById(taskID);
   const updateTaskMutation = useUpdateTask();
   const deleteTaskMutation = useDeleteTask();
-  const { upsertChecklistItem, addChecklistItem, updateChecklistItem, deleteChecklistItem } =
-    useChecklistItemMutations(taskID);
+  const { updateChecklistItem } = useChecklistItemMutations(taskID);
 
   const [formData, setFormData] = useState<TaskFormData>({
     title: '',
@@ -48,10 +48,18 @@ export default function EditTask() {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [initialLoad, setInitialLoad] = useState(true);
 
+  // Memoize the loading state to prevent unnecessary re-renders
+  const loading = useMemo(
+    () => initialLoad || isLoading || isCheckListItemsLoading,
+    [initialLoad, isLoading, isCheckListItemsLoading],
+  );
+
   useEffect(() => {
     const loadTaskData = async () => {
       if (theTask) {
-        setFormData({
+        // Use functional updates for state
+        setFormData((prevFormData) => ({
+          ...prevFormData,
           title: theTask.title || '',
           notes: theTask.notes || '',
           repeatPeriod: theTask.repeat_period || '',
@@ -66,7 +74,7 @@ export default function EditTask() {
               isComplete: item.is_complete,
               position: item.position ?? 0,
             })) || [],
-        });
+        }));
         setInitialLoad(false);
       }
     };
@@ -79,38 +87,19 @@ export default function EditTask() {
       Alert.alert('Error', 'Task data is not available');
       return;
     }
-    // Convert form data to Task type
-    const taskToUpdate: Task = {
-      // You'll need to preserve existing task ID and other required fields
-      id: +taskID, // Get from your existing task data
-      user_id: theTask.user_id,
-      is_complete: theTask.is_complete,
-      position: theTask.position,
-      title: formData.title,
-      notes: formData.notes,
-      updated_at: new Date().toISOString(),
-      repeat_period: formData.repeatPeriod || null,
-      repeat_frequency: formData.repeatPeriod ? formData.repeatFrequency : null,
-      repeat_on_wk: formData.repeatPeriod
-        ? (formData.repeatOnWk as Tables<'tasks'>['repeat_on_wk'])
-        : null,
-      created_at: formData.customStartDate?.toISOString() || theTask.created_at,
-    };
+
+    const taskToUpdate = createTaskUpdate(formData, theTask, taskID);
 
     updateTaskMutation.mutate(taskToUpdate, {
       onSuccess: () => {
         router.back();
       },
       onError: (error) => {
-        // Handle error
         Alert.alert('Error', 'Failed to update task');
         console.error(error);
       },
     });
-    formData.checklistItems.forEach((item) => {
-      // TODO update checklist items of task;
-      upsertChecklistItem(item.content);
-    });
+    updateChecklistItem(formData);
   };
 
   const handleDelete = async () => {
@@ -149,7 +138,7 @@ export default function EditTask() {
     }));
   };
 
-  if (initialLoad || isLoading || isCheckListItemsLoading) {
+  if (loading) {
     return (
       <Box className="flex-1 items-center justify-center">
         <Spinner size="large" />
@@ -299,4 +288,6 @@ export default function EditTask() {
       </HStack>
     </VStack>
   );
-}
+};
+
+export default EditTask;

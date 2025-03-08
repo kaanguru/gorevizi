@@ -61,17 +61,6 @@ export default function useChecklistItemMutations(taskID: number | string) {
     mutationFn: async (formData: Readonly<TaskFormData>) => {
       if (!taskID) throw new Error('No task ID');
 
-      const updatedTask = await updateTask(+taskID, {
-        title: formData.title.trim(),
-        notes: formData.notes.trim() || null,
-        created_at: (formData.customStartDate || new Date()).toISOString(),
-        repeat_on_wk: formData.repeatOnWk.length > 0 ? formData.repeatOnWk : null,
-        repeat_frequency: formData.repeatFrequency || null,
-        repeat_period: formData.repeatPeriod || null,
-      });
-
-      if (!updatedTask) throw new Error('Failed to update task');
-
       const { error: deleteError } = await supabase
         .from('checklistitems')
         .delete()
@@ -94,7 +83,7 @@ export default function useChecklistItemMutations(taskID: number | string) {
         if (insertError) throw new Error('Failed to update checklist items');
       }
 
-      return updatedTask;
+      return;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tasks'] });
