@@ -11,6 +11,7 @@ import { Button } from '~/components/ui/button';
 import { HStack } from '~/components/ui/hstack';
 import { useTheme } from '~/components/ui/ThemeProvider/ThemeProvider';
 import { TaskFormData } from '~/types';
+import { Pressable } from './ui/pressable';
 
 const ITEM_HEIGHT = 42;
 
@@ -86,13 +87,15 @@ const DraggableItem = memo(
                   autoFocus
                 />
               </Input>
-              <Button size="sm" variant="link" onPress={() => onRemove(index)}>
+              <Pressable
+                className="rounded-full bg-background-light p-1 dark:bg-background-dark"
+                onPress={() => onRemove(index)}>
                 <Ionicons
                   name="trash-bin"
                   size={24}
                   color={theme === 'dark' ? '#FFFAEB' : '#051824'}
                 />
-              </Button>
+              </Pressable>
             </HStack>
           </Box>
         </Animated.View>

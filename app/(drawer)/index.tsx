@@ -19,7 +19,7 @@ import useTaskCompleteSound from '~/hooks/useTaskCompleteSound';
 import { useToggleComplete } from '~/hooks/useTasksMutations';
 import useTasksQueries from '~/hooks/useTasksQueries';
 import useUpdateTaskPositions from '~/hooks/useUpdateTaskPositions';
-import useUser  from '~/hooks/useUser';
+import useUser from '~/hooks/useUser';
 import { Task } from '~/types';
 import genRandomInt from '~/utils/genRandomInt';
 import isTaskDueToday from '~/utils/tasks/isTaskDueToday';
@@ -82,7 +82,7 @@ export default function Index() {
             }
             setTimeout(() => {
               setShowConfetti(false);
-            }, 2000);
+            }, 600);
           },
         },
       );

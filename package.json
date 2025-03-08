@@ -30,9 +30,7 @@
   },
   "jest": {
     "preset": "jest-expo",
-    "setupFiles": [
-      "./jest.setup.ts"
-    ],
+    "setupFiles": ["./jest.setup.ts"],
     "transformIgnorePatterns": [
       "node_modules/(?!(?:.pnpm/)?((jest-)?react-native|@react-native(-community)?|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@sentry/react-native|native-base|react-native-svg))"
     ]
@@ -130,8 +128,6 @@
   },
   "packageManager": "pnpm@10.6.1+sha512.40ee09af407fa9fbb5fbfb8e1cb40fbb74c0af0c3e10e9224d7b53c7658528615b2c92450e74cfad91e3a2dcafe3ce4050d80bda71d757756d2ce2b66213e9a3",
   "pnpm": {
-    "onlyBuiltDependencies": [
-      "@sentry/cli"
-    ]
+    "onlyBuiltDependencies": ["@sentry/cli"]
   }
 }

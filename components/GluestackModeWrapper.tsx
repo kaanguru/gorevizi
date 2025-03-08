@@ -110,7 +110,7 @@ export default function GluestackModeWrapper() {
     if (isAppReady) {
       setTimeout(() => {
         SplashScreen.hideAsync();
-      }, 300);
+      }, 200);
     }
   }, [isAppReady]);
 
