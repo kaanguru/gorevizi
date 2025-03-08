@@ -1,12 +1,10 @@
 // hooks/useCheckListMutations.ts
 /* eslint-disable functional/prefer-immutable-types */
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { router } from 'expo-router';
 import { Alert } from 'react-native';
 
 import { TaskFormData } from '~/types';
 import { supabase } from '~/utils/supabase';
-import updateTask from '~/utils/tasks/updateTask';
 
 export default function useChecklistItemMutations(taskID: number | string) {
   const queryClient = useQueryClient();
@@ -85,9 +83,11 @@ export default function useChecklistItemMutations(taskID: number | string) {
 
       return;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['tasks'] });
-      router.back();
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ['checklistItems', taskID], // Keep this
+      });
+      await queryClient.invalidateQueries({ queryKey: ['tasks'] }); // Add this
     },
     onError: (error) => {
       console.error('Error updating task:', error);

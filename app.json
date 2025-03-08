@@ -45,12 +45,12 @@
     "assetBundlePatterns": ["**/*"],
     "splash": {
       "backgroundColor": "#fffaec",
-      "image": "./assets/splash-l.png",
+      "image": "./assets/splash.png",
       "dark": {
         "image": "./assets/splash-d.png",
         "backgroundColor": "#00173D"
       },
-      "imageWidth": 393
+      "imageWidth": 480
     },
     "android": {
       "permissions": ["android.permission.ACCESS_NETWORK_STATE"],

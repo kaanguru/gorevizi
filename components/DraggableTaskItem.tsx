@@ -2,7 +2,7 @@
 //DraggableTaskItem.tsx
 import { MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
 import React, { memo } from 'react';
-import { ActivityIndicator, View } from 'react-native';
+import { ActivityIndicator } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Markdown from 'react-native-markdown-display';
 import Animated, {
@@ -15,7 +15,7 @@ import Animated, {
 
 import AnimatedCheckBox from './lotties/AnimatedCheckBox';
 import { Box } from './ui/box';
-import { Checkbox, CheckboxIcon, CheckboxIndicator } from './ui/checkbox';
+import { Checkbox, CheckboxIndicator } from './ui/checkbox';
 import { Pressable } from './ui/pressable';
 
 import { Text } from '~/components/ui/text';

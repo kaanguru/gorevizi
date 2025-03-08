@@ -82,7 +82,7 @@ export default function Index() {
             }
             setTimeout(() => {
               setShowConfetti(false);
-            }, 2000);
+            }, 600);
           },
         },
       );
