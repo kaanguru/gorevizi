@@ -8,7 +8,7 @@ import resetRecurringTasks from './tasks/resetRecurringTasks';
 import { useUpdateHealthAndHappiness } from '~/hooks/useHealthAndHappinessMutations';
 import useHealthAndHappinessQuery from '~/hooks/useHealthAndHappinessQueries';
 import useTasksQuery from '~/hooks/useTasksQueries';
-import useUser } from '~/hooks/useUser';
+import useUser from '~/hooks/useUser';
 import { Task } from '~/types';
 import wasTaskDueYesterday from '~/utils/tasks/wasTaskDueYesterday';
 
