@@ -39,11 +39,13 @@ export default function Login() {
       setIsInvalidEmail(false);
       setIsInvalidPass(false);
       await signIn(email, password);
-      if (authError) {
-        router.replace('/login');
-      } else {
-        router.replace('/');
-      }
+      setTimeout(() => {
+        if (authError) {
+          router.replace('/login');
+        } else {
+          router.replace('/');
+        }
+      }, 200);
     }
   };
 
