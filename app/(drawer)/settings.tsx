@@ -1,5 +1,6 @@
-import { Ionicons } from '@expo/vector-icons';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { View } from 'react-native';
@@ -75,13 +76,14 @@ export default function SettingsScreen() {
       <View className="mb-5 flex-1 flex-col items-center justify-items-start gap-9 p-12 ">
         <Button
           variant="outline"
-          size="md"
+          size="sm"
           action="positive"
           className="mt-5 "
           onPress={() => router.push('/(tasks)/completed-tasks')}>
           <ButtonText className="text-typography-black dark:text-typography-white">
-            Show Completed Tasks
+            Completed
           </ButtonText>
+          <Ionicons name="checkmark-done-sharp" size={24} color="black" />
         </Button>
         <Button
           variant="outline"
@@ -90,21 +92,19 @@ export default function SettingsScreen() {
           className="mt-1"
           onPress={() => router.push('/(tasks)/tasks-of-yesterday')}>
           <ButtonText className="text-typography-black dark:text-typography-white">
-            Show Yesterday's Tasks
+            Yesterday's
           </ButtonText>
+          <FontAwesome5 name="history" size={24} color="black" />
         </Button>
-        <HStack className="flex-row items-center justify-center gap-2">
-          <Text size="md" bold>
-            Your e-mail:
-          </Text>
-          <Text size="md"> {userEmail}</Text>
+        <HStack className="ml-4 flex-row items-center justify-center gap-2">
+          <Text size="sm"> {userEmail}</Text>
           <Button
             variant="link"
             size="sm"
             action="positive"
             className="m-2"
             onPress={() => setShowModal(true)}>
-            <FontAwesome6 name="edit" size={24} color="black" />
+            <FontAwesome6 name="user-pen" size={16} color="black" />
           </Button>
         </HStack>
         <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
@@ -117,7 +117,7 @@ export default function SettingsScreen() {
             <ModalCloseButton onPress={() => setShowModal(false)} />
             <ModalBody className="flex flex-col gap-2">
               <Text size="sm">Set your new mail address</Text>
-              <Input>
+              <Input className="my-2 w-full">
                 <InputField
                   placeholder="New email address"
                   onChangeText={handleEmailChange}
@@ -144,15 +144,13 @@ export default function SettingsScreen() {
           </ModalContent>
         </Modal>
         <Button
-          size="md"
+          size="sm"
           variant="solid"
           action="negative"
           onPress={() => setIsDialogOpen(true)}
           isDisabled={isPending}>
-          <ButtonText className="text-typography-950 dark:text-typography-50">
-            Reset Statistics
-          </ButtonText>
-          <Ionicons name="trash-bin" size={24} color="white" />
+          <ButtonText className="text-typography-white">Reset Statistics</ButtonText>
+          <Ionicons name="trash-bin" size={16} color="white" />
         </Button>
       </View>
 
@@ -183,7 +181,7 @@ export default function SettingsScreen() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-      <Box className="mt-5 flex-row items-center justify-between rounded-lg bg-background-dark p-4 dark:bg-background-light">
+      <Box className="mt-5 flex-row items-center justify-between rounded-lg bg-background-dark p-2 dark:bg-background-light">
         <View className="flex-row items-center">
           {isSoundEnabled ? (
             <FontAwesome6
@@ -200,7 +198,7 @@ export default function SettingsScreen() {
           )}
 
           <Text className="ms-4 text-typography-white dark:text-typography-black">
-            {isSoundEnabled ? 'Sound Enabled' : 'Sound Disabled'}
+            {isSoundEnabled ? 'Enabled' : 'Disabled'}
           </Text>
         </View>
         <Switch
