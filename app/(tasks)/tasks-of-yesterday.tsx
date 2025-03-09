@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, FlatList, SafeAreaView, Alert, ListRenderItem } from 'react-native';
 
 import Header from '~/components/Header';
@@ -16,7 +16,7 @@ import useTasksQuery from '~/hooks/useTasksQueries';
 import { Task } from '~/types';
 import wasTaskDueYesterday from '~/utils/tasks/wasTaskDueYesterday';
 
-function TasksOfYesterday() {
+export default function TasksOfYesterday() {
   const { data: notCompletedTasks } = useTasksQuery('not-completed');
   const [tasksDueYesterday, setTasksDueYesterday] = useState<ReadonlyArray<Tables<'tasks'>>>();
 
@@ -81,5 +81,3 @@ function TasksOfYesterday() {
     </SafeAreaView>
   );
 }
-
-export default TasksOfYesterday;

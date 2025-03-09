@@ -4,7 +4,7 @@ import React from 'react';
 
 import Header from '~/components/Header';
 import TiredOfWorking from '~/components/lotties/TiredOfWorking';
-import { Button, ButtonIcon, ButtonText } from '~/components/ui/button';
+import { Button, ButtonText } from '~/components/ui/button';
 import { Card } from '~/components/ui/card';
 import { Text } from '~/components/ui/text';
 

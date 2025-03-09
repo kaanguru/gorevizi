@@ -26,12 +26,13 @@
         "expo-splash-screen",
         {
           "backgroundColor": "#fffaec",
-          "image": "./assets/splash-l.png",
+          "image": "./assets/splash.png",
           "dark": {
             "image": "./assets/splash-d.png",
             "backgroundColor": "#00173D"
           },
-          "imageWidth": 393
+          "resizeMode": "contain",
+          "imageWidth": 480
         }
       ]
     ],
@@ -40,18 +41,10 @@
       "tsconfigPaths": true
     },
     "orientation": "portrait",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "automatic",
 
-    "assetBundlePatterns": ["**/*"],
-    "splash": {
-      "backgroundColor": "#fffaec",
-      "image": "./assets/splash.png",
-      "dark": {
-        "image": "./assets/splash-d.png",
-        "backgroundColor": "#00173D"
-      },
-      "imageWidth": 480
-    },
+    "assetBundlePatterns": ["**/*.js", "**/*.png", "**/*.jpg", "**/*.json", "**/*.mp3", "**/*.ttf"],
+
     "android": {
       "permissions": ["android.permission.ACCESS_NETWORK_STATE"],
       "adaptiveIcon": {

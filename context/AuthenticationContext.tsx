@@ -1,7 +1,7 @@
 // context/AuthenticationContext.tsx
 import { Session } from '@supabase/supabase-js';
 import { useRouter } from 'expo-router';
-import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { ToastAndroid } from 'react-native';
 
 import { useSession } from '~/hooks/useSession';

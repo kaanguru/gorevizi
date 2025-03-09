@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { router } from 'expo-router';
-import React, { View } from 'react-native';
+import React from 'react-native';
 
 import { Tables } from '@/database.types';
 

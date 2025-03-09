@@ -1,8 +1,9 @@
 import { useRouter } from 'expo-router';
-import { View, Text, Pressable } from 'react-native';
+import { View } from 'react-native';
 
 import LogoPortrait from '~/components/lotties/LogoPortrait';
 import { Button, ButtonText } from '~/components/ui/button';
+
 export default function StartScreen() {
   const router = useRouter();
 

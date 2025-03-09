@@ -25,6 +25,7 @@ Sentry.init({
 const queryClient = new QueryClient();
 
 export default function RootLayout() {
+  console.log('Is Hermes running?', typeof HermesInternal);
   const refNav = useNavigationContainerRef();
   const [isNavigationReady, setIsNavigationReady] = useState(false);
 

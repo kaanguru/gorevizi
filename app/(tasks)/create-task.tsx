@@ -109,7 +109,7 @@ export default function CreateTask() {
           />
           <RepeatPeriodSelector
             repeatPeriod={formData.repeatPeriod}
-            setRepeatPeriod={(value: string) =>
+            setRepeatPeriod={(value: '' | RepeatPeriod | null) =>
               setFormData((prev) => ({ ...prev, repeatPeriod: value as RepeatPeriod | '' }))
             }
           />

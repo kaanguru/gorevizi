@@ -1,4 +1,4 @@
-import { FontAwesome6 } from '@expo/vector-icons'; // Import the icon
+import { FontAwesome6 } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
@@ -40,15 +40,14 @@ export default function RepeatPeriodSelector({
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row', // Arrange picker and icon horizontally
-    alignItems: 'center', // Vertically center items
-    // You might need to add padding or margin to your container based on your design
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   picker: {
-    flex: 1, // Allow picker to take available space
+    flex: 1,
     height: 60,
   },
   iconContainer: {
-    paddingLeft: 8, // Add some space between picker and icon
+    paddingLeft: 8,
   },
 });

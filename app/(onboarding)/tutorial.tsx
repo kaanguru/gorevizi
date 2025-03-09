@@ -29,7 +29,6 @@ const tutorials: TutorialItem[] = [
     title: 'Track your progress',
   },
 ];
-
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 export default function TutorialScreen() {

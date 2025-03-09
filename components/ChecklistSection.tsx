@@ -1,10 +1,8 @@
 import { FontAwesome6 } from '@expo/vector-icons';
 import { useState, useEffect, useCallback } from 'react';
-import { ScrollView } from 'react-native';
 
 import DraggableItem from '~/components/DraggableItem';
 import { Button, ButtonText } from '~/components/ui/button';
-import { HStack } from '~/components/ui/hstack';
 import { useTheme } from '~/components/ui/ThemeProvider/ThemeProvider';
 import { VStack } from '~/components/ui/vstack';
 import { TaskFormData } from '~/types';

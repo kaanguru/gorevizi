@@ -3,7 +3,7 @@ import { router } from 'expo-router';
 import React from 'react';
 
 import { Box } from '~/components/ui/box';
-import { Button, ButtonIcon } from '~/components/ui/button';
+import { Button } from '~/components/ui/button';
 import { HStack } from '~/components/ui/hstack';
 import { Text } from '~/components/ui/text';
 import { useTheme } from '~/components/ui/ThemeProvider/ThemeProvider';
