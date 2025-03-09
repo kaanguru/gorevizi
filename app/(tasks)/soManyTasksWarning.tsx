@@ -8,7 +8,7 @@ import { Button, ButtonIcon, ButtonText } from '~/components/ui/button';
 import { Card } from '~/components/ui/card';
 import { Text } from '~/components/ui/text';
 
-const WarningPage = () => {
+export default function soManyTasksWarning() {
   return (
     <>
       <Header headerTitle="Over Load Warning" />
@@ -28,6 +28,4 @@ const WarningPage = () => {
       </Card>
     </>
   );
-};
-
-export default WarningPage;
+}

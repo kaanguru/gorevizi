@@ -3,7 +3,7 @@ import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useMemo, useState } from 'react';
-import { Alert, ScrollView } from 'react-native';
+import { ActivityIndicator, Alert, ScrollView } from 'react-native';
 
 import ChecklistSection from '~/components/ChecklistSection';
 import { FormInput } from '~/components/FormInput';
@@ -14,7 +14,6 @@ import { Box } from '~/components/ui/box';
 import { Button, ButtonText } from '~/components/ui/button';
 import { Checkbox, CheckboxIndicator, CheckboxLabel } from '~/components/ui/checkbox';
 import { HStack } from '~/components/ui/hstack';
-import { Spinner } from '~/components/ui/spinner';
 import { Text } from '~/components/ui/text';
 import { VStack } from '~/components/ui/vstack';
 import WeekdaySelector from '~/components/WeekDaySelector';
@@ -141,7 +140,7 @@ const EditTask = () => {
   if (loading) {
     return (
       <Box className="flex-1 items-center justify-center">
-        <Spinner size="large" />
+        <ActivityIndicator size="large" />
       </Box>
     );
   }
@@ -161,7 +160,7 @@ const EditTask = () => {
 
             <RepeatPeriodSelector
               repeatPeriod={formData.repeatPeriod}
-              setRepeatPeriod={(value: string) =>
+              setRepeatPeriod={(value: RepeatPeriod | '' | null) =>
                 setFormData((prev) => ({ ...prev, repeatPeriod: value as RepeatPeriod | '' }))
               }
             />
@@ -253,7 +252,7 @@ const EditTask = () => {
                 }}
               />
             )}
-            {isCheckListItemsLoading && <Spinner accessibilityLabel="Loading checklist items" />}
+            {isCheckListItemsLoading && <ActivityIndicator />}
             {isCheckListItemsError ? (
               <Text>Error loading checklist items</Text>
             ) : (

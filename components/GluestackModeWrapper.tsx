@@ -10,7 +10,6 @@ import { View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { GluestackUIProvider } from '~/components/ui/gluestack-ui-provider';
-import { Spinner } from '~/components/ui/spinner';
 import { useTheme } from '~/components/ui/ThemeProvider/ThemeProvider';
 import { useSessionContext } from '~/context/AuthenticationContext';
 import { SoundProvider } from '~/context/SoundContext';
@@ -117,7 +116,7 @@ export default function GluestackModeWrapper() {
   if (!isSupabaseInitialized || (!fontsLoaded && !fontError) || sessionLoading || !initialized) {
     return (
       <View className="flex-1 justify-center">
-        <Spinner size="large" />
+        <ActivityIndicator size="large" />
       </View>
     );
   }

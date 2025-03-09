@@ -2,14 +2,13 @@ import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { Stack, useFocusEffect, useRouter } from 'expo-router';
 import * as R from 'ramda';
 import React, { useCallback, useState, useEffect } from 'react';
-import { Pressable, View, Text } from 'react-native';
+import { ActivityIndicator, Pressable, View } from 'react-native';
 
 import { TaskItem } from '~/components/DraggableTaskItem';
 import Confetti from '~/components/lotties/Confetti';
 import TaskListDisplay from '~/components/TaskListDisplay';
 import { Box } from '~/components/ui/box';
-import { Fab, FabIcon } from '~/components/ui/fab';
-import { Spinner } from '~/components/ui/spinner';
+import { Fab } from '~/components/ui/fab';
 import { useTheme } from '~/components/ui/ThemeProvider/ThemeProvider';
 import { useSoundContext } from '~/context/SoundContext';
 import useFilteredTasks from '~/hooks/useFilteredTasks';
@@ -161,7 +160,7 @@ export default function Index() {
         <View className="flex-1 bg-background-light  p-5 dark:bg-background-dark">
           {showLoading ? (
             <Box className="flex-1 items-center justify-center">
-              {showConfetti ? <Confetti /> : <Spinner size="large" />}
+              {showConfetti ? <Confetti /> : <ActivityIndicator size="large" />}
             </Box>
           ) : (
             <>

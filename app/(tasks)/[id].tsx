@@ -1,8 +1,8 @@
 import { FontAwesome6, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useCallback } from 'react';
-import { ScrollView } from 'react-native';
+import React, { useCallback, useState } from 'react';
+import { ActivityIndicator, ScrollView, Text } from 'react-native';
 import Markdown from 'react-native-markdown-display';
 
 import Header from '~/components/Header';
@@ -20,11 +20,8 @@ import { Button, ButtonText } from '~/components/ui/button';
 import { Card } from '~/components/ui/card';
 import { Checkbox, CheckboxIndicator, CheckboxLabel, CheckboxIcon } from '~/components/ui/checkbox';
 import { Divider } from '~/components/ui/divider';
-import { Heading } from '~/components/ui/heading';
 import { HStack } from '~/components/ui/hstack';
 import { Pressable } from '~/components/ui/pressable';
-import { Spinner } from '~/components/ui/spinner';
-import { Text } from '~/components/ui/text';
 import { useTheme } from '~/components/ui/ThemeProvider/ThemeProvider';
 import { VStack } from '~/components/ui/vstack';
 import useChecklistItemMutations from '~/hooks/useCheckListMutations';
@@ -49,11 +46,11 @@ export default function TaskDetailPage() {
   const { data: task, isLoading, isError, error, refetch } = useTaskById(taskID);
   const { mutate: deleteTask } = useDeleteTask();
   const { theme } = useTheme();
-  const [showAlertDialog, setShowAlertDialog] = React.useState(false);
+  const [showAlertDialog, setShowAlertDialog] = useState(false);
   const handleClose = () => setShowAlertDialog(false);
 
   useFocusEffect(
-    React.useCallback(() => {
+    useCallback(() => {
       refetch();
     }, [refetch]),
   );
@@ -66,7 +63,7 @@ export default function TaskDetailPage() {
   if (!task || isChecklistItemsLoading) {
     return (
       <Box className="flex-1 items-center justify-center">
-        <Spinner size="large" />
+        <ActivityIndicator size="large" />
       </Box>
     );
   }
@@ -117,10 +114,10 @@ export default function TaskDetailPage() {
                 />
               </Box>
               <AlertDialogHeader className="mb-2">
-                <Heading size="md">Delete Task?</Heading>
+                <Text>Delete Task?</Text>
               </AlertDialogHeader>
               <AlertDialogBody>
-                <Text size="sm" className="text-center">
+                <Text className="text-center text-sm">
                   The Task will be deleted from the database. This cannot be undone.
                 </Text>
               </AlertDialogBody>
@@ -145,11 +142,9 @@ export default function TaskDetailPage() {
           </AlertDialog>
         </HStack>
         <Card className="mx-5 mt-4 bg-background-dark text-typography-white dark:bg-background-light dark:text-typography-black">
-          <Heading
-            size="2xl"
-            className="justify-self-center p-4 text-center text-typography-white dark:text-typography-black">
+          <Text className=" justify-self-center p-4 text-center text-2xl text-typography-white dark:text-typography-black">
             {task.title}
-          </Heading>
+          </Text>
           {task.notes && (
             <Box className="rounded-sm bg-background-light p-3">
               <Markdown>{task.notes}</Markdown>
@@ -160,7 +155,7 @@ export default function TaskDetailPage() {
           {/* Task Status */}
           <VStack className="mx-auto my-5 w-full items-center justify-center px-4" space="xl">
             {toggleCompleteIsPending ? (
-              <Spinner size="small" />
+              <ActivityIndicator size="small" color="#8AC926" />
             ) : (
               <Checkbox
                 size="lg"
@@ -178,9 +173,7 @@ export default function TaskDetailPage() {
             )}
           </VStack>
           {!task.repeat_period && (
-            <Text
-              size="md"
-              className="text-center text-typography-white dark:text-typography-black">
+            <Text className="text-center text-typography-white dark:text-typography-black">
               It is not a repeating task
             </Text>
           )}
@@ -188,7 +181,7 @@ export default function TaskDetailPage() {
             <VStack className="bg-gray.50 rounded-lg p-4">
               <VStack className="items-center justify-center">
                 <MaterialCommunityIcons name="calendar-sync" size={24} color="#CC9900" />
-                <Text size="md" bold className="text-typography-white  dark:text-typography-black">
+                <Text className="text-typography-white  dark:text-typography-black">
                   Every {task.repeat_frequency} {getRepeatPeriodLabel(task.repeat_period)}{' '}
                 </Text>
               </VStack>
@@ -196,9 +189,7 @@ export default function TaskDetailPage() {
                 <HStack space="sm" className="flex-wrap justify-center">
                   {task.repeat_on_wk.map((day) => (
                     <Badge key={day} variant="outline" className="my-3 p-1">
-                      <Text size="md" bold className="text-gray.700 p-3">
-                        {day}
-                      </Text>
+                      <Text className="text-gray.700 p-3">{day}</Text>
                     </Badge>
                   ))}
                 </HStack>
@@ -208,18 +199,14 @@ export default function TaskDetailPage() {
         </Card>
         <HStack className="m-2  justify-between px-1" space="lg">
           <VStack className="items-start px-2">
-            <Text size="xs" bold>
-              start
-            </Text>
-            <Text size="md">{new Date(task.created_at!).toLocaleDateString()}</Text>
+            <Text className="text-xs">start</Text>
+            <Text>{new Date(task.created_at!).toLocaleDateString()}</Text>
             <Divider />
           </VStack>
           {task.updated_at && (
             <VStack className="items-end px-2">
-              <Text size="xs" bold>
-                update
-              </Text>
-              <Text size="md">{new Date(task.updated_at!).toLocaleDateString()}</Text>
+              <Text className="text-xs">update</Text>
+              <Text>{new Date(task.updated_at!).toLocaleDateString()}</Text>
               <Divider />
             </VStack>
           )}
@@ -230,7 +217,7 @@ export default function TaskDetailPage() {
             <HStack>
               <Image source="~/assets/waypoints.png" style={{ width: 24, height: 24 }} />
 
-              <Text size="lg" className="pb-2 text-typography-black dark:text-typography-white">
+              <Text className="pb-2 text-lg text-typography-black dark:text-typography-white">
                 Routine Steps
               </Text>
             </HStack>

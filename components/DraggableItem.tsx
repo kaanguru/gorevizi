@@ -5,13 +5,12 @@ import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-g
 import Animated, { useSharedValue, useAnimatedStyle, runOnJS } from 'react-native-reanimated';
 
 import { Input, InputField } from './ui/input';
+import { Pressable } from './ui/pressable';
 
 import { Box } from '~/components/ui/box';
-import { Button } from '~/components/ui/button';
 import { HStack } from '~/components/ui/hstack';
 import { useTheme } from '~/components/ui/ThemeProvider/ThemeProvider';
 import { TaskFormData } from '~/types';
-import { Pressable } from './ui/pressable';
 
 const ITEM_HEIGHT = 42;
 

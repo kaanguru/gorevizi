@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { View, FlatList } from 'react-native';
+import { View, FlatList, ActivityIndicator } from 'react-native';
 
 import { Tables } from '@/database.types';
 
@@ -9,10 +9,8 @@ import TaskSuccessPercentage from '~/components/TaskSuccessPercentage';
 import { Box } from '~/components/ui/box';
 import { Card } from '~/components/ui/card';
 import { Divider } from '~/components/ui/divider';
-import { Heading } from '~/components/ui/heading';
 import { HStack } from '~/components/ui/hstack';
 import { Progress, ProgressFilledTrack } from '~/components/ui/progress';
-import { Spinner } from '~/components/ui/spinner';
 import { Text } from '~/components/ui/text';
 import useHealthAndHappinessQuery from '~/hooks/useHealthAndHappinessQueries';
 import useTasksQuery from '~/hooks/useTasksQueries';
@@ -49,7 +47,7 @@ export default function Stats() {
   if (isLoading || isLoadingHealthAndHappiness) {
     return (
       <Box className="flex-1 items-center justify-center">
-        <Spinner size="large" />
+        <ActivityIndicator size="large" />
       </Box>
     );
   }
@@ -81,11 +79,11 @@ export default function Stats() {
       <HStack className="basis-6/6 justify-evenly">
         <Card className="m-1 w-2/6 rounded-lg bg-[#1982C4] p-2">
           <Healthy height={100} width={120} />
-          <Heading
+          <Text
             size="md"
             className="justify-between text-center text-typography-white dark:text-typography-black">
             Health
-          </Heading>
+          </Text>
           <Divider
             orientation="horizontal"
             className="my-2 flex w-full self-center bg-background-500"
@@ -96,11 +94,11 @@ export default function Stats() {
         </Card>
         <Card className="m-1 w-2/6 rounded-lg bg-[#4F10A8] p-2">
           <Happy height={100} width={120} />
-          <Heading
+          <Text
             size="md"
             className="justify-between text-center text-typography-white dark:text-typography-black">
             Happiness
-          </Heading>
+          </Text>
           <Divider
             orientation="horizontal"
             className="my-2 flex w-full self-center bg-background-500"
